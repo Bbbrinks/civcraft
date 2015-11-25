@@ -8,6 +8,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 /**
  * Created by Bob on 25-11-2015.
  * <p>
@@ -26,7 +28,7 @@ public class CivCraftApplication extends Application {
 
     }
 
-    public void addAppStates(AppState... states){
+    public void addAppStates(List<AppState> states){
         if (states != null) {
             for (AppState a : states) {
                 if (a != null) {
