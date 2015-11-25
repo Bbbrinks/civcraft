@@ -6,7 +6,67 @@
 
     <groupId>nl.civcraft</groupId>
     <artifactId>civcraft</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>civcraft-core</module>
+        <module>civcraft-desktop</module>
+    </modules>
 
+    <properties>
+        <!-- dependency versions -->
+        <spring-version>4.2.1.RELEASE</spring-version>
+        <jmonkey-version>3.0.10</jmonkey-version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jme3</groupId>
+                <artifactId>jme3-core</artifactId>
+                <version>${jmonkey-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jme3</groupId>
+                <artifactId>jme3-desktop</artifactId>
+                <version>${jmonkey-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jme3</groupId>
+                <artifactId>jme3-lwjgl</artifactId>
+                <version>${jmonkey-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>2.4.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>jmonkey</id>
+            <name>jmonkey repository</name>
+            <url>http://updates.jmonkeyengine.org/maven/</url>
+        </repository>
+    </repositories>
 
 </project>
