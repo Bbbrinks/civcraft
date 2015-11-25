@@ -1,6 +1,7 @@
 package nl.civcraft.desktop;
 
 import com.jme3.app.Application;
+import com.jme3.app.FlyCamAppState;
 import nl.civcraft.core.conf.InitialConfigruation;
 import nl.civcraft.desktop.conf.DesktopConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -16,5 +17,6 @@ public class Civcraft   {
         AnnotationConfigApplicationContext appContext = new AnnotationConfigApplicationContext(InitialConfigruation.class, DesktopConfiguration.class);
         Application app = appContext.getBean(Application.class);
         app.start();
+        app.getStateManager().getState(FlyCamAppState.class).getCamera().setMoveSpeed(100f);
     }
 }

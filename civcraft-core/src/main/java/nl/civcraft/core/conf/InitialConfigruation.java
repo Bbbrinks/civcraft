@@ -10,6 +10,8 @@ import com.jme3.system.JmeSystem;
 import nl.civcraft.core.CivCraftApplication;
 import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.input.GlobalInput;
+import nl.civcraft.core.worldgeneration.RollingHillsGenerator;
+import nl.civcraft.core.worldgeneration.WorldGenerator;
 import nl.civcraft.core.worldgeneration.WorldGeneratorState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +41,13 @@ public class InitialConfigruation {
     public AppState worldGeneratorState(){
         return new WorldGeneratorState();
     }
+
+    @Bean
+    public WorldGenerator worldGenerator()
+    {
+        return new WorldGenerator();
+    }
+
     @Bean
     public AppState debugStatsState(){
         return new DebugStatsState();
@@ -51,6 +60,7 @@ public class InitialConfigruation {
 
     @Bean
     public AppState flyCamAppState(){
+
         return new FlyCamAppState();
     }
 
@@ -68,6 +78,12 @@ public class InitialConfigruation {
     @Bean
     public Node guiNode() {
         return new Node("Gui Node");
+    }
+
+    @Bean
+    public RollingHillsGenerator rollingHillsGenerator()
+    {
+        return new RollingHillsGenerator();
     }
 
     @Bean

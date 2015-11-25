@@ -24,6 +24,10 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jme3</groupId>
+            <artifactId>jme3-terrain</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
