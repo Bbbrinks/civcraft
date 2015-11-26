@@ -17,6 +17,6 @@ public class Civcraft   {
         AnnotationConfigApplicationContext appContext = new AnnotationConfigApplicationContext(InitialConfigruation.class, DesktopConfiguration.class);
         Application app = appContext.getBean(Application.class);
         app.start();
-        app.getStateManager().getState(FlyCamAppState.class).getCamera().setMoveSpeed(100f);
+        app.getStateManager().getState(FlyCamAppState.class).getCamera().setMoveSpeed(200f);
     }
 }

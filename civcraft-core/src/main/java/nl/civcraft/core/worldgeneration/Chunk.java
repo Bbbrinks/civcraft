@@ -1,7 +1,6 @@
 package nl.civcraft.core.worldgeneration;
 
 import com.jme3.scene.Node;
-import com.jme3.scene.control.LodControl;
 
 /**
  * Created by Bob on 25-11-2015.
@@ -10,7 +9,17 @@ import com.jme3.scene.control.LodControl;
  */
 public class Chunk extends Node {
 
-    public Chunk(LodControl lodControl) {
+    private boolean optimized;
+
+    public Chunk(ChunkLodOptimizerControl lodControl) {
         addControl(lodControl);
+    }
+
+    public boolean isOptimized() {
+        return optimized;
+    }
+
+    public void setOptimized(boolean optimized) {
+        this.optimized = optimized;
     }
 }
