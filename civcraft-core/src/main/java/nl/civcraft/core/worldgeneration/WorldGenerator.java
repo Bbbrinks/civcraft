@@ -1,6 +1,5 @@
 package nl.civcraft.core.worldgeneration;
 
-import com.jme3.asset.AssetManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -9,20 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
  * This is probably not worth documenting
  */
 public class WorldGenerator {
-    @Autowired
-    private AssetManager assetManager;
-    @Autowired
-    private RollingHillsGenerator rollingHillsGenerator;
 
-    public Chunk generateChunk(int chunkX, int chunkY, int chunkZ) {
-        Chunk chunk = new Chunk();
+    @Autowired
+    private HillsGenerator hillsGenerator;
+    @Autowired
+    private ChunkBuilder chunkBuilder;
+    private HeightMap heightMap;
 
-        HeightMap heightMap = rollingHillsGenerator.generateRandomHeightMap(100, 100);
-        for (int x = 0; x < heightMap.getWidth(); x++) {
-            for (int z = 0; z < heightMap.getLength(); z++) {
-                chunk.attachChild(new Voxel(x + chunkX, (int) heightMap.getHeight(x, z), z + chunkZ, assetManager));
-            }
-        }
-        return chunk;
+
+    public Chunk generateChunk(int chunkX, int chunkZ) {
+        return chunkBuilder.buildChunk(chunkX, chunkZ, heightMap);
+    }
+
+    public void generateHeightMap() {
+        this.heightMap = hillsGenerator.generateRandomHeightMap(1000, 1000);
     }
 }

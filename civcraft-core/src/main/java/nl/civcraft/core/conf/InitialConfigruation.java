@@ -6,11 +6,13 @@ import com.jme3.app.FlyCamAppState;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
+import com.jme3.scene.control.LodControl;
 import com.jme3.system.JmeSystem;
 import nl.civcraft.core.CivCraftApplication;
 import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.input.GlobalInput;
-import nl.civcraft.core.worldgeneration.RollingHillsGenerator;
+import nl.civcraft.core.worldgeneration.ChunkBuilder;
+import nl.civcraft.core.worldgeneration.HillsGenerator;
 import nl.civcraft.core.worldgeneration.WorldGenerator;
 import nl.civcraft.core.worldgeneration.WorldGeneratorState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,34 +40,38 @@ public class InitialConfigruation {
     }
 
     @Bean
-    public AppState worldGeneratorState(){
+    public AppState worldGeneratorState() {
         return new WorldGeneratorState();
     }
 
     @Bean
-    public WorldGenerator worldGenerator()
-    {
+    public WorldGenerator worldGenerator() {
         return new WorldGenerator();
     }
 
     @Bean
-    public AppState debugStatsState(){
+    public AppState debugStatsState() {
         return new DebugStatsState();
     }
 
     @Bean
-    public AppState globalInput(){
+    public AppState globalInput() {
         return new GlobalInput();
     }
 
     @Bean
-    public AppState flyCamAppState(){
+    public AppState flyCamAppState() {
 
         return new FlyCamAppState();
     }
 
     @Bean
-    public AppState debugKeysAppState(){
+    public ChunkBuilder chunkBuilder() {
+        return new ChunkBuilder();
+    }
+
+    @Bean
+    public AppState debugKeysAppState() {
         return new DebugKeysAppState();
     }
 
@@ -81,9 +87,14 @@ public class InitialConfigruation {
     }
 
     @Bean
-    public RollingHillsGenerator rollingHillsGenerator()
+    public HillsGenerator rollingHillsGenerator() {
+        return new HillsGenerator();
+    }
+
+    @Bean
+    public LodControl lodControl()
     {
-        return new RollingHillsGenerator();
+        return new LodControl();
     }
 
     @Bean

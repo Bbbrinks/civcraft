@@ -49,8 +49,11 @@ public class WorldGeneratorState extends AbstractAppState implements ActionListe
 
     public void generateInitialChunk() {
         rootNode.detachAllChildren();
-        rootNode.attachChild(worldGenerator.generateChunk(0,0,0));
+        worldGenerator.generateHeightMap();
+        for(int x = 0; x < 10; x++){
+            for(int z = 0; z < 10; z++){
+                rootNode.attachChild(worldGenerator.generateChunk(x,z));
+            }
+        }
     }
-
-
 }

@@ -7,14 +7,14 @@ import nl.civcraft.core.utils.MathUtil;
  * <p>
  * This is probably not worth documenting
  */
-public class RollingHillsGenerator implements HeightMapGenerator {
+public class HillsGenerator implements HeightMapGenerator {
 
 
     public static final float MAX_HILL_HEIGHT = 20f;
     private static final float MIN_HILL_RADIUS = 20f;
     private static final float MAX_HILL_RADIUS = 40f;
-    private static final int MIN_HILLS = 3;
-    private static final int MAX_HILLS = 8;
+    private static final int MIN_HILLS = 100;
+    private static final int MAX_HILLS = 500;
 
     public HeightMap generateRandomHeightMap(int width, int length) {
         HeightMap heightMap = new HeightMap(width, length);
