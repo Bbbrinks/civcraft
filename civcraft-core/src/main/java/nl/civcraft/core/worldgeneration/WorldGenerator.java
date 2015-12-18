@@ -9,11 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class WorldGenerator {
 
+    private final int heightMapWidth;
+    private final int heightMapHeight;
     @Autowired
     private HillsGenerator hillsGenerator;
     @Autowired
     private ChunkBuilder chunkBuilder;
     private HeightMap heightMap;
+
+    public WorldGenerator(int heightMapWidth, int heightMapHeight) {
+        this.heightMapWidth = heightMapWidth;
+        this.heightMapHeight = heightMapHeight;
+    }
 
 
     public Chunk generateChunk(int chunkX, int chunkZ) {
@@ -21,6 +28,6 @@ public class WorldGenerator {
     }
 
     public void generateHeightMap() {
-        this.heightMap = hillsGenerator.generateRandomHeightMap(1000, 1000);
+        this.heightMap = hillsGenerator.generateRandomHeightMap(heightMapWidth, heightMapHeight);
     }
 }

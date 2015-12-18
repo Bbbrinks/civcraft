@@ -10,19 +10,27 @@ import nl.civcraft.core.utils.MathUtil;
 public class HillsGenerator implements HeightMapGenerator {
 
 
-    public static final float MAX_HILL_HEIGHT = 20f;
-    private static final float MIN_HILL_RADIUS = 20f;
-    private static final float MAX_HILL_RADIUS = 40f;
-    private static final int MIN_HILLS = 100;
-    private static final int MAX_HILLS = 500;
+    private final float maxHillHeight;
+    private  final float minHillRadius;
+    private  final float maxHillRadius;
+    private  final int minHills;
+    private  final int maxHills;
+
+    public HillsGenerator(float maxHillHeight, float minHillRadius, float maxHillRadius, int minHills, int maxHills) {
+        this.maxHillHeight = maxHillHeight;
+        this.minHillRadius = minHillRadius;
+        this.maxHillRadius = maxHillRadius;
+        this.minHills = minHills;
+        this.maxHills = maxHills;
+    }
 
     public HeightMap generateRandomHeightMap(int width, int length) {
         HeightMap heightMap = new HeightMap(width, length);
-        int iterations = (int) MathUtil.rnd(MIN_HILLS,MAX_HILLS);
+        int iterations = (int) MathUtil.rnd(minHills, maxHills);
         for(; iterations > 0; iterations--){
             addRandomHill(heightMap);
         }
-        normalize(MAX_HILL_HEIGHT, heightMap);
+        normalize(maxHillHeight, heightMap);
         return heightMap;
     }
 
@@ -40,7 +48,7 @@ public class HillsGenerator implements HeightMapGenerator {
         int peakX = (int) MathUtil.rnd(heightMap.getLength());
         int peakZ = (int) MathUtil.rnd(heightMap.getWidth());
 
-        float hillRadius = MathUtil.rnd(MIN_HILL_RADIUS, MAX_HILL_RADIUS);
+        float hillRadius = MathUtil.rnd(minHillRadius, maxHillRadius);
         handlePeak(peakX, peakZ, hillRadius, heightMap);
 
     }
