@@ -1,5 +1,6 @@
 package nl.civcraft.core.worldgeneration;
 
+import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.model.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,14 +48,19 @@ public class WorldGenerator implements Runnable {
 
     @Override
     public void run() {
-        LOGGER.trace("Start generating height map");
+        DebugStatsState.LAST_MESSAGE = "Start generating height map";
+        LOGGER.trace(DebugStatsState.LAST_MESSAGE);
+
         generateHeightMap();
-        LOGGER.trace("End generating height map");
+        DebugStatsState.LAST_MESSAGE ="End generating height map";
+        LOGGER.trace(DebugStatsState.LAST_MESSAGE);
+
         chunks = new ArrayList<>();
         for (int x = 0; x < 10; x++) {
             for (int z = 0; z < 10; z++) {
                 chunks.add(generateChunk(x, z));
-                LOGGER.trace("Generating chunk: " + x + z + "/100");
+                DebugStatsState.LAST_MESSAGE = "Generating chunk: " + chunks.size() + "/100";
+                LOGGER.trace(DebugStatsState.LAST_MESSAGE );
             }
         }
         generationDone = true;

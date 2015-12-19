@@ -1,6 +1,9 @@
 package nl.civcraft.core.worldgeneration;
 
+import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.utils.MathUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by Bob on 25-11-2015.
@@ -8,13 +11,13 @@ import nl.civcraft.core.utils.MathUtil;
  * This is probably not worth documenting
  */
 public class HillsGenerator implements HeightMapGenerator {
-
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final float maxHillHeight;
-    private  final float minHillRadius;
-    private  final float maxHillRadius;
-    private  final int minHills;
-    private  final int maxHills;
+    private final float minHillRadius;
+    private final float maxHillRadius;
+    private final int minHills;
+    private final int maxHills;
 
     public HillsGenerator(float maxHillHeight, float minHillRadius, float maxHillRadius, int minHills, int maxHills) {
         this.maxHillHeight = maxHillHeight;
@@ -27,7 +30,10 @@ public class HillsGenerator implements HeightMapGenerator {
     public HeightMap generateRandomHeightMap(int width, int length) {
         HeightMap heightMap = new HeightMap(width, length);
         int iterations = (int) MathUtil.rnd(minHills, maxHills);
-        for(; iterations > 0; iterations--){
+
+        for (; iterations > 0; iterations--) {
+            DebugStatsState.LAST_MESSAGE = "Adding random hill to height map. (" + iterations + " hills left to add)";
+            LOGGER.trace(DebugStatsState.LAST_MESSAGE);
             addRandomHill(heightMap);
         }
         normalize(maxHillHeight, heightMap);
@@ -39,7 +45,7 @@ public class HillsGenerator implements HeightMapGenerator {
         float normalizer = maxHillHeight / highestPoint;
         for (int x = 0; x < heightMap.getWidth(); x++) {
             for (int z = 0; z < heightMap.getLength(); z++) {
-                heightMap.setHeight(x,z, Math.round((heightMap.getHeight(x,z)) * normalizer));
+                heightMap.setHeight(x, z, Math.round((heightMap.getHeight(x, z)) * normalizer));
             }
         }
     }

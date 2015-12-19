@@ -15,12 +15,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class DebugStatsState extends AbstractAppState {
 
+    public static String LAST_MESSAGE = "";
     private Application app;
     @Autowired
     private Node guiNode;
     private BitmapFont guiFont;
     private BitmapText fpsText;
     private StatsView statsView;
+    private BitmapText logMessageText;
     private float secondCounter;
     private int frameCounter;
 
@@ -34,6 +36,18 @@ public class DebugStatsState extends AbstractAppState {
 
         loadFpsText();
         loadStatsView();
+        loadLogMessageText();
+    }
+
+    private void loadLogMessageText() {
+        if (logMessageText == null) {
+            logMessageText = new BitmapText(guiFont, false);
+        }
+
+        logMessageText.setLocalTranslation(0, logMessageText.getLineHeight() * 2, 0);
+        logMessageText.setText("");
+        logMessageText.setCullHint(Spatial.CullHint.Never);
+        guiNode.attachChild(logMessageText);
     }
 
     /**
@@ -60,7 +74,7 @@ public class DebugStatsState extends AbstractAppState {
                 app.getAssetManager(),
                 app.getRenderer().getStatistics());
         // move it up so it appears above fps text
-        statsView.setLocalTranslation(0, fpsText.getLineHeight(), 0);
+        statsView.setLocalTranslation(0, fpsText.getLineHeight() * 3, 0);
         statsView.setEnabled(true);
         statsView.setCullHint(Spatial.CullHint.Never);
         guiNode.attachChild(statsView);
@@ -76,7 +90,7 @@ public class DebugStatsState extends AbstractAppState {
             secondCounter = 0.0f;
             frameCounter = 0;
         }
-
+        logMessageText.setText(LAST_MESSAGE);
     }
 
     @Override

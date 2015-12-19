@@ -4,6 +4,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import jme3tools.optimize.GeometryBatchFactory;
+import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.Voxel;
 import org.apache.logging.log4j.LogManager;
@@ -44,10 +45,12 @@ public class ChunkOptimizer implements Runnable {
     }
 
     private List<List<Voxel>> optimzeVoxels(List<Voxel> unoptimizedVoxels) {
-        LOGGER.info("Optimizing chunk");
+        DebugStatsState.LAST_MESSAGE = "Start optimizing chunk";
+        LOGGER.info(DebugStatsState.LAST_MESSAGE);
         List<List<Voxel>> optimizedVoxelGroups = new ArrayList<>();
         while (unoptimizedVoxels.size() > 0) {
-            LOGGER.trace("Unoptimized voxels left: " + unoptimizedVoxels.size());
+            DebugStatsState.LAST_MESSAGE = "Unoptimized voxels left: " + unoptimizedVoxels.size();
+            LOGGER.trace( DebugStatsState.LAST_MESSAGE);
             Voxel toBeOptimized = unoptimizedVoxels.get(0);
             List<Voxel> optimizedVoxel = new ArrayList<>();
             optimizedVoxel.add(toBeOptimized);
@@ -55,6 +58,8 @@ public class ChunkOptimizer implements Runnable {
             unoptimizedVoxels.removeAll(optimizedVoxel);
             optimizedVoxelGroups.add(optimizedVoxel);
         }
+        DebugStatsState.LAST_MESSAGE = "End optimizing chunk";
+        LOGGER.info(DebugStatsState.LAST_MESSAGE);
         return optimizedVoxelGroups;
     }
 
