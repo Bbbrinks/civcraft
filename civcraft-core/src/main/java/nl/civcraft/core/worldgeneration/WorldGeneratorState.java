@@ -33,8 +33,6 @@ public class WorldGeneratorState extends AbstractAppState implements ActionListe
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
 
-        worldGenerator.generateHeightMap();
-
         registerInput(app.getInputManager());
     }
 
@@ -61,6 +59,7 @@ public class WorldGeneratorState extends AbstractAppState implements ActionListe
 
     public void generateInitialChunk() {
         rootNode.detachAllChildren();
+        worldGenerator.generateHeightMap();
         for (int x = 0; x < 10; x++) {
             for (int z = 0; z < 10; z++) {
                 rootNode.attachChild(worldGenerator.generateChunk(x, z));
