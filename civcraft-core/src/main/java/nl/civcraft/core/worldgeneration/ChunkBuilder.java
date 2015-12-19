@@ -19,7 +19,7 @@ public class ChunkBuilder {
     private static final int CHUNK_SIZE = 10;
 
     public Chunk buildChunk(int chunkX, int chunkZ, HeightMap heightMap) {
-        Chunk chunk = new Chunk(CHUNK_SIZE, new ChunkLodOptimizerControl());
+        Chunk chunk = new Chunk(CHUNK_SIZE, chunkX, chunkZ, new ChunkLodOptimizerControl());
         int chunkMinX = chunkX * CHUNK_SIZE;
         int chunkMinZ = chunkZ * CHUNK_SIZE;
         for (int x = chunkMinX; x < chunkMinX + CHUNK_SIZE; x++) {

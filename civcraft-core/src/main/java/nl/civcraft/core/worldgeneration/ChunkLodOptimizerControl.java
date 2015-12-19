@@ -4,7 +4,6 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import nl.civcraft.core.model.Face;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,6 +24,7 @@ public class ChunkLodOptimizerControl extends AbstractControl {
     private Chunk chunk;
 
     private int depth = 10;
+    private boolean optimizing;
 
     @Override
     public void setSpatial(Spatial spatial) {
@@ -36,83 +36,37 @@ public class ChunkLodOptimizerControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        if (!chunk.isOptimized()) {
+        if (!chunk.isOptimized() && !isOptimizing()) {
+            optimizing = true;
             LOGGER.info(String.format("Starting chunk optimization: %s", chunk));
             List<Voxel> unoptimizedVoxels = Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).collect(Collectors.toList());
-            optimzeVoxels(unoptimizedVoxels);
-            chunk.setOptimized(true);
+            List<List<Voxel>> optimizedVoxels = optimzeVoxels(unoptimizedVoxels);
+            chunk.setOptimizedVoxels(optimizedVoxels);
+            chunk.updateVoxelCache();
+            optimizing = false;
         }
     }
 
-    private void optimzeVoxels(List<Voxel> unoptimizedVoxels) {
-        List<Voxel> optimizedThisRun = new ArrayList<>();
-        Voxel toBeOptimized = unoptimizedVoxels.get(0);
-        optimizedThisRun.add(toBeOptimized);
-        int originX = toBeOptimized.getX();
-        int originY = toBeOptimized.getY();
-        int originZ = toBeOptimized.getZ();
-        int originWidth = 1;
-        int originHeight = 1;
-        int originDepth = 1;
-        boolean stillMerging = true;
-        Voxel currentlyOptimizing = toBeOptimized;
-        while (stillMerging) {
-            Voxel rightNeighbour = chunk.getNeighbour(currentlyOptimizing, Face.RIGHT);
-            if (currentlyOptimizing.canMerge(rightNeighbour)) {
-                originWidth++;
-                optimizedThisRun.add(rightNeighbour);
-                currentlyOptimizing = rightNeighbour;
-            } else {
-                stillMerging = false;
-            }
+    private List<List<Voxel>> optimzeVoxels(List<Voxel> unoptimizedVoxels) {
+        LOGGER.info("Optimizing chunk");
+        List<List<Voxel>> optimizedVoxelGroups = new ArrayList<>();
+        while (unoptimizedVoxels.size() > 0){
+            LOGGER.trace("Unoptimized voxels left: " + unoptimizedVoxels.size());
+            Voxel toBeOptimized = unoptimizedVoxels.get(0);
+            List<Voxel> optimizedVoxel= new ArrayList<>();
+            optimizedVoxel.add(toBeOptimized);
+            getOptimizedVoxel(toBeOptimized, optimizedVoxel);
+            unoptimizedVoxels.removeAll(optimizedVoxel);
+            optimizedVoxelGroups.add(optimizedVoxel);
         }
-        stillMerging = true;
-        currentlyOptimizing = chunk.getNeighbour(toBeOptimized, Face.BACK);
-        while (stillMerging) {
-            boolean canMerge = true;
-            List<Voxel> candidates = new ArrayList<>();
-            for (int i = 0; i < originWidth; i++) {
-                Voxel neighbour = chunk.getNeighbour(currentlyOptimizing, Face.RIGHT);
-                candidates.add(neighbour);
-                if (!currentlyOptimizing.canMerge(neighbour)) {
-                    canMerge = false;
-                    break;
-                }
-                currentlyOptimizing = neighbour;
-            }
-            if (canMerge) {
-                optimizedThisRun.addAll(candidates);
-                originDepth++;
-            } else {
-                stillMerging = false;
-            }
-        }
-        stillMerging = true;
-        currentlyOptimizing = chunk.getNeighbour(toBeOptimized, Face.DOWN);
-        while (stillMerging) {
-            boolean canMerge = true;
-            List<Voxel> candidates = new ArrayList<>();
-            for (int i = 0; i < originWidth; i++) {
-                Voxel rightNeighbour = chunk.getNeighbour(currentlyOptimizing, Face.RIGHT);
-                candidates.add(rightNeighbour);
-                if (!currentlyOptimizing.canMerge(rightNeighbour)) {
-                    canMerge = false;
-                    break;
-                }
-                for (int j = 0; j < originDepth; j++) {
-                    Voxel voxelBottomNeighbour = chunk.getNeighbour(rightNeighbour, Face.BACK);
+        return optimizedVoxelGroups;
+    }
 
-                    vo
-
-                }
-                currentlyOptimizing = rightNeighbour;
-            }
-            if (canMerge) {
-                optimizedThisRun.addAll(candidates);
-                originHeight++;
-            } else {
-                stillMerging = false;
-            }
+    private void getOptimizedVoxel(Voxel toBeOptimized, List<Voxel> optimizedVoxel) {
+        List<Voxel> mergableNeighbours = chunk.getVoxelNeighbours(toBeOptimized).stream().filter(toBeOptimized::canMerge).filter(v -> !optimizedVoxel.contains(v)).collect(Collectors.toList());
+        optimizedVoxel.addAll(mergableNeighbours);
+        for (Voxel mergableNeighbour : mergableNeighbours) {
+            getOptimizedVoxel(mergableNeighbour, optimizedVoxel);
         }
     }
 
@@ -120,5 +74,13 @@ public class ChunkLodOptimizerControl extends AbstractControl {
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
 
+    }
+
+    public boolean isOptimizing() {
+        return optimizing;
+    }
+
+    public void setOptimizing(boolean optimizing) {
+        this.optimizing = optimizing;
     }
 }

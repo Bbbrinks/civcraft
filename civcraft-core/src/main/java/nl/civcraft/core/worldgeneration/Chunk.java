@@ -1,6 +1,8 @@
 package nl.civcraft.core.worldgeneration;
 
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import jme3tools.optimize.GeometryBatchFactory;
 import nl.civcraft.core.model.Face;
 
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ public class Chunk extends Node {
 
     private final Voxel[] voxels;
     private int chunkSize;
+    private List<List<Voxel>> optimizedVoxels;
 
     public Chunk(int chunkSize, int chunkX, int chunkZ, ChunkLodOptimizerControl lodControl) {
         addControl(lodControl);
@@ -98,5 +101,28 @@ public class Chunk extends Node {
 
     public Voxel[] getVoxels() {
         return voxels;
+    }
+
+    public void setOptimizedVoxels(List<List<Voxel>> optimizedVoxels) {
+        this.optimizedVoxels = optimizedVoxels;
+    }
+
+    public void updateVoxelCache() {
+        detachAllChildren();
+        for (List<Voxel> optimizedVoxel : optimizedVoxels) {
+            attachChild(buildOpitmizedVoxelMesh(optimizedVoxel));
+        }
+        optimized = true;
+    }
+
+    private Spatial buildOpitmizedVoxelMesh(List<Voxel> optimizedVoxel) {
+        Node optimizedVoxelNode = new Node();
+        for (Voxel voxel : optimizedVoxel) {
+            voxel.getGeometry().setLocalTranslation(voxel.getX(), voxel.getY(), voxel.getZ());
+            optimizedVoxelNode.attachChild(voxel.getGeometry());
+        }
+        Spatial optimized = GeometryBatchFactory.optimize(optimizedVoxelNode);
+        optimized.setMaterial(optimizedVoxel.get(0).getMaterial());
+        return optimized;
     }
 }
