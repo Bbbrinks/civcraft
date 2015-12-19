@@ -5,7 +5,7 @@ import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
-import nl.civcraft.core.worldgeneration.VoxelGeometryManager;
+import nl.civcraft.core.managers.VoxelGeometryManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

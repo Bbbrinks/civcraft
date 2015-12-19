@@ -3,12 +3,12 @@ package nl.civcraft.core.worldgeneration;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.asset.AssetManager;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.scene.Node;
+import nl.civcraft.core.model.Chunk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +19,6 @@ public class WorldGeneratorState extends AbstractAppState implements ActionListe
 
     public static final String GENERATE_WORLD = "GENERATE_WORLD";
     private static final String OPTIMIZE_CHUNKS = "OPTIMIZE_CHUNKS";
-
-    @Autowired
-    private AssetManager assetManager;
 
     @Autowired
     private WorldGenerator worldGenerator;
@@ -58,12 +55,12 @@ public class WorldGeneratorState extends AbstractAppState implements ActionListe
     }
 
     public void generateInitialChunk() {
-        rootNode.detachAllChildren();
-        worldGenerator.generateHeightMap();
-        for (int x = 0; x < 10; x++) {
-            for (int z = 0; z < 10; z++) {
-                rootNode.attachChild(worldGenerator.generateChunk(x, z));
-            }
+        if(rootNode.getControl(WorldGeneratorControl.class) == null) {
+            rootNode.addControl(new WorldGeneratorControl(worldGenerator, rootNode));
+            Thread thread = new Thread(worldGenerator, "World generation thread");
+            thread.start();
         }
     }
+
+
 }

@@ -1,7 +1,9 @@
 package nl.civcraft.core.worldgeneration;
 
-import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
+import nl.civcraft.core.managers.VoxelGeometryManager;
+import nl.civcraft.core.model.Chunk;
+import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.utils.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 

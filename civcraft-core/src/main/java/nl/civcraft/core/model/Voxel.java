@@ -1,4 +1,4 @@
-package nl.civcraft.core.worldgeneration;
+package nl.civcraft.core.model;
 
 import com.jme3.scene.Geometry;
 import org.apache.logging.log4j.LogManager;

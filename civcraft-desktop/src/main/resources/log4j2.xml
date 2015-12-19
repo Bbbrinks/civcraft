@@ -9,5 +9,8 @@
         <Root level="warn">
             <AppenderRef ref="Console"/>
         </Root>
+        <Logger name="nl.civcraft.core.worldgeneration.WorldGenerator" level="trace" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
     </Loggers>
 </Configuration>

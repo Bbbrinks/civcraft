@@ -50,7 +50,6 @@ public class HillsGenerator implements HeightMapGenerator {
 
         float hillRadius = MathUtil.rnd(minHillRadius, maxHillRadius);
         handlePeak(peakX, peakZ, hillRadius, heightMap);
-
     }
 
     private void handlePeak(int peakX, int peakZ, float hillRadius, HeightMap heightMap) {

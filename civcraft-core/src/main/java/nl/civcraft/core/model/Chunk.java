@@ -1,10 +1,10 @@
-package nl.civcraft.core.worldgeneration;
+package nl.civcraft.core.model;
 
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import jme3tools.optimize.GeometryBatchFactory;
-import nl.civcraft.core.model.Face;
+import nl.civcraft.core.worldgeneration.ChunkLodOptimizerControl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +22,11 @@ public class Chunk extends Node {
 
     private final Voxel[] voxels;
     private int chunkSize;
-    private List<List<Voxel>> optimizedVoxels;
+    private List<Spatial> optimizedVoxels;
     private boolean optimizing;
     private boolean optimizingDone;
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public Chunk(int chunkSize, int chunkX, int chunkZ, ChunkLodOptimizerControl lodControl) {
         addControl(lodControl);
@@ -106,29 +108,21 @@ public class Chunk extends Node {
         return voxels;
     }
 
-    public void setOptimizedVoxels(List<List<Voxel>> optimizedVoxels) {
+    public void setOptimizedVoxels(List<Spatial> optimizedVoxels) {
         this.optimizedVoxels = optimizedVoxels;
     }
 
     public void updateVoxelCache() {
+        LOGGER.trace("Start updating voxel cache");
         detachAllChildren();
-        for (List<Voxel> optimizedVoxel : optimizedVoxels) {
-            attachChild(buildOpitmizedVoxelMesh(optimizedVoxel));
+        for (Spatial optimizedVoxel : optimizedVoxels) {
+            attachChild(optimizedVoxel);
         }
         setOptimized(true);
+        LOGGER.trace("End updating voxel cache");
     }
 
-    private Spatial buildOpitmizedVoxelMesh(List<Voxel> optimizedVoxel) {
-        Node optimizedVoxelNode = new Node();
-        for (Voxel voxel : optimizedVoxel) {
-            Geometry geometry = voxel.cloneGeometry().clone();
-            geometry.setLocalTranslation(voxel.getX(), voxel.getY(), voxel.getZ());
-            optimizedVoxelNode.attachChild(geometry);
-        }
-        Spatial optimized = GeometryBatchFactory.optimize(optimizedVoxelNode);
-        optimized.setMaterial(optimizedVoxel.get(0).cloneGeometry().getMaterial());
-        return optimized;
-    }
+
 
     public void setOptimizing(boolean optimizing) {
         this.optimizing = optimizing;

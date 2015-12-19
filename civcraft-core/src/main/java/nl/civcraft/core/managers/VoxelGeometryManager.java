@@ -1,4 +1,4 @@
-package nl.civcraft.core.worldgeneration;
+package nl.civcraft.core.managers;
 
 import com.jme3.scene.Geometry;
 import org.springframework.beans.factory.annotation.Autowired;

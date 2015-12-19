@@ -4,6 +4,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import nl.civcraft.core.model.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,7 +32,7 @@ public class ChunkLodOptimizerControl extends AbstractControl {
         if (!chunk.isOptimized() && !chunk.isOptimizing()) {
             ChunkOptimizer chunkOptimizer = new ChunkOptimizer(chunk);
             Thread optimizeThread = new Thread(chunkOptimizer);
-            optimizeThread.run();
+            optimizeThread.start();
         }
         if (chunk.isOptimizingDone()){
             chunk.updateVoxelCache();

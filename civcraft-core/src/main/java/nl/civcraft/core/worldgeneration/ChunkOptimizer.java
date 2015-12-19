@@ -1,5 +1,11 @@
 package nl.civcraft.core.worldgeneration;
 
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import jme3tools.optimize.GeometryBatchFactory;
+import nl.civcraft.core.model.Chunk;
+import nl.civcraft.core.model.Voxel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +34,11 @@ public class ChunkOptimizer implements Runnable {
         LOGGER.info(String.format("Starting chunk optimization: %s", chunk));
         List<Voxel> unoptimizedVoxels = Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).collect(Collectors.toList());
         List<List<Voxel>> optimizedVoxels = optimzeVoxels(unoptimizedVoxels);
-        chunk.setOptimizedVoxels(optimizedVoxels);
+        List<Spatial> optimizedSpatials = new ArrayList<>();
+        for (List<Voxel> optimizedVoxel : optimizedVoxels) {
+            optimizedSpatials.add(buildOpitmizedVoxelMesh(optimizedVoxel));
+        }
+        chunk.setOptimizedVoxels(optimizedSpatials);
         chunk.setOptimizing(false);
         chunk.setOptimizingDone(true);
     }
@@ -54,5 +64,17 @@ public class ChunkOptimizer implements Runnable {
         for (Voxel mergableNeighbour : mergableNeighbours) {
             getOptimizedVoxel(mergableNeighbour, optimizedVoxel);
         }
+    }
+
+    private Spatial buildOpitmizedVoxelMesh(List<Voxel> optimizedVoxel) {
+        Node optimizedVoxelNode = new Node();
+        for (Voxel voxel : optimizedVoxel) {
+            Geometry geometry = voxel.cloneGeometry().clone();
+            geometry.setLocalTranslation(voxel.getX(), voxel.getY(), voxel.getZ());
+            optimizedVoxelNode.attachChild(geometry);
+        }
+        Spatial optimized = GeometryBatchFactory.optimize(optimizedVoxelNode);
+        optimized.setMaterial(optimizedVoxel.get(0).cloneGeometry().getMaterial());
+        return optimized;
     }
 }
