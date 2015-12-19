@@ -22,6 +22,8 @@ public class Chunk extends Node {
     private final Voxel[] voxels;
     private int chunkSize;
     private List<List<Voxel>> optimizedVoxels;
+    private boolean optimizing;
+    private boolean optimizingDone;
 
     public Chunk(int chunkSize, int chunkX, int chunkZ, ChunkLodOptimizerControl lodControl) {
         addControl(lodControl);
@@ -112,7 +114,7 @@ public class Chunk extends Node {
         for (List<Voxel> optimizedVoxel : optimizedVoxels) {
             attachChild(buildOpitmizedVoxelMesh(optimizedVoxel));
         }
-        optimized = true;
+        setOptimized(true);
     }
 
     private Spatial buildOpitmizedVoxelMesh(List<Voxel> optimizedVoxel) {
@@ -124,5 +126,21 @@ public class Chunk extends Node {
         Spatial optimized = GeometryBatchFactory.optimize(optimizedVoxelNode);
         optimized.setMaterial(optimizedVoxel.get(0).getMaterial());
         return optimized;
+    }
+
+    public void setOptimizing(boolean optimizing) {
+        this.optimizing = optimizing;
+    }
+
+    public boolean isOptimizing() {
+        return optimizing;
+    }
+
+    public boolean isOptimizingDone() {
+        return optimizingDone;
+    }
+
+    public void setOptimizingDone(boolean optimizingDone) {
+        this.optimizingDone = optimizingDone;
     }
 }

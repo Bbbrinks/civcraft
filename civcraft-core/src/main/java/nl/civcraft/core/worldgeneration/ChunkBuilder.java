@@ -24,19 +24,19 @@ public class ChunkBuilder {
         int chunkMinZ = chunkZ * CHUNK_SIZE;
         for (int x = chunkMinX; x < chunkMinX + CHUNK_SIZE; x++) {
             for (int z = chunkMinZ; z < chunkMinZ + CHUNK_SIZE; z++) {
-                String type;
-                long rnd = MathUtil.rnd(1);
-                Material mat1 = new Material(assetManager,
-                        "Common/MatDefs/Misc/Unshaded.j3md");
-                if (rnd == 0) {
-                    type = "brown";
-                    mat1.setColor("Color", ColorRGBA.Brown);
-                } else {
-                    type = "white";
-                    mat1.setColor("Color", ColorRGBA.White);
-                }
                 int voxelY = (int) heightMap.getHeight(x, z);
                 for(int y = 0; y <= voxelY; y++) {
+                    String type;
+                    long rnd = MathUtil.rnd(1);
+                    Material mat1 = new Material(assetManager,
+                            "Common/MatDefs/Misc/Unshaded.j3md");
+                    if (rnd == 0) {
+                        type = "brown";
+                        mat1.setColor("Color", ColorRGBA.Brown);
+                    } else {
+                        type = "white";
+                        mat1.setColor("Color", ColorRGBA.White);
+                    }
                     Voxel voxel = new Voxel(x, y, z, type, mat1);
                     chunk.addVoxel(voxel);
                 }
