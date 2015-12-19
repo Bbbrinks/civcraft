@@ -25,7 +25,7 @@ public class Chunk extends Node {
 
     public Chunk(int chunkSize, int chunkX, int chunkZ, ChunkLodOptimizerControl lodControl) {
         addControl(lodControl);
-        voxels = new Voxel[chunkSize * chunkSize * chunkSize];
+        voxels = new Voxel[chunkSize * 100 * chunkSize];
         this.chunkSize = chunkSize;
         this.chunkX = chunkX;
         this.chunkZ = chunkZ;
@@ -44,7 +44,7 @@ public class Chunk extends Node {
     }
 
     private int getArrayIndex(int x, int y, int z) {
-        int arrayIndex = x - (chunkX * chunkSize) + (y * chunkSize) + (z * chunkSize) - (chunkZ * chunkSize);
+        int arrayIndex = x - (chunkX * chunkSize) + (y * 100) + (z * chunkSize) - (chunkZ * chunkSize);
         if (arrayIndex < 0 || arrayIndex >= voxels.length) {
             return -1;
         }

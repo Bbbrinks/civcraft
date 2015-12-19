@@ -36,8 +36,10 @@ public class ChunkBuilder {
                     mat1.setColor("Color", ColorRGBA.White);
                 }
                 int voxelY = (int) heightMap.getHeight(x, z);
-                Voxel voxel = new Voxel(x, voxelY, z, type, mat1);
-                chunk.addVoxel(voxel);
+                for(int y = 0; y <= voxelY; y++) {
+                    Voxel voxel = new Voxel(x, y, z, type, mat1);
+                    chunk.addVoxel(voxel);
+                }
             }
         }
         return chunk;
