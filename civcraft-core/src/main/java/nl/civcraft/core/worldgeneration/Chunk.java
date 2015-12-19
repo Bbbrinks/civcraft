@@ -1,5 +1,6 @@
 package nl.civcraft.core.worldgeneration;
 
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import jme3tools.optimize.GeometryBatchFactory;
@@ -120,11 +121,12 @@ public class Chunk extends Node {
     private Spatial buildOpitmizedVoxelMesh(List<Voxel> optimizedVoxel) {
         Node optimizedVoxelNode = new Node();
         for (Voxel voxel : optimizedVoxel) {
-            voxel.getGeometry().setLocalTranslation(voxel.getX(), voxel.getY(), voxel.getZ());
-            optimizedVoxelNode.attachChild(voxel.getGeometry());
+            Geometry geometry = voxel.cloneGeometry().clone();
+            geometry.setLocalTranslation(voxel.getX(), voxel.getY(), voxel.getZ());
+            optimizedVoxelNode.attachChild(geometry);
         }
         Spatial optimized = GeometryBatchFactory.optimize(optimizedVoxelNode);
-        optimized.setMaterial(optimizedVoxel.get(0).getMaterial());
+        optimized.setMaterial(optimizedVoxel.get(0).cloneGeometry().getMaterial());
         return optimized;
     }
 

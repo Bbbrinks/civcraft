@@ -19,7 +19,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import java.util.List;
 
 @Configuration
-@ComponentScan(basePackageClasses = {WorldGeneratorState.class, WorldGeneration.class})
+@ComponentScan(basePackageClasses = {WorldGeneratorState.class, WorldGeneration.class, BlockConfiguration.class})
 public class InitialConfigruation {
 
     @Autowired
