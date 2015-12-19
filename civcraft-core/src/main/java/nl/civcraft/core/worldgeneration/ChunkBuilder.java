@@ -16,14 +16,14 @@ public class ChunkBuilder {
     private AssetManager assetManager;
 
 
-    private static final int chunkSize = 10;
+    private static final int CHUNK_SIZE = 10;
 
     public Chunk buildChunk(int chunkX, int chunkZ, HeightMap heightMap) {
-        Chunk chunk = new Chunk(new ChunkLodOptimizerControl());
-        int chunkMinX = chunkX * chunkSize;
-        int chunkMinZ = chunkZ * chunkSize;
-        for (int x = chunkMinX; x < chunkMinX + chunkSize; x++) {
-            for (int z = chunkMinZ; z < chunkMinZ + chunkSize; z++) {
+        Chunk chunk = new Chunk(CHUNK_SIZE, new ChunkLodOptimizerControl());
+        int chunkMinX = chunkX * CHUNK_SIZE;
+        int chunkMinZ = chunkZ * CHUNK_SIZE;
+        for (int x = chunkMinX; x < chunkMinX + CHUNK_SIZE; x++) {
+            for (int z = chunkMinZ; z < chunkMinZ + CHUNK_SIZE; z++) {
                 String type;
                 long rnd = MathUtil.rnd(1);
                 Material mat1 = new Material(assetManager,
@@ -35,7 +35,9 @@ public class ChunkBuilder {
                     type = "white";
                     mat1.setColor("Color", ColorRGBA.White);
                 }
-                chunk.attachChild(new Voxel(x, (int) heightMap.getHeight(x, z), z, type, mat1));
+                int voxelY = (int) heightMap.getHeight(x, z);
+                Voxel voxel = new Voxel(x, voxelY, z, type, mat1);
+                chunk.addVoxel(voxel);
             }
         }
         return chunk;

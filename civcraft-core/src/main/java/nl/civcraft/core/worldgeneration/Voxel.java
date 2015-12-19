@@ -22,7 +22,6 @@ public class Voxel extends Node {
 
     private final String type;
 
-
     public Voxel(int x, int y, int z, String type, Material material) {
         Box box1 = new Box(0.5f, 0.5f, 0.5f);
         Geometry blue = new Geometry("Box", box1);
@@ -92,15 +91,12 @@ public class Voxel extends Node {
     }
 
     public boolean canMerge(Voxel voxel) {
+        if (voxel == null) {
+            return false;
+        }
         if (equals(voxel)) {
             return false;
         } else if (!getType().equals(voxel.getType())) {
-            return false;
-        } else if (voxel.getParent() == null || !voxel.getParent().equals(getParent())) {
-            return false;
-        } else if (!isCardinalNeighbour(voxel)) {
-            return false;
-        } else if (!isFaceSameSize(voxel,getFacingSide(voxel))) {
             return false;
         } else {
             return true;
@@ -108,11 +104,11 @@ public class Voxel extends Node {
     }
 
     private boolean isFaceSameSize(Voxel voxel, Face face) {
-        if(face.equals(Face.BACK) || face.equals(Face.FRONT)){
+        if (face.equals(Face.BACK) || face.equals(Face.FRONT)) {
             return getMeshBound().getYExtent() == voxel.getMeshBound().getYExtent();
-        }else if(face.equals(Face.UP) || face.equals(Face.DOWN)){
+        } else if (face.equals(Face.UP) || face.equals(Face.DOWN)) {
             return getMeshBound().getZExtent() == voxel.getMeshBound().getZExtent();
-        }else if(face.equals(Face.LEFT) || face.equals(Face.RIGHT)){
+        } else if (face.equals(Face.LEFT) || face.equals(Face.RIGHT)) {
             return getMeshBound().getXExtent() == voxel.getMeshBound().getXExtent();
         }
         return false;
@@ -146,5 +142,17 @@ public class Voxel extends Node {
     @Override
     public String toString() {
         return String.format("{type: %s, translation: %s, bound: %s}", getType(), getWorldTranslation(), getMeshBound());
+    }
+
+    public int getX() {
+        return (int) getWorldTranslation().getX();
+    }
+
+    public int getY() {
+        return (int) getWorldTranslation().getY();
+    }
+
+    public int getZ() {
+        return (int) getWorldTranslation().getZ();
     }
 }
