@@ -83,7 +83,7 @@ public class FlyingCamera implements AnalogListener, ActionListener {
     protected float zoomSpeed = 10f;
     protected MotionAllowedListener motionAllowed = null;
     protected boolean enabled = true;
-    protected boolean dragToRotate = false;
+    protected boolean dragToRotate = true;
     protected boolean canRotate = false;
     protected boolean invertY = false;
     protected InputManager inputManager;
@@ -227,7 +227,7 @@ public class FlyingCamera implements AnalogListener, ActionListener {
         // mouse only - zoom in/out with wheel, and rotate drag
         inputManager.addMapping("FLYCAM_ZoomIn", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
         inputManager.addMapping("FLYCAM_ZoomOut", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
-        inputManager.addMapping("FLYCAM_RotateDrag", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        inputManager.addMapping("FLYCAM_RotateDrag", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 
         // keyboard only WASD for movement and WZ for rise/lower height
         inputManager.addMapping("FLYCAM_StrafeLeft", new KeyTrigger(KeyInput.KEY_A));

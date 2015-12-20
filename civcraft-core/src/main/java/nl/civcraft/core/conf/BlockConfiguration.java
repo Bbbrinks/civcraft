@@ -114,34 +114,34 @@ public class BlockConfiguration {
         switch (face) {
             case TOP:
                 name = "top";
-                translation = new Vector3f(-0.5f, 0.5f, 0.5f);
+                translation = new Vector3f(0f, 1f, 1f);
                 rotation = new float[]{-90F * FastMath.DEG_TO_RAD, 0F, 0F};
                 break;
             case BOTTOM:
                 name = "bottom";
-                translation = new Vector3f(-0.5f, -0.5f, -0.5f);
+                translation = new Vector3f(0f, 0f, 0f);
                 rotation = new float[]{90F * FastMath.DEG_TO_RAD, 0F, 0F};
                 break;
             case LEFT:
                 name = "left";
-                translation = new Vector3f(0.5f, -0.5F, -0.5f);
+                translation = new Vector3f(1f,0F, 0f);
                 rotation = new float[]{0F, 180F * FastMath.DEG_TO_RAD, 0F };
                 break;
             case RIGHT:
                 name = "right";
-                translation = new Vector3f(-0.5f, -0.5F, 0.5f);
+                translation = new Vector3f(0f, 0F, 1f);
                 rotation = new float[]{0F, 0F, 0F };
                 break;
             case FRONT:
                 name = "front";
-                translation = new Vector3f(-0.5f, -0.5F, -0.5f);
+                translation = new Vector3f(0f, 0F, 0f);
                 rotation = new float[]{0F, 270F * FastMath.DEG_TO_RAD, 0F };
                 break;
             case NONE:
                 break;
             case BACK:
                 name = "back";
-                translation = new Vector3f(0.5f, -0.5F, 0.5f);
+                translation = new Vector3f(1f, 0F, 1f);
                 rotation = new float[]{0F, 90F * FastMath.DEG_TO_RAD, 0F };
                 break;
         }
@@ -157,6 +157,7 @@ public class BlockConfiguration {
         Box box = new Box(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         Geometry geometry = new Geometry("box", box);
         geometry.setMaterial(cobbleMaterial);
+        geometry.setLocalTranslation(0.5f, 0.5f, 0.5f);
         Block block = new Block(name, blockOptimizer);
         block.attachChild(geometry);
         return block;

@@ -6,6 +6,8 @@ import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.input.CivCraftFlyCamState;
 import nl.civcraft.core.input.FlyingCamera;
 import nl.civcraft.core.input.GlobalInput;
+import nl.civcraft.core.input.VoxelSelectionInput;
+import nl.civcraft.core.managers.WorldManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -34,5 +36,16 @@ public class InputConfiguration {
     @Bean
     public AppState debugKeysAppState() {
         return new DebugKeysAppState();
+    }
+
+    @Bean
+    public AppState voxelSelectionInput(){
+        return new VoxelSelectionInput();
+    }
+
+    @Bean
+    public WorldManager worldManager()
+    {
+        return new WorldManager();
     }
 }

@@ -8,6 +8,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.scene.Node;
+import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Chunk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ public class WorldGeneratorState extends AbstractAppState implements ActionListe
 
     @Autowired
     private Node rootNode;
+
+    @Autowired
+    private WorldManager worldManager;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -56,7 +60,7 @@ public class WorldGeneratorState extends AbstractAppState implements ActionListe
 
     public void generateInitialChunk() {
         if(rootNode.getControl(WorldGeneratorControl.class) == null) {
-            rootNode.addControl(new WorldGeneratorControl(worldGenerator, rootNode));
+            rootNode.addControl(new WorldGeneratorControl(worldManager, worldGenerator, rootNode));
             Thread thread = new Thread(worldGenerator, "World generation thread");
             thread.start();
         }

@@ -1,5 +1,6 @@
 package nl.civcraft.core.managers;
 
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -25,7 +26,8 @@ public class SingleGeometryBoxBlockOptimizer implements BlockOptimizer {
         Node optimizedVoxelNode = new Node();
         for (Voxel voxel : voxels) {
             Geometry geometry = (Geometry) voxel.getBlock().getChild("box").clone();
-            geometry.setLocalTranslation(voxel.getX(), voxel.getY(), voxel.getZ());
+            Vector3f localTranslation = geometry.getLocalTranslation();
+            geometry.setLocalTranslation(localTranslation.x + voxel.getX(), localTranslation.y + voxel.getY(),localTranslation.z +  voxel.getZ());
             optimizedVoxelNode.attachChild(geometry);
         }
         Spatial optimized = GeometryBatchFactory.optimize(optimizedVoxelNode);

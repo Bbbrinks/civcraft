@@ -16,6 +16,14 @@ import java.util.List;
  */
 public class Chunk extends Node {
 
+    public int getChunkX() {
+        return chunkX;
+    }
+
+    public int getChunkZ() {
+        return chunkZ;
+    }
+
     private final int chunkX;
     private final int chunkZ;
     private boolean optimized;
@@ -34,6 +42,7 @@ public class Chunk extends Node {
         this.chunkSize = chunkSize;
         this.chunkX = chunkX;
         this.chunkZ = chunkZ;
+        this.name = chunkX + "x" + chunkZ;
     }
 
     public boolean isOptimized() {
@@ -96,7 +105,7 @@ public class Chunk extends Node {
         }
     }
 
-    private Voxel getVoxelAt(int x, int y, int z) {
+    public Voxel getVoxelAt(int x, int y, int z) {
         int arrayIndex = getArrayIndex(x, y, z);
         if (arrayIndex == -1) {
             return null;
@@ -123,7 +132,6 @@ public class Chunk extends Node {
     }
 
 
-
     public void setOptimizing(boolean optimizing) {
         this.optimizing = optimizing;
     }
@@ -138,5 +146,9 @@ public class Chunk extends Node {
 
     public void setOptimizingDone(boolean optimizingDone) {
         this.optimizingDone = optimizingDone;
+    }
+
+    public int getChunkSize() {
+        return chunkSize;
     }
 }
