@@ -129,7 +129,7 @@ public class BlockConfiguration {
                 break;
             case RIGHT:
                 name = "right";
-                translation = new Vector3f(-0.5f, -0.5F, -0.5f);
+                translation = new Vector3f(-0.5f, -0.5F, 0.5f);
                 rotation = new float[]{0F, 0F, 0F };
                 break;
             case FRONT:
