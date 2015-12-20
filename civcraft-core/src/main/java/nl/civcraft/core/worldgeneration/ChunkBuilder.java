@@ -29,12 +29,15 @@ public class ChunkBuilder {
                 for (int y = 0; y <= voxelY; y++) {
                     String type;
                     long rnd = MathUtil.rnd(2) - 1;
-                    if (voxelY == y) {
-                        type = "grass";
-                    } else if (voxelY - y - rnd > 0) {
+
+                    if (voxelY - y - rnd > 0) {
                         type = "cobble";
                     } else {
-                        type = "dirt";
+                        if (voxelY == y) {
+                            type = "grass";
+                        } else {
+                            type = "dirt";
+                        }
                     }
                     Block block = blockManager.findBlock(type);
                     Voxel voxel = new Voxel(x, y, z, type, block);

@@ -56,9 +56,13 @@ public class BlockConfiguration {
     public Block grass(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer) {
         Texture grassTopTex = assetManager.loadTexture(
                 "textures/grass_top.png");
+
+        Texture grassColormap = assetManager.loadTexture(
+                "textures/colormap/grass.png");
         Material grassTopMaterial = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        grassTopMaterial.setTexture("ColorMap", grassTopTex);
+                "matdefs/GrayScaleColorMap.j3md");
+        grassTopMaterial.setTexture("ColorMap", grassColormap);
+        grassTopMaterial.setTexture("TextureMap", grassTopTex);
 
         Texture grassSideTex = assetManager.loadTexture(
                 "textures/bdc_grass_side01.png");
