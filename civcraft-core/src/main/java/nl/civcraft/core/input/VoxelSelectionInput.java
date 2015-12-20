@@ -13,6 +13,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Voxel;
 import org.apache.logging.log4j.LogManager;
@@ -34,9 +35,13 @@ public class VoxelSelectionInput extends AbstractAppState implements ActionListe
     @Autowired
     private WorldManager worldManager;
 
+    @Autowired
+    private Spatial selectionSpatial;
+
     private static final String SELECT_VOXEL = "SELECT_VOXEL";
     private Camera cam;
     private InputManager inputManager;
+    private Node selectionBoxes;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -44,6 +49,8 @@ public class VoxelSelectionInput extends AbstractAppState implements ActionListe
         registerInput(app.getInputManager());
         this.cam = app.getCamera();
         this.inputManager = app.getInputManager();
+        selectionBoxes = new Node("selectionBoxes");
+        rootNode.attachChild(selectionBoxes);
     }
 
     private void registerInput(InputManager inputManager) {
@@ -86,7 +93,11 @@ public class VoxelSelectionInput extends AbstractAppState implements ActionListe
 
                 Voxel voxelAt = worldManager.getWorld().getVoxelAt(x, y, z);
                 if (voxelAt != null) {
+                    selectionBoxes.detachAllChildren();
                     LOGGER.warn("Clicked on " + voxelAt.getType() + " @(" + x + ", " + y + ", " + z + " )");
+                    Spatial clone = selectionSpatial.clone();
+                    clone.setLocalTranslation(clone.getLocalTranslation().x + voxelAt.getX(), clone.getLocalTranslation().y + voxelAt.getY() , clone.getLocalTranslation().z + voxelAt.getZ());
+                    selectionBoxes.attachChild(clone);
                 }
             }
         }

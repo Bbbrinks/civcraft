@@ -11,29 +11,30 @@ import nl.civcraft.core.model.Chunk;
 public class WorldGeneratorControl extends AbstractControl {
 
 
+    private final Node voxels;
     private WorldManager worldManager;
 
     private final WorldGenerator worldGenerator;
-    private final Node rootNode;
 
     public WorldGeneratorControl(WorldManager worldManager, WorldGenerator worldGenerator, Node rootNode) {
         this.worldGenerator = worldGenerator;
-        this.rootNode = rootNode;
+        voxels = new Node("voxels");
+        rootNode.attachChild(voxels);
         this.worldManager = worldManager;
     }
 
     @Override
     protected void controlUpdate(float tpf) {
         if (worldGenerator.isGenerationDone()) {
-            rootNode.detachAllChildren();
+            voxels.detachAllChildren();
             worldManager.getWorld().clearChunks();
-            worldGenerator.getChunks().forEach(rootNode::attachChild);
+            worldGenerator.getChunks().forEach(voxels::attachChild);
             for (Chunk chunk : worldGenerator.getChunks()) {
                 worldManager.getWorld().addChunk(chunk);
             }
 
             worldGenerator.setGenerationDone(false);
-            rootNode.removeControl(this);
+            voxels.removeControl(this);
         }
     }
 
