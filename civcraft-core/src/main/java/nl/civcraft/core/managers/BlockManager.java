@@ -1,19 +1,19 @@
 package nl.civcraft.core.managers;
 
-import com.jme3.scene.Geometry;
+import nl.civcraft.core.model.Block;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class VoxelGeometryManager {
+public class BlockManager {
 
     @Autowired
-    public List<Geometry> blocks;
+    public List<Block> blocks;
 
 
-    public Geometry findBlock(String blockName) {
+    public Block findBlock(String blockName) {
         return blocks.stream().filter(g -> g.getName().equals(blockName)).limit(1).collect(Collectors.toList()).get(0);
     }
 }

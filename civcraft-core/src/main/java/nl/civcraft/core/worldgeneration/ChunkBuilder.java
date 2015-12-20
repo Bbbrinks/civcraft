@@ -1,7 +1,7 @@
 package nl.civcraft.core.worldgeneration;
 
-import com.jme3.scene.Geometry;
-import nl.civcraft.core.managers.VoxelGeometryManager;
+import nl.civcraft.core.managers.BlockManager;
+import nl.civcraft.core.model.Block;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.utils.MathUtil;
@@ -17,7 +17,7 @@ public class ChunkBuilder {
     private static final int CHUNK_SIZE = 10;
 
     @Autowired
-    public VoxelGeometryManager voxelGeometryManager;
+    public BlockManager blockManager;
 
     public Chunk buildChunk(int chunkX, int chunkZ, HeightMap heightMap) {
         Chunk chunk = new Chunk(CHUNK_SIZE, chunkX, chunkZ, new ChunkLodOptimizerControl());
@@ -34,8 +34,8 @@ public class ChunkBuilder {
                     } else {
                         type = "dirt";
                     }
-                    Geometry cobble = voxelGeometryManager.findBlock(type);
-                    Voxel voxel = new Voxel(x, y, z, type, cobble);
+                    Block block = blockManager.findBlock(type);
+                    Voxel voxel = new Voxel(x, y, z, type, block);
                     chunk.addVoxel(voxel);
                 }
             }

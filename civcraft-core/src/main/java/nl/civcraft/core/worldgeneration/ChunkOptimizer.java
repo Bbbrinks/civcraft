@@ -1,9 +1,6 @@
 package nl.civcraft.core.worldgeneration;
 
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import jme3tools.optimize.GeometryBatchFactory;
 import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.Voxel;
@@ -50,7 +47,7 @@ public class ChunkOptimizer implements Runnable {
         List<List<Voxel>> optimizedVoxelGroups = new ArrayList<>();
         while (unoptimizedVoxels.size() > 0) {
             DebugStatsState.LAST_MESSAGE = "Unoptimized voxels left: " + unoptimizedVoxels.size();
-            LOGGER.trace( DebugStatsState.LAST_MESSAGE);
+            LOGGER.trace(DebugStatsState.LAST_MESSAGE);
             Voxel toBeOptimized = unoptimizedVoxels.get(0);
             List<Voxel> optimizedVoxel = new ArrayList<>();
             optimizedVoxel.add(toBeOptimized);
@@ -64,7 +61,7 @@ public class ChunkOptimizer implements Runnable {
     }
 
     private void getOptimizedVoxel(Voxel toBeOptimized, List<Voxel> optimizedVoxel) {
-        List<Voxel> mergableNeighbours = chunk.getVoxelNeighbours(toBeOptimized).stream().filter(toBeOptimized::canMerge).filter(v -> !optimizedVoxel.contains(v)).collect(Collectors.toList());
+        List<Voxel> mergableNeighbours = chunk.getVoxelNeighbours(toBeOptimized).stream().filter(v -> toBeOptimized.getBlock().getBlockOptimizer().canMerge(v, toBeOptimized)).filter(v -> !optimizedVoxel.contains(v)).collect(Collectors.toList());
         optimizedVoxel.addAll(mergableNeighbours);
         for (Voxel mergableNeighbour : mergableNeighbours) {
             getOptimizedVoxel(mergableNeighbour, optimizedVoxel);
@@ -72,14 +69,8 @@ public class ChunkOptimizer implements Runnable {
     }
 
     private Spatial buildOpitmizedVoxelMesh(List<Voxel> optimizedVoxel) {
-        Node optimizedVoxelNode = new Node();
-        for (Voxel voxel : optimizedVoxel) {
-            Geometry geometry = voxel.cloneGeometry().clone();
-            geometry.setLocalTranslation(voxel.getX(), voxel.getY(), voxel.getZ());
-            optimizedVoxelNode.attachChild(geometry);
-        }
-        Spatial optimized = GeometryBatchFactory.optimize(optimizedVoxelNode);
-        optimized.setMaterial(optimizedVoxel.get(0).cloneGeometry().getMaterial());
-        return optimized;
+
+        return optimizedVoxel.get(0).getBlock().getBlockOptimizer().optimize(optimizedVoxel);
+
     }
 }
