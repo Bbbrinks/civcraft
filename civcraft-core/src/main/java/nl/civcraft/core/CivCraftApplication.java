@@ -5,7 +5,6 @@ import com.jme3.app.state.AppState;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.system.AppSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -40,7 +39,6 @@ public class CivCraftApplication extends Application {
 
     @Override
     public void start() {
-        setSettings(new AppSettings(true));
         super.start();
     }
 

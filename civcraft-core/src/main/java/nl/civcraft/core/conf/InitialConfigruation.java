@@ -5,6 +5,7 @@ import com.jme3.app.state.AppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.LodControl;
+import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
 import nl.civcraft.core.CivCraftApplication;
 import nl.civcraft.core.worldgeneration.ChunkBuilder;
@@ -27,14 +28,23 @@ public class InitialConfigruation {
 
     @Bean
     @Scope("singleton")
-    public Application mainApplication() {
+    public Application mainApplication(AppSettings settings) {
         //TODO: Replace SimpleApplication with own implementation
         CivCraftApplication application = new CivCraftApplication();
+        application.setSettings(settings);
         application.addAppStates(appStateList);
         return application;
     }
 
-
+    @Bean
+    public AppSettings appSettings()
+    {
+        AppSettings settings = new AppSettings(true);
+        settings.setWidth(1024);
+        settings.setHeight(768);
+        settings.setTitle("CivCraft");
+        return settings;
+    }
 
 
     @Bean
