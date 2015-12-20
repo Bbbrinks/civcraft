@@ -7,14 +7,19 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
+import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DebugStatsState extends AbstractAppState {
+public class DebugStatsState extends AbstractAppState implements ActionListener {
 
+    public static final String TOGGLE_DEBUG_INFO = "TOGGLE_DEBUG_INFO";
     public static String LAST_MESSAGE = "";
     private Application app;
     @Autowired
@@ -25,6 +30,7 @@ public class DebugStatsState extends AbstractAppState {
     private BitmapText logMessageText;
     private float secondCounter;
     private int frameCounter;
+    private boolean show = false;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -37,6 +43,12 @@ public class DebugStatsState extends AbstractAppState {
         loadFpsText();
         loadStatsView();
         loadLogMessageText();
+        registerInputs(app.getInputManager());
+    }
+
+    private void registerInputs(InputManager inputManager) {
+        inputManager.addMapping(TOGGLE_DEBUG_INFO, new KeyTrigger(KeyInput.KEY_F10));
+        inputManager.addListener(this, TOGGLE_DEBUG_INFO);
     }
 
     private void loadLogMessageText() {
@@ -82,6 +94,14 @@ public class DebugStatsState extends AbstractAppState {
 
     @Override
     public void update(float tpf) {
+        if (!show) {
+            guiNode.detachAllChildren();
+        } else {
+            guiNode.attachChild(statsView);
+            guiNode.attachChild(fpsText);
+            guiNode.attachChild(logMessageText);
+        }
+
         secondCounter += app.getTimer().getTimePerFrame();
         frameCounter++;
         if (secondCounter >= 1.0f) {
@@ -91,6 +111,7 @@ public class DebugStatsState extends AbstractAppState {
             frameCounter = 0;
         }
         logMessageText.setText(LAST_MESSAGE);
+
     }
 
     @Override
@@ -99,6 +120,16 @@ public class DebugStatsState extends AbstractAppState {
 
         guiNode.detachChild(statsView);
         guiNode.detachChild(fpsText);
+        guiNode.detachChild(logMessageText);
     }
 
+    @Override
+    public void onAction(String name, boolean isPressed, float tpf) {
+        if (!isPressed) {
+            return;
+        }
+        if (name.equals(TOGGLE_DEBUG_INFO)) {
+            show = !show;
+        }
+    }
 }
