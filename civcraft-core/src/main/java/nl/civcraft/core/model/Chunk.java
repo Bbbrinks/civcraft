@@ -72,9 +72,9 @@ public class Chunk extends Node {
 
     public Voxel getNeighbour(Voxel voxel, Face face) {
         switch (face) {
-            case UP:
+            case TOP:
                 return getVoxelAt(voxel.getX(), voxel.getY() + 1, voxel.getZ());
-            case DOWN:
+            case BOTTOM:
                 return getVoxelAt(voxel.getX(), voxel.getY() - 1, voxel.getZ());
             case LEFT:
                 return getVoxelAt(voxel.getX() - 1, voxel.getY(), voxel.getZ());

@@ -28,8 +28,10 @@ public class ChunkBuilder {
                 int voxelY = (int) heightMap.getHeight(x, z);
                 for (int y = 0; y <= voxelY; y++) {
                     String type;
-                    long rnd = MathUtil.rnd(2)-1;
-                    if (voxelY - y - rnd   > 0) {
+                    long rnd = MathUtil.rnd(2) - 1;
+                    if (voxelY == y) {
+                        type = "grass";
+                    } else if (voxelY - y - rnd > 0) {
                         type = "cobble";
                     } else {
                         type = "dirt";
