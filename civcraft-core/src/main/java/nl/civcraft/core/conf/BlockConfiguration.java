@@ -2,6 +2,7 @@ package nl.civcraft.core.conf;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -57,12 +58,10 @@ public class BlockConfiguration {
         Texture grassTopTex = assetManager.loadTexture(
                 "textures/grass_top.png");
 
-        Texture grassColormap = assetManager.loadTexture(
-                "textures/colormap/grass.png");
         Material grassTopMaterial = new Material(assetManager,
                 "matdefs/GrayScaleColorMap.j3md");
-        grassTopMaterial.setTexture("ColorMap", grassColormap);
         grassTopMaterial.setTexture("TextureMap", grassTopTex);
+        grassTopMaterial.setColor("Color", new ColorRGBA(0.51f, 0.83f, 0.24f, 1.0f));
 
         Texture grassSideTex = assetManager.loadTexture(
                 "textures/bdc_grass_side01.png");
