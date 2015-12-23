@@ -82,8 +82,10 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
                     Spatial clone = selectionSpatial.clone();
                     clone.setLocalTranslation(clone.getLocalTranslation().x + voxelAt.getX(), clone.getLocalTranslation().y + voxelAt.getY(), clone.getLocalTranslation().z + voxelAt.getZ());
                     selectionBoxes.attachChild(clone);
-                }else{
+                }
+                if(name.equals(DELETE_VOXEL)){
                     selectionBoxes.detachAllChildren();
+                    hoverBoxes.detachAllChildren();
                     voxelAt.breakBlock();
                 }
             }

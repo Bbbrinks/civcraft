@@ -96,7 +96,7 @@ public class InitialConfigruation {
                 "Common/MatDefs/Misc/Unshaded.j3md");  // ... specify .j3md file to use (unshaded).
         mat.setColor("Color", new ColorRGBA(0.1f, 0.7f, 0.7f, 0.5f));
         mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        Box box = new Box(0.6f, 0.6f, 0.6f);
+        Box box = new Box(0.51f, 0.51f, 0.51f);
         Geometry geometry = new Geometry("selectionBox", box);
         geometry.setMaterial(mat);
         geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
@@ -110,7 +110,7 @@ public class InitialConfigruation {
                 "Common/MatDefs/Misc/Unshaded.j3md");  // ... specify .j3md file to use (unshaded).
         mat.setColor("Color", new ColorRGBA(0.7f, 0.7f, 0.1f, 0.5f));
         mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        Box box = new Box(0.6f, 0.6f, 0.6f);
+        Box box = new Box(0.51f, 0.51f, 0.51f);
         Geometry geometry = new Geometry("selectionBox", box);
         geometry.setMaterial(mat);
         geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
