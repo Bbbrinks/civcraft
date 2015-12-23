@@ -22,6 +22,7 @@ public class WorldGenerator implements Runnable {
     private HillsGenerator hillsGenerator;
     @Autowired
     private ChunkBuilder chunkBuilder;
+
     private HeightMap heightMap;
 
     private boolean generationDone;

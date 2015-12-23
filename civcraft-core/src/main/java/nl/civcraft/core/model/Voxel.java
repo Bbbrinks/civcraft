@@ -12,6 +12,7 @@ public class Voxel {
     private final int y;
     private final int z;
     private final Block block;
+    private Chunk chunk;
 
     public Voxel(int x, int y, int z, String type, Block block) {
 
@@ -41,5 +42,17 @@ public class Voxel {
 
     public Block getBlock() {
         return block;
+    }
+
+    public void breakBlock() {
+        chunk.removeVoxel(this);
+    }
+
+    public void setChunk(Chunk chunk) {
+        this.chunk = chunk;
+    }
+
+    public Chunk getChunk() {
+        return chunk;
     }
 }

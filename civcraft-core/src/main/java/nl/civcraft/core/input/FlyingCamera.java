@@ -41,6 +41,8 @@ import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A first person view camera controller.
@@ -54,6 +56,8 @@ import com.jme3.renderer.Camera;
  * - QZ keys raise or lower the camera
  */
 public class FlyingCamera implements AnalogListener, ActionListener {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static String[] mappings = new String[]{
             "FLYCAM_Left",

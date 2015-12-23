@@ -55,6 +55,7 @@ public class Chunk extends Node {
 
     public void addVoxel(Voxel voxel) {
         voxels[getArrayIndex(voxel.getX(), voxel.getY(), voxel.getZ())] = voxel;
+        voxel.setChunk(this);
     }
 
     private int getArrayIndex(int x, int y, int z) {
@@ -150,5 +151,11 @@ public class Chunk extends Node {
 
     public int getChunkSize() {
         return chunkSize;
+    }
+
+    public void removeVoxel(Voxel voxel) {
+        int arrayIndex = getArrayIndex(voxel.getX(), voxel.getY(), voxel.getZ());
+        voxels[arrayIndex] = null;
+        this.optimized = false;
     }
 }
