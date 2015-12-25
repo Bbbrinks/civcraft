@@ -1,5 +1,6 @@
 package nl.civcraft.core.worldgeneration;
 
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.model.Chunk;
@@ -70,7 +71,9 @@ public class ChunkOptimizer implements Runnable {
 
     private Spatial buildOpitmizedVoxelMesh(List<Voxel> optimizedVoxel) {
 
-        return optimizedVoxel.get(0).getBlock().getBlockOptimizer().optimize(optimizedVoxel);
+        Spatial optimize = optimizedVoxel.get(0).getBlock().getBlockOptimizer().optimize(optimizedVoxel);
+        optimize.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        return optimize;
 
     }
 }
