@@ -50,6 +50,7 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
     private InputManager inputManager;
     private Node selectionBoxes;
     private Node hoverBoxes;
+    private Voxel currentVoxel;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -75,19 +76,18 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
     public void onAction(String name, boolean isPressed, float tpf) {
 
         if (isPressed) {
-            Voxel voxelAt = getVoxelAt();
-            if (voxelAt != null) {
+            if (currentVoxel != null) {
                 if(name.equals(SELECT_VOXEL)) {
-                    voxelAt.isVisible();
+                    currentVoxel.isVisible();
                     selectionBoxes.detachAllChildren();
                     Spatial clone = selectionSpatial.clone();
-                    clone.setLocalTranslation(clone.getLocalTranslation().x + voxelAt.getX(), clone.getLocalTranslation().y + voxelAt.getY(), clone.getLocalTranslation().z + voxelAt.getZ());
+                    clone.setLocalTranslation(clone.getLocalTranslation().x + currentVoxel.getX(), clone.getLocalTranslation().y + currentVoxel.getY(), clone.getLocalTranslation().z + currentVoxel.getZ());
                     selectionBoxes.attachChild(clone);
                 }
                 if(name.equals(DELETE_VOXEL)){
                     selectionBoxes.detachAllChildren();
                     hoverBoxes.detachAllChildren();
-                    voxelAt.breakBlock();
+                    currentVoxel.breakBlock();
                 }
             }
         }
@@ -132,9 +132,10 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
         if (name.equals(MOUSE_MOTION)) {
             Voxel voxelAt = getVoxelAt();
             if (voxelAt != null) {
+                currentVoxel = voxelAt;
                 hoverBoxes.detachAllChildren();
                 Spatial clone = hoverSpatial.clone();
-                clone.setLocalTranslation(clone.getLocalTranslation().x + voxelAt.getX(), clone.getLocalTranslation().y + voxelAt.getY(), clone.getLocalTranslation().z + voxelAt.getZ());
+                clone.setLocalTranslation(clone.getLocalTranslation().x + currentVoxel.getX(), clone.getLocalTranslation().y + currentVoxel.getY(), clone.getLocalTranslation().z + currentVoxel.getZ());
                 hoverBoxes.attachChild(clone);
             }
         }
