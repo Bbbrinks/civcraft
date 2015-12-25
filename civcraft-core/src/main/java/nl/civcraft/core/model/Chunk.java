@@ -6,7 +6,6 @@ import nl.civcraft.core.worldgeneration.ChunkLodOptimizerControl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,46 +65,6 @@ public class Chunk extends Node {
         return arrayIndex;
     }
 
-    public List<Voxel> getVoxelNeighbours(Voxel voxel) {
-        List<Voxel> neighbours = new ArrayList<>();
-        int x = voxel.getX();
-        int y = voxel.getY();
-        int z = voxel.getZ();
-        addIfNotNull(neighbours, getVoxelAt(x - 1, y, z));
-        addIfNotNull(neighbours, getVoxelAt(x, y - 1, z));
-        addIfNotNull(neighbours, getVoxelAt(x, y, z - 1));
-        addIfNotNull(neighbours, getVoxelAt(x + 1, y, z));
-        addIfNotNull(neighbours, getVoxelAt(x, y + 1, z));
-        addIfNotNull(neighbours, getVoxelAt(x, y, z + 1));
-        return neighbours;
-    }
-
-    public Voxel getNeighbour(Voxel voxel, Face face) {
-        switch (face) {
-            case TOP:
-                return getVoxelAt(voxel.getX(), voxel.getY() + 1, voxel.getZ());
-            case BOTTOM:
-                return getVoxelAt(voxel.getX(), voxel.getY() - 1, voxel.getZ());
-            case LEFT:
-                return getVoxelAt(voxel.getX() - 1, voxel.getY(), voxel.getZ());
-            case RIGHT:
-                return getVoxelAt(voxel.getX() + 1, voxel.getY(), voxel.getZ());
-            case FRONT:
-                return getVoxelAt(voxel.getX(), voxel.getY(), voxel.getZ() - 1);
-            case NONE:
-                return null;
-            case BACK:
-                return getVoxelAt(voxel.getX(), voxel.getY(), voxel.getZ() + 1);
-        }
-        return null;
-    }
-
-    private void addIfNotNull(List<Voxel> neighbours, Voxel voxelAt) {
-        if (voxelAt != null) {
-            neighbours.add(voxelAt);
-        }
-    }
-
     public Voxel getVoxelAt(int x, int y, int z) {
         int arrayIndex = getArrayIndex(x, y, z);
         if (arrayIndex == -1) {
@@ -154,6 +113,7 @@ public class Chunk extends Node {
     }
 
     public void removeVoxel(Voxel voxel) {
+        voxel.remove();
         int arrayIndex = getArrayIndex(voxel.getX(), voxel.getY(), voxel.getZ());
         voxels[arrayIndex] = null;
         this.optimized = false;

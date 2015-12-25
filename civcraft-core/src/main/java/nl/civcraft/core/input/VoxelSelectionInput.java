@@ -78,6 +78,7 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
             Voxel voxelAt = getVoxelAt();
             if (voxelAt != null) {
                 if(name.equals(SELECT_VOXEL)) {
+                    voxelAt.isVisible();
                     selectionBoxes.detachAllChildren();
                     Spatial clone = selectionSpatial.clone();
                     clone.setLocalTranslation(clone.getLocalTranslation().x + voxelAt.getX(), clone.getLocalTranslation().y + voxelAt.getY(), clone.getLocalTranslation().z + voxelAt.getZ());
@@ -112,13 +113,13 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
             float y = contactPoint.y;
             float z = contactPoint.z;
             if (contactNormal.x == 1.0f) {
-                x -= 1f;
+                x -= 0.5f;
             }
             if (contactNormal.y == 1.0f) {
-                y -= 1f;
+                y -= 0.5f;
             }
             if (contactNormal.z == 1.0f) {
-                z -= 1f;
+                z -= 0.5f;
             }
 
             voxelAt = worldManager.getWorld().getVoxelAt(x, y, z);

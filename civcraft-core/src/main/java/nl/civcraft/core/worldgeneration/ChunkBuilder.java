@@ -2,8 +2,8 @@ package nl.civcraft.core.worldgeneration;
 
 import nl.civcraft.core.managers.BlockManager;
 import nl.civcraft.core.model.Block;
-import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.model.World;
 import nl.civcraft.core.utils.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,8 +19,7 @@ public class ChunkBuilder {
     @Autowired
     public BlockManager blockManager;
 
-    public Chunk buildChunk(int chunkX, int chunkZ, HeightMap heightMap) {
-        Chunk chunk = new Chunk(CHUNK_SIZE, chunkX, chunkZ, new ChunkLodOptimizerControl());
+    public void buildChunk(int chunkX, int chunkZ, HeightMap heightMap, World world) {
         int chunkMinX = chunkX * CHUNK_SIZE;
         int chunkMinZ = chunkZ * CHUNK_SIZE;
         for (int x = chunkMinX; x < chunkMinX + CHUNK_SIZE; x++) {
@@ -41,10 +40,9 @@ public class ChunkBuilder {
                     }
                     Block block = blockManager.findBlock(type);
                     Voxel voxel = new Voxel(x, y, z, type, block);
-                    chunk.addVoxel(voxel);
+                    world.addVoxel(voxel);
                 }
             }
         }
-        return chunk;
     }
 }

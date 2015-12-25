@@ -30,7 +30,7 @@ public class ChunkOptimizer implements Runnable {
     public void run() {
         chunk.setOptimizing(true);
         LOGGER.info(String.format("Starting chunk optimization: %s", chunk));
-        List<Voxel> unoptimizedVoxels = Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).collect(Collectors.toList());
+        List<Voxel> unoptimizedVoxels = Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).filter(Voxel::isVisible).collect(Collectors.toList());
         List<List<Voxel>> optimizedVoxels = optimzeVoxels(unoptimizedVoxels);
         List<Spatial> optimizedSpatials = new ArrayList<>();
         for (List<Voxel> optimizedVoxel : optimizedVoxels) {
@@ -51,7 +51,7 @@ public class ChunkOptimizer implements Runnable {
             Voxel toBeOptimized = unoptimizedVoxels.get(0);
             List<Voxel> optimizedVoxel = new ArrayList<>();
             optimizedVoxel.add(toBeOptimized);
-            getOptimizedVoxel(toBeOptimized, optimizedVoxel);
+            getOptimizedVoxel(toBeOptimized, optimizedVoxel, unoptimizedVoxels);
             unoptimizedVoxels.removeAll(optimizedVoxel);
             optimizedVoxelGroups.add(optimizedVoxel);
         }
@@ -60,11 +60,11 @@ public class ChunkOptimizer implements Runnable {
         return optimizedVoxelGroups;
     }
 
-    private void getOptimizedVoxel(Voxel toBeOptimized, List<Voxel> optimizedVoxel) {
-        List<Voxel> mergableNeighbours = chunk.getVoxelNeighbours(toBeOptimized).stream().filter(v -> toBeOptimized.getBlock().getBlockOptimizer().canMerge(v, toBeOptimized)).filter(v -> !optimizedVoxel.contains(v)).collect(Collectors.toList());
+    private void getOptimizedVoxel(Voxel toBeOptimized, List<Voxel> optimizedVoxel, List<Voxel> unoptimizedVoxels) {
+        List<Voxel> mergableNeighbours = toBeOptimized.getNeighbours().stream().filter(v -> unoptimizedVoxels.contains(v)).filter(Voxel::isVisible).filter(v -> toBeOptimized.getBlock().getBlockOptimizer().canMerge(v, toBeOptimized)).filter(v -> !optimizedVoxel.contains(v)).collect(Collectors.toList());
         optimizedVoxel.addAll(mergableNeighbours);
         for (Voxel mergableNeighbour : mergableNeighbours) {
-            getOptimizedVoxel(mergableNeighbour, optimizedVoxel);
+            getOptimizedVoxel(mergableNeighbour, optimizedVoxel, unoptimizedVoxels);
         }
     }
 

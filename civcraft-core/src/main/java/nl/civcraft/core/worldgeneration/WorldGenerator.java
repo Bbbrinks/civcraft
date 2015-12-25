@@ -1,12 +1,11 @@
 package nl.civcraft.core.worldgeneration;
 
 import nl.civcraft.core.debug.DebugStatsState;
-import nl.civcraft.core.model.Chunk;
+import nl.civcraft.core.managers.WorldManager;
+import nl.civcraft.core.model.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
 
 /**
  * Created by Bob on 25-11-2015.
@@ -27,11 +26,8 @@ public class WorldGenerator implements Runnable {
 
     private boolean generationDone;
 
-    public ArrayList<Chunk> getChunks() {
-        return chunks;
-    }
-
-    private ArrayList<Chunk> chunks;
+    @Autowired
+    private WorldManager worldManager;
 
     public WorldGenerator(int heightMapWidth, int heightMapHeight) {
         this.heightMapWidth = heightMapWidth;
@@ -39,8 +35,8 @@ public class WorldGenerator implements Runnable {
     }
 
 
-    public Chunk generateChunk(int chunkX, int chunkZ) {
-        return chunkBuilder.buildChunk(chunkX, chunkZ, heightMap);
+    public void generateChunk(int chunkX, int chunkZ) {
+        chunkBuilder.buildChunk(chunkX, chunkZ, heightMap, worldManager.getWorld());
     }
 
     public void generateHeightMap() {
@@ -55,13 +51,14 @@ public class WorldGenerator implements Runnable {
         generateHeightMap();
         DebugStatsState.LAST_MESSAGE ="End generating height map";
         LOGGER.trace(DebugStatsState.LAST_MESSAGE);
-
-        chunks = new ArrayList<>();
+        worldManager.getWorld().clearChunks();
+        int chunkCount = 0;
         for (int x = 0; x < 10; x++) {
             for (int z = 0; z < 10; z++) {
-                chunks.add(generateChunk(x, z));
-                DebugStatsState.LAST_MESSAGE = "Generating chunk: " + chunks.size() + "/100";
+                generateChunk(x, z);
+                DebugStatsState.LAST_MESSAGE = "Generating chunk: " + chunkCount + "/100";
                 LOGGER.trace(DebugStatsState.LAST_MESSAGE );
+                chunkCount++;
             }
         }
         generationDone = true;
@@ -74,5 +71,9 @@ public class WorldGenerator implements Runnable {
 
     public void setGenerationDone(boolean generationDone) {
         this.generationDone = generationDone;
+    }
+
+    public World getWorld() {
+        return worldManager.getWorld();
     }
 }

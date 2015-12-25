@@ -1,6 +1,8 @@
 package nl.civcraft.core.model;
 
 
+import nl.civcraft.core.worldgeneration.ChunkLodOptimizerControl;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +38,71 @@ public class World {
             return found.get(0);
         }
         return null;
+    }
+
+    public void addVoxel(Voxel voxel){
+        int x = voxel.getX();
+        int y = voxel.getY();
+        int z = voxel.getZ();
+        Chunk chunkAt = getChunkAt(x, y, z);
+        if(chunkAt == null){
+            chunkAt = addChunkAt(x, y, z);
+        }
+
+        voxel.addNeighbours(getVoxelNeighbours(voxel));
+
+        chunkAt.addVoxel(voxel);
+    }
+
+    private Chunk addChunkAt(int x, int y, int z) {
+        Chunk chunk = new Chunk(CHUNK_SIZE,x / CHUNK_SIZE, z / CHUNK_SIZE, new ChunkLodOptimizerControl());
+        chunks.add(chunk);
+        return chunk;
+    }
+
+    public List<Chunk> getChunks()
+    {
+        return chunks;
+    }
+
+    public List<Voxel> getVoxelNeighbours(Voxel voxel) {
+        List<Voxel> neighbours = new ArrayList<>();
+        int x = voxel.getX();
+        int y = voxel.getY();
+        int z = voxel.getZ();
+        addIfNotNull(neighbours, getVoxelAt(x - 1, y, z));
+        addIfNotNull(neighbours, getVoxelAt(x, y - 1, z));
+        addIfNotNull(neighbours, getVoxelAt(x, y, z - 1));
+        addIfNotNull(neighbours, getVoxelAt(x + 1, y, z));
+        addIfNotNull(neighbours, getVoxelAt(x, y + 1, z));
+        addIfNotNull(neighbours, getVoxelAt(x, y, z + 1));
+        return neighbours;
+    }
+
+    public Voxel getNeighbour(Voxel voxel, Face face) {
+        switch (face) {
+            case TOP:
+                return getVoxelAt(voxel.getX(), voxel.getY() + 1, voxel.getZ());
+            case BOTTOM:
+                return getVoxelAt(voxel.getX(), voxel.getY() - 1, voxel.getZ());
+            case LEFT:
+                return getVoxelAt(voxel.getX() - 1, voxel.getY(), voxel.getZ());
+            case RIGHT:
+                return getVoxelAt(voxel.getX() + 1, voxel.getY(), voxel.getZ());
+            case FRONT:
+                return getVoxelAt(voxel.getX(), voxel.getY(), voxel.getZ() - 1);
+            case NONE:
+                return null;
+            case BACK:
+                return getVoxelAt(voxel.getX(), voxel.getY(), voxel.getZ() + 1);
+        }
+        return null;
+    }
+
+    private void addIfNotNull(List<Voxel> neighbours, Voxel voxelAt) {
+        if (voxelAt != null) {
+            neighbours.add(voxelAt);
+        }
     }
 
 }
