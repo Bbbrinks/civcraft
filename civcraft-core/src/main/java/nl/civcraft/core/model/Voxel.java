@@ -1,5 +1,7 @@
 package nl.civcraft.core.model;
 
+import com.jme3.math.Vector3f;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,21 +65,22 @@ public class Voxel {
         return chunk;
     }
 
-    public boolean isVisible(){
-        if(y == 0){
+    public boolean isVisible() {
+        if (y == 0) {
             return neighbours.size() != 5;
         }
         return neighbours.size() != 6;
     }
 
-    public void addNeighbour(Voxel voxel){
-        if(!neighbours.contains(voxel)) {
+    public void addNeighbour(Voxel voxel) {
+        if (!neighbours.contains(voxel)) {
             neighbours.add(voxel);
             voxel.addNeighbour(this);
         }
     }
-    public void removeNeighbour(Voxel voxel){
-        if(neighbours.contains(voxel)) {
+
+    public void removeNeighbour(Voxel voxel) {
+        if (neighbours.contains(voxel)) {
             voxel.removeNeighbour(voxel);
             neighbours.remove(voxel);
         }
@@ -90,12 +93,19 @@ public class Voxel {
     }
 
     public void addNeighbours(List<Voxel> voxelNeighbours) {
-        for (Voxel voxelNeighbour : voxelNeighbours) {
-            this.addNeighbour(voxelNeighbour);
-        }
+        voxelNeighbours.forEach(this::addNeighbour);
     }
 
     public List<Voxel> getNeighbours() {
         return neighbours;
+    }
+
+    public Vector3f findLocalChunkTranslation() {
+        return new Vector3f(x, y, z).subtract(new Vector3f(chunk.getChunkX() * chunk.getChunkSize(), 0, chunk.getChunkZ() * chunk.getChunkSize()));
+    }
+
+    @Override
+    public String toString() {
+        return type + "@" + x + "x" + y + "x" + z;
     }
 }

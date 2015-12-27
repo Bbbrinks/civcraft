@@ -15,6 +15,9 @@ import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
 import nl.civcraft.core.CivCraftApplication;
+import nl.civcraft.core.rendering.RenderedVoxelFilter;
+import nl.civcraft.core.rendering.VissibleVoxelFilter;
+import nl.civcraft.core.rendering.WorldEdgeVoxelFilter;
 import nl.civcraft.core.worldgeneration.ChunkBuilder;
 import nl.civcraft.core.worldgeneration.WorldGeneratorState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,5 +119,15 @@ public class InitialConfigruation {
         geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
         geometry.setLocalTranslation(0.5f, 0.5f, 0.5f);
         return geometry;
+    }
+
+    @Bean
+    public RenderedVoxelFilter visibleVoxelFilter(){
+        return  new VissibleVoxelFilter();
+    }
+
+    @Bean
+    public RenderedVoxelFilter worldEdgeVoxelFilter(){
+        return  new WorldEdgeVoxelFilter();
     }
 }

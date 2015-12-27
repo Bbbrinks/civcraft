@@ -4,8 +4,11 @@ import nl.civcraft.core.managers.BlockManager;
 import nl.civcraft.core.model.Block;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
+import nl.civcraft.core.rendering.RenderedVoxelFilter;
 import nl.civcraft.core.utils.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Created by Bob on 26-11-2015.
@@ -19,7 +22,7 @@ public class ChunkBuilder {
     @Autowired
     public BlockManager blockManager;
 
-    public void buildChunk(int chunkX, int chunkZ, HeightMap heightMap, World world) {
+    public void buildChunk(int chunkX, int chunkZ, HeightMap heightMap, World world, List<RenderedVoxelFilter> renderedVoxelFilters) {
         int chunkMinX = chunkX * CHUNK_SIZE;
         int chunkMinZ = chunkZ * CHUNK_SIZE;
         for (int x = chunkMinX; x < chunkMinX + CHUNK_SIZE; x++) {
@@ -40,7 +43,7 @@ public class ChunkBuilder {
                     }
                     Block block = blockManager.findBlock(type);
                     Voxel voxel = new Voxel(x, y, z, type, block);
-                    world.addVoxel(voxel);
+                    world.addVoxel(voxel, new ChunkRendererControl(renderedVoxelFilters));
                 }
             }
         }

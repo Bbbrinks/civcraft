@@ -1,6 +1,7 @@
 package nl.civcraft.core.conf;
 
 import com.jme3.app.state.AppState;
+import nl.civcraft.core.rendering.RenderedVoxelFilter;
 import nl.civcraft.core.worldgeneration.HillsGenerator;
 import nl.civcraft.core.worldgeneration.WorldGenerator;
 import nl.civcraft.core.worldgeneration.WorldGeneratorState;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+
+import java.util.List;
 
 @Configuration
 @PropertySource("classpath:world-generation.properties")
@@ -40,8 +43,8 @@ public class WorldGeneration {
     }
 
     @Bean
-    public WorldGenerator worldGenerator() {
-        return new WorldGenerator(heightMapWidth, heightMapHeight);
+    public WorldGenerator worldGenerator(List<RenderedVoxelFilter> filters) {
+        return new WorldGenerator(heightMapWidth, heightMapHeight, filters);
     }
 
 }

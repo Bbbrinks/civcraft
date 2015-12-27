@@ -4,6 +4,7 @@ import com.jme3.scene.Spatial;
 import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.rendering.RenderedVoxelFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,11 +19,12 @@ import java.util.stream.Collectors;
  * This is probably not worth documenting
  */
 public class ChunkOptimizer implements Runnable {
-    private final Chunk chunk;
-
     private static final Logger LOGGER = LogManager.getLogger();
+    private final Chunk chunk;
+    private final List<RenderedVoxelFilter> voxelFilters;
 
-    public ChunkOptimizer(Chunk chunk) {
+    public ChunkOptimizer(List<RenderedVoxelFilter> voxelFilters, Chunk chunk) {
+        this.voxelFilters = voxelFilters;
         this.chunk = chunk;
     }
 
@@ -30,7 +32,10 @@ public class ChunkOptimizer implements Runnable {
     public void run() {
         chunk.setOptimizing(true);
         LOGGER.info(String.format("Starting chunk optimization: %s", chunk));
-        List<Voxel> unoptimizedVoxels = Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).filter(Voxel::isVisible).collect(Collectors.toList());
+        List<Voxel> unoptimizedVoxels = Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).collect(Collectors.toList());
+        for (RenderedVoxelFilter voxelFilter : voxelFilters) {
+            unoptimizedVoxels = voxelFilter.filter(unoptimizedVoxels);
+        }
         List<List<Voxel>> optimizedVoxels = optimzeVoxels(unoptimizedVoxels);
         List<Spatial> optimizedSpatials = new ArrayList<>();
         for (List<Voxel> optimizedVoxel : optimizedVoxels) {

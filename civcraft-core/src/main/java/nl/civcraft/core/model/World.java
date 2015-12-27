@@ -1,7 +1,7 @@
 package nl.civcraft.core.model;
 
 
-import nl.civcraft.core.worldgeneration.ChunkLodOptimizerControl;
+import nl.civcraft.core.worldgeneration.ChunkRendererControl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,13 +40,13 @@ public class World {
         return null;
     }
 
-    public void addVoxel(Voxel voxel){
+    public void addVoxel(Voxel voxel, ChunkRendererControl chunkRendererControl){
         int x = voxel.getX();
         int y = voxel.getY();
         int z = voxel.getZ();
         Chunk chunkAt = getChunkAt(x, y, z);
         if(chunkAt == null){
-            chunkAt = addChunkAt(x, y, z);
+            chunkAt = addChunkAt(x, y, z, chunkRendererControl);
         }
 
         voxel.addNeighbours(getVoxelNeighbours(voxel));
@@ -54,9 +54,15 @@ public class World {
         chunkAt.addVoxel(voxel);
     }
 
-    private Chunk addChunkAt(int x, int y, int z) {
-        Chunk chunk = new Chunk(CHUNK_SIZE,x / CHUNK_SIZE, z / CHUNK_SIZE, new ChunkLodOptimizerControl());
+    private Chunk addChunkAt(int x, int y, int z, ChunkRendererControl chunkRendererControl) {
+        Chunk chunk = new Chunk(CHUNK_SIZE,x / CHUNK_SIZE, z / CHUNK_SIZE, chunkRendererControl);
         chunks.add(chunk);
+        List<Chunk> neighbours = new ArrayList<>();
+        addIfNotNull(neighbours, getChunkAt(x - CHUNK_SIZE, 1, z));
+        addIfNotNull(neighbours, getChunkAt(x + CHUNK_SIZE, 1, z));
+        addIfNotNull(neighbours, getChunkAt(x, 1, z + CHUNK_SIZE));
+        addIfNotNull(neighbours, getChunkAt(x, 1, z - CHUNK_SIZE));
+        chunk.addNeighbours(neighbours);
         return chunk;
     }
 
@@ -99,7 +105,7 @@ public class World {
         return null;
     }
 
-    private void addIfNotNull(List<Voxel> neighbours, Voxel voxelAt) {
+    private <T> void addIfNotNull(List<T> neighbours, T voxelAt) {
         if (voxelAt != null) {
             neighbours.add(voxelAt);
         }
