@@ -16,47 +16,37 @@ import java.util.List;
  */
 public class CivCraftApplication extends Application {
 
+    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
     @Autowired
     private Node rootNode;
 
+    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
     @Autowired
     private Node guiNode;
 
-    public CivCraftApplication( ) {
+    public CivCraftApplication() {
         super();
-
     }
 
-    public void addAppStates(List<AppState> states){
-        if (states != null) {
-            for (AppState a : states) {
-                if (a != null) {
-                    stateManager.attach(a);
-                }
-            }
+    public void addAppStates(List<AppState> states) {
+        for (AppState a : states) {
+            stateManager.attach(a);
         }
-    }
-
-    @Override
-    public void start() {
-        super.start();
     }
 
     @Override
     public void initialize() {
         super.initialize();
-
         guiNode.setQueueBucket(RenderQueue.Bucket.Gui);
         guiNode.setCullHint(Spatial.CullHint.Never);
         viewPort.attachScene(rootNode);
         guiViewPort.attachScene(guiNode);
-
     }
 
     @Override
     public void update() {
         super.update(); // makes sure to execute AppTasks
-        if (speed == 0 || paused) {
+        if (Float.floatToRawIntBits(speed) == 0 || paused) {
             return;
         }
 

@@ -17,9 +17,8 @@ public class Voxel {
     private final int y;
     private final int z;
     private final Block block;
+    private final List<Voxel> neighbours;
     private Chunk chunk;
-
-    private List<Voxel> neighbours;
 
     public Voxel(int x, int y, int z, String type, Block block) {
 
@@ -61,10 +60,6 @@ public class Voxel {
         this.chunk = chunk;
     }
 
-    public Chunk getChunk() {
-        return chunk;
-    }
-
     public boolean isVisible() {
         if (y == 0) {
             return neighbours.size() != 5;
@@ -72,14 +67,14 @@ public class Voxel {
         return neighbours.size() != 6;
     }
 
-    public void addNeighbour(Voxel voxel) {
+    private void addNeighbour(Voxel voxel) {
         if (!neighbours.contains(voxel)) {
             neighbours.add(voxel);
             voxel.addNeighbour(this);
         }
     }
 
-    public void removeNeighbour(Voxel voxel) {
+    private void removeNeighbour(Voxel voxel) {
         if (neighbours.contains(voxel)) {
             voxel.removeNeighbour(voxel);
             neighbours.remove(voxel);
@@ -101,7 +96,7 @@ public class Voxel {
     }
 
     public Vector3f findLocalChunkTranslation() {
-        return new Vector3f(x, y, z).subtract(new Vector3f(chunk.getChunkX() * chunk.getChunkSize(), 0, chunk.getChunkZ() * chunk.getChunkSize()));
+        return new Vector3f(x, y, z).subtract(new Vector3f(chunk.getChunkX() * World.CHUNK_SIZE, 0, chunk.getChunkZ() * World.CHUNK_SIZE));
     }
 
     @Override

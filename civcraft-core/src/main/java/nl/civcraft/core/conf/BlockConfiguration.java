@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BlockConfiguration {
 
-    public static final float BLOCK_SIZE = 0.5f;
+    private static final float BLOCK_SIZE = 0.5f;
     @Autowired
     private AssetManager assetManager;
 
@@ -41,6 +41,16 @@ public class BlockConfiguration {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         dirtMaterial.setTexture("ColorMap", dirtTexture);
         return createSingleGeometryBoxBlock(dirtMaterial, "dirt", blockOptimizer);
+    }
+
+    private Block createSingleGeometryBoxBlock(Material cobbleMaterial, String name, BlockOptimizer blockOptimizer) {
+        Box box = new Box(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+        Geometry geometry = new Geometry("box", box);
+        geometry.setMaterial(cobbleMaterial);
+        geometry.setLocalTranslation(0.5f, 0.5f, 0.5f);
+        Block block = new Block(name, blockOptimizer);
+        block.attachChild(geometry);
+        return block;
     }
 
     @Bean
@@ -106,7 +116,6 @@ public class BlockConfiguration {
 
     private Geometry getBlockQuadGeometry(Face face) {
         Quad quad = new Quad(BLOCK_SIZE * 2, BLOCK_SIZE * 2);
-        ;
         String name = null;
         Vector3f translation = null;
         float[] rotation = null;
@@ -136,12 +145,12 @@ public class BlockConfiguration {
                 translation = new Vector3f(0f, 0F, 0f);
                 rotation = new float[]{0F, 270F * FastMath.DEG_TO_RAD, 0F };
                 break;
-            case NONE:
-                break;
             case BACK:
                 name = "back";
                 translation = new Vector3f(1f, 0F, 1f);
                 rotation = new float[]{0F, 90F * FastMath.DEG_TO_RAD, 0F };
+                break;
+            default:
                 break;
         }
         Geometry geometry = new Geometry(name, quad);
@@ -150,16 +159,6 @@ public class BlockConfiguration {
         geometry.setLocalTranslation(translation);
 
         return geometry;
-    }
-
-    private Block createSingleGeometryBoxBlock(Material cobbleMaterial, String name, BlockOptimizer blockOptimizer) {
-        Box box = new Box(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-        Geometry geometry = new Geometry("box", box);
-        geometry.setMaterial(cobbleMaterial);
-        geometry.setLocalTranslation(0.5f, 0.5f, 0.5f);
-        Block block = new Block(name, blockOptimizer);
-        block.attachChild(geometry);
-        return block;
     }
 
     @Bean

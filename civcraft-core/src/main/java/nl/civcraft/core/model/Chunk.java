@@ -18,32 +18,19 @@ import java.util.stream.Collectors;
  */
 public class Chunk extends Node {
 
+    private static final Logger LOGGER = LogManager.getLogger();
     private final List<Chunk> neighbours;
-
-    public int getChunkX() {
-        return chunkX;
-    }
-
-    public int getChunkZ() {
-        return chunkZ;
-    }
-
     private final int chunkX;
     private final int chunkZ;
-    private boolean optimized;
-
     private final Voxel[] voxels;
-    private int chunkSize;
+    private boolean optimized;
     private List<Spatial> optimizedVoxels;
     private boolean optimizing;
     private boolean optimizingDone;
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    public Chunk(int chunkSize, int chunkX, int chunkZ, ChunkRendererControl lodControl) {
+    public Chunk(int chunkX, int chunkZ, ChunkRendererControl lodControl) {
         addControl(lodControl);
-        voxels = new Voxel[chunkSize * 100 * chunkSize];
-        this.chunkSize = chunkSize;
+        voxels = new Voxel[World.CHUNK_SIZE * 100 * World.CHUNK_SIZE];
         this.chunkX = chunkX;
         this.chunkZ = chunkZ;
         this.name = chunkX + "x" + chunkZ;
@@ -64,7 +51,7 @@ public class Chunk extends Node {
     }
 
     private int getArrayIndex(int x, int y, int z) {
-        int arrayIndex = x - (chunkX * chunkSize) + (y * 100) + (z * chunkSize) - (chunkZ * chunkSize);
+        int arrayIndex = x - (chunkX * World.CHUNK_SIZE) + (y * 100) + (z * World.CHUNK_SIZE) - (chunkZ * World.CHUNK_SIZE);
         if (arrayIndex < 0 || arrayIndex >= voxels.length) {
             return -1;
         }
@@ -90,20 +77,17 @@ public class Chunk extends Node {
     public void updateVoxelCache() {
         LOGGER.trace("Start updating voxel cache");
         detachAllChildren();
-        for (Spatial optimizedVoxel : optimizedVoxels) {
-            attachChild(optimizedVoxel);
-        }
+        optimizedVoxels.forEach(this::attachChild);
         setOptimized(true);
         LOGGER.trace("End updating voxel cache");
     }
 
+    public boolean isOptimizing() {
+        return optimizing;
+    }
 
     public void setOptimizing(boolean optimizing) {
         this.optimizing = optimizing;
-    }
-
-    public boolean isOptimizing() {
-        return optimizing;
     }
 
     public boolean isOptimizingDone() {
@@ -112,10 +96,6 @@ public class Chunk extends Node {
 
     public void setOptimizingDone(boolean optimizingDone) {
         this.optimizingDone = optimizingDone;
-    }
-
-    public int getChunkSize() {
-        return chunkSize;
     }
 
     public void removeVoxel(Voxel voxel) {
@@ -144,8 +124,8 @@ public class Chunk extends Node {
 
     public Chunk getNeighbour(Face face) {
         //TODO move this calculation to Face to avoid switch
-        int chunkX = -1;
-        int chunkZ = -1;
+        int chunkX;
+        int chunkZ;
         switch (face) {
             case LEFT:
                 chunkX = this.chunkX - 1;
@@ -165,7 +145,7 @@ public class Chunk extends Node {
                 break;
             case TOP:
             case BOTTOM:
-            case NONE:
+            default:
                 return null;
         }
         final int chunkXF = chunkX;
@@ -177,35 +157,43 @@ public class Chunk extends Node {
         return null;
     }
 
+    public int getChunkX() {
+        return chunkX;
+    }
+
+    public int getChunkZ() {
+        return chunkZ;
+    }
+
     public List<Voxel> getFaceVoxels(Face face) {
-        int voxelXMin = -1;
-        int voxelXMax = -1;
-        int voxelZMin = -1;
-        int voxelZMax = -1;
+        int voxelXMin;
+        int voxelXMax;
+        int voxelZMin;
+        int voxelZMax;
         switch (face) {
             case LEFT:
-                voxelXMin = voxelXMax = this.chunkX * chunkSize;
-                voxelZMin = this.chunkZ * chunkSize;
-                voxelZMax = this.chunkZ * chunkSize + chunkSize;
+                voxelXMin = voxelXMax = this.chunkX * World.CHUNK_SIZE;
+                voxelZMin = this.chunkZ * World.CHUNK_SIZE;
+                voxelZMax = this.chunkZ * World.CHUNK_SIZE + World.CHUNK_SIZE;
                 break;
             case RIGHT:
-                voxelXMin = voxelXMax = this.chunkX * chunkSize + chunkSize - 1;
-                voxelZMin = this.chunkZ * chunkSize;
-                voxelZMax = this.chunkZ * chunkSize + chunkSize;
+                voxelXMin = voxelXMax = this.chunkX * World.CHUNK_SIZE + World.CHUNK_SIZE - 1;
+                voxelZMin = this.chunkZ * World.CHUNK_SIZE;
+                voxelZMax = this.chunkZ * World.CHUNK_SIZE + World.CHUNK_SIZE;
                 break;
             case FRONT:
-                voxelZMin = voxelZMax = this.chunkZ * chunkSize;
-                voxelXMin = this.chunkX * chunkSize;
-                voxelXMax = this.chunkX * chunkSize + chunkSize;
+                voxelZMin = voxelZMax = this.chunkZ * World.CHUNK_SIZE;
+                voxelXMin = this.chunkX * World.CHUNK_SIZE;
+                voxelXMax = this.chunkX * World.CHUNK_SIZE + World.CHUNK_SIZE;
                 break;
             case BACK:
-                voxelZMin = voxelZMax = this.chunkZ * chunkSize + chunkSize - 1;
-                voxelXMin = this.chunkX * chunkSize;
-                voxelXMax = this.chunkX * chunkSize + chunkSize;
+                voxelZMin = voxelZMax = this.chunkZ * World.CHUNK_SIZE + World.CHUNK_SIZE - 1;
+                voxelXMin = this.chunkX * World.CHUNK_SIZE;
+                voxelXMax = this.chunkX * World.CHUNK_SIZE + World.CHUNK_SIZE;
                 break;
             case TOP:
             case BOTTOM:
-            case NONE:
+            default:
                 return new ArrayList<>();
         }
 

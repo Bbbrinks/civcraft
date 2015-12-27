@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * <p>
  * This is probably not worth documenting
  */
-public class VissibleVoxelFilter implements  RenderedVoxelFilter {
+public class VisibleVoxelFilter implements RenderedVoxelFilter {
     @Override
     public List<Voxel> filter(List<Voxel> unoptimizedVoxels) {
         return unoptimizedVoxels.parallelStream().filter(Voxel::isVisible).collect(Collectors.toList());

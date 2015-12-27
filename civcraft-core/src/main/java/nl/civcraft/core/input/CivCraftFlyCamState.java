@@ -13,21 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CivCraftFlyCamState extends AbstractAppState {
 
     private Application app;
+    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
     @Autowired
     private FlyingCamera flyCam;
 
     public CivCraftFlyCamState() {
-    }
-
-    /**
-     * This is called by SimpleApplication during initialize().
-     */
-    void setCamera(FlyingCamera cam) {
-        this.flyCam = cam;
-    }
-
-    public FlyingCamera getCamera() {
-        return flyCam;
     }
 
     @Override

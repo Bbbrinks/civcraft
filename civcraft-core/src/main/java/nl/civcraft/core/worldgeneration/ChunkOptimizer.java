@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * <p>
  * This is probably not worth documenting
  */
-public class ChunkOptimizer implements Runnable {
+class ChunkOptimizer implements Runnable {
     private static final Logger LOGGER = LogManager.getLogger();
     private final Chunk chunk;
     private final List<RenderedVoxelFilter> voxelFilters;
@@ -36,17 +36,14 @@ public class ChunkOptimizer implements Runnable {
         for (RenderedVoxelFilter voxelFilter : voxelFilters) {
             unoptimizedVoxels = voxelFilter.filter(unoptimizedVoxels);
         }
-        List<List<Voxel>> optimizedVoxels = optimzeVoxels(unoptimizedVoxels);
-        List<Spatial> optimizedSpatials = new ArrayList<>();
-        for (List<Voxel> optimizedVoxel : optimizedVoxels) {
-            optimizedSpatials.add(buildOpitmizedVoxelMesh(optimizedVoxel));
-        }
+        List<List<Voxel>> optimizedVoxels = optimizeVoxels(unoptimizedVoxels);
+        List<Spatial> optimizedSpatials = optimizedVoxels.stream().map(this::buildOptimizedVoxelMesh).collect(Collectors.toList());
         chunk.setOptimizedVoxels(optimizedSpatials);
         chunk.setOptimizing(false);
         chunk.setOptimizingDone(true);
     }
 
-    private List<List<Voxel>> optimzeVoxels(List<Voxel> unoptimizedVoxels) {
+    private List<List<Voxel>> optimizeVoxels(List<Voxel> unoptimizedVoxels) {
         DebugStatsState.LAST_MESSAGE = "Start optimizing chunk";
         LOGGER.info(DebugStatsState.LAST_MESSAGE);
         List<List<Voxel>> optimizedVoxelGroups = new ArrayList<>();
@@ -66,14 +63,14 @@ public class ChunkOptimizer implements Runnable {
     }
 
     private void getOptimizedVoxel(Voxel toBeOptimized, List<Voxel> optimizedVoxel, List<Voxel> unoptimizedVoxels) {
-        List<Voxel> mergableNeighbours = toBeOptimized.getNeighbours().stream().filter(v -> unoptimizedVoxels.contains(v)).filter(Voxel::isVisible).filter(v -> toBeOptimized.getBlock().getBlockOptimizer().canMerge(v, toBeOptimized)).filter(v -> !optimizedVoxel.contains(v)).collect(Collectors.toList());
+        List<Voxel> mergableNeighbours = toBeOptimized.getNeighbours().stream().filter(unoptimizedVoxels::contains).filter(Voxel::isVisible).filter(v -> toBeOptimized.getBlock().getBlockOptimizer().canMerge(v, toBeOptimized)).filter(v -> !optimizedVoxel.contains(v)).collect(Collectors.toList());
         optimizedVoxel.addAll(mergableNeighbours);
         for (Voxel mergableNeighbour : mergableNeighbours) {
             getOptimizedVoxel(mergableNeighbour, optimizedVoxel, unoptimizedVoxels);
         }
     }
 
-    private Spatial buildOpitmizedVoxelMesh(List<Voxel> optimizedVoxel) {
+    private Spatial buildOptimizedVoxelMesh(List<Voxel> optimizedVoxel) {
 
         return optimizedVoxel.get(0).getBlock().getBlockOptimizer().optimize(optimizedVoxel);
 

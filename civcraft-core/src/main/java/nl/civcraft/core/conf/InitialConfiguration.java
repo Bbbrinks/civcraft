@@ -16,7 +16,7 @@ import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
 import nl.civcraft.core.CivCraftApplication;
 import nl.civcraft.core.rendering.RenderedVoxelFilter;
-import nl.civcraft.core.rendering.VissibleVoxelFilter;
+import nl.civcraft.core.rendering.VisibleVoxelFilter;
 import nl.civcraft.core.rendering.WorldEdgeVoxelFilter;
 import nl.civcraft.core.worldgeneration.ChunkBuilder;
 import nl.civcraft.core.worldgeneration.WorldGeneratorState;
@@ -31,10 +31,15 @@ import java.util.List;
 
 @Configuration
 @ComponentScan(basePackageClasses = {WorldGeneratorState.class, WorldGeneration.class, BlockConfiguration.class})
-public class InitialConfigruation {
+public class InitialConfiguration {
 
     @Autowired
     List<AppState> appStateList;
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
     @Bean
     @Scope("singleton")
@@ -47,8 +52,7 @@ public class InitialConfigruation {
     }
 
     @Bean
-    public AppSettings appSettings()
-    {
+    public AppSettings appSettings() {
         AppSettings settings = new AppSettings(true);
         settings.setWidth(1024);
         settings.setHeight(768);
@@ -56,13 +60,10 @@ public class InitialConfigruation {
         return settings;
     }
 
-
     @Bean
     public ChunkBuilder chunkBuilder() {
         return new ChunkBuilder();
     }
-
-
 
     @Bean
     public Node rootNode() {
@@ -75,8 +76,7 @@ public class InitialConfigruation {
     }
 
     @Bean
-    public LodControl lodControl()
-    {
+    public LodControl lodControl() {
         return new LodControl();
     }
 
@@ -86,11 +86,6 @@ public class InitialConfigruation {
         return JmeSystem.newAssetManager(
                 Thread.currentThread().getContextClassLoader()
                         .getResource("com/jme3/asset/Desktop.cfg"));
-    }
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
     }
 
     @Bean
@@ -123,7 +118,7 @@ public class InitialConfigruation {
 
     @Bean
     public RenderedVoxelFilter visibleVoxelFilter(){
-        return  new VissibleVoxelFilter();
+        return new VisibleVoxelFilter();
     }
 
     @Bean

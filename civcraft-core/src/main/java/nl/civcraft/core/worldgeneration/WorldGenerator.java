@@ -20,32 +20,20 @@ public class WorldGenerator implements Runnable {
     private static final Logger LOGGER = LogManager.getLogger();
     private final int heightMapWidth;
     private final int heightMapHeight;
+    private final List<RenderedVoxelFilter> renderedVoxelFilters;
     @Autowired
-    private HillsGenerator hillsGenerator;
+    private HeightMapGenerator hillsGenerator;
     @Autowired
     private ChunkBuilder chunkBuilder;
-
     private HeightMap heightMap;
-
     private boolean generationDone;
-
     @Autowired
     private WorldManager worldManager;
-    private final List<RenderedVoxelFilter> renderedVoxelFilters;
 
     public WorldGenerator(int heightMapWidth, int heightMapHeight, List<RenderedVoxelFilter> renderedVoxelFilters) {
         this.heightMapWidth = heightMapWidth;
         this.heightMapHeight = heightMapHeight;
         this.renderedVoxelFilters = renderedVoxelFilters;
-    }
-
-
-    public void generateChunk(int chunkX, int chunkZ, List<RenderedVoxelFilter> renderedVoxelFilters) {
-        chunkBuilder.buildChunk(chunkX, chunkZ, heightMap, worldManager.getWorld(), renderedVoxelFilters);
-    }
-
-    public void generateHeightMap() {
-        this.heightMap = hillsGenerator.generateRandomHeightMap(heightMapWidth, heightMapHeight);
     }
 
     @Override
@@ -66,9 +54,16 @@ public class WorldGenerator implements Runnable {
                 chunkCount++;
             }
         }
-        generationDone = true;
+        setGenerationDone(true);
     }
 
+    private void generateHeightMap() {
+        this.heightMap = hillsGenerator.generateRandomHeightMap(heightMapWidth, heightMapHeight);
+    }
+
+    private void generateChunk(int chunkX, int chunkZ, List<RenderedVoxelFilter> renderedVoxelFilters) {
+        chunkBuilder.buildChunk(chunkX, chunkZ, heightMap, worldManager.getWorld(), renderedVoxelFilters);
+    }
 
     public boolean isGenerationDone() {
         return generationDone;

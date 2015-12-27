@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class DebugStatsState extends AbstractAppState implements ActionListener {
 
-    public static final String TOGGLE_DEBUG_INFO = "TOGGLE_DEBUG_INFO";
-    public static String LAST_MESSAGE = "";
+    private static final String TOGGLE_DEBUG_INFO = "TOGGLE_DEBUG_INFO";
+    public static String LAST_MESSAGE; //NOSONAR
     private Application app;
     @Autowired
     private Node guiNode;
@@ -46,26 +46,10 @@ public class DebugStatsState extends AbstractAppState implements ActionListener 
         registerInputs(app.getInputManager());
     }
 
-    private void registerInputs(InputManager inputManager) {
-        inputManager.addMapping(TOGGLE_DEBUG_INFO, new KeyTrigger(KeyInput.KEY_F10));
-        inputManager.addListener(this, TOGGLE_DEBUG_INFO);
-    }
-
-    private void loadLogMessageText() {
-        if (logMessageText == null) {
-            logMessageText = new BitmapText(guiFont, false);
-        }
-
-        logMessageText.setLocalTranslation(0, logMessageText.getLineHeight() * 2, 0);
-        logMessageText.setText("");
-        logMessageText.setCullHint(Spatial.CullHint.Never);
-        guiNode.attachChild(logMessageText);
-    }
-
     /**
      * Attaches FPS statistics to guiNode and displays it on the screen.
      */
-    public void loadFpsText() {
+    private void loadFpsText() {
         if (fpsText == null) {
             fpsText = new BitmapText(guiFont, false);
         }
@@ -81,7 +65,7 @@ public class DebugStatsState extends AbstractAppState implements ActionListener 
      * Attaches Statistics View to guiNode and displays it on the screen
      * above FPS statistics line.
      */
-    public void loadStatsView() {
+    private void loadStatsView() {
         statsView = new StatsView("Statistics View",
                 app.getAssetManager(),
                 app.getRenderer().getStatistics());
@@ -90,6 +74,22 @@ public class DebugStatsState extends AbstractAppState implements ActionListener 
         statsView.setEnabled(true);
         statsView.setCullHint(Spatial.CullHint.Never);
         guiNode.attachChild(statsView);
+    }
+
+    private void loadLogMessageText() {
+        if (logMessageText == null) {
+            logMessageText = new BitmapText(guiFont, false);
+        }
+
+        logMessageText.setLocalTranslation(0, logMessageText.getLineHeight() * 2, 0);
+        logMessageText.setText("");
+        logMessageText.setCullHint(Spatial.CullHint.Never);
+        guiNode.attachChild(logMessageText);
+    }
+
+    private void registerInputs(InputManager inputManager) {
+        inputManager.addMapping(TOGGLE_DEBUG_INFO, new KeyTrigger(KeyInput.KEY_F10));
+        inputManager.addListener(this, TOGGLE_DEBUG_INFO);
     }
 
     @Override

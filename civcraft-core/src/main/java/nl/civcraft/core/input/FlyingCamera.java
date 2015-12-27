@@ -31,7 +31,6 @@
  */
 package nl.civcraft.core.input;
 
-import com.jme3.collision.MotionAllowedListener;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -41,8 +40,6 @@ import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * A first person view camera controller.
@@ -57,9 +54,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class FlyingCamera implements AnalogListener, ActionListener {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    private static String[] mappings = new String[]{
+    private static final String[] mappings = new String[]{
             "FLYCAM_Left",
             "FLYCAM_Right",
             "FLYCAM_Up",
@@ -79,138 +74,19 @@ public class FlyingCamera implements AnalogListener, ActionListener {
 
             "FLYCAM_InvertY"
     };
-
-    protected Camera cam;
-    protected Vector3f initialUpVec;
-    protected float rotationSpeed = 1f;
-    protected float moveSpeed = 10f;
-    protected float zoomSpeed = 10f;
-    protected MotionAllowedListener motionAllowed = null;
-    protected boolean enabled = true;
-    protected boolean dragToRotate = true;
-    protected boolean canRotate = false;
-    protected boolean invertY = false;
-    protected InputManager inputManager;
-
-    /**
-     * Sets the up vector that should be used for the camera.
-     *
-     * @param upVec
-     */
-    public void setUpVector(Vector3f upVec) {
-        initialUpVec.set(upVec);
-    }
-
-    public void setMotionAllowedListener(MotionAllowedListener listener) {
-        this.motionAllowed = listener;
-    }
-
-    /**
-     * Sets the move speed. The speed is given in world units per second.
-     *
-     * @param moveSpeed
-     */
-    public void setMoveSpeed(float moveSpeed) {
-        this.moveSpeed = moveSpeed;
-    }
-
-    /**
-     * Gets the move speed. The speed is given in world units per second.
-     *
-     * @return moveSpeed
-     */
-    public float getMoveSpeed() {
-        return moveSpeed;
-    }
-
-    /**
-     * Sets the rotation speed.
-     *
-     * @param rotationSpeed
-     */
-    public void setRotationSpeed(float rotationSpeed) {
-        this.rotationSpeed = rotationSpeed;
-    }
-
-    /**
-     * Gets the move speed. The speed is given in world units per second.
-     *
-     * @return rotationSpeed
-     */
-    public float getRotationSpeed() {
-        return rotationSpeed;
-    }
-
-    /**
-     * Sets the zoom speed.
-     *
-     * @param zoomSpeed
-     */
-    public void setZoomSpeed(float zoomSpeed) {
-        this.zoomSpeed = zoomSpeed;
-    }
-
-    /**
-     * Gets the zoom speed.  The speed is a multiplier to increase/decrease
-     * the zoom rate.
-     *
-     * @return zoomSpeed
-     */
-    public float getZoomSpeed() {
-        return zoomSpeed;
-    }
-
-    /**
-     * @param enable If false, the camera will ignore input.
-     */
-    public void setEnabled(boolean enable) {
-        if (enabled && !enable) {
-            if (inputManager != null && (!dragToRotate || (dragToRotate && canRotate))) {
-                inputManager.setCursorVisible(true);
-            }
-        }
-        enabled = enable;
-    }
-
-    /**
-     * @return If enabled
-     * @see FlyingCamera#setEnabled(boolean)
-     */
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    /**
-     * @return If drag to rotate feature is enabled.
-     * @see FlyingCamera#setDragToRotate(boolean)
-     */
-    public boolean isDragToRotate() {
-        return dragToRotate;
-    }
-
-    /**
-     * Set if drag to rotate mode is enabled.
-     * <p>
-     * When true, the user must hold the mouse button
-     * and drag over the screen to rotate the camera, and the cursor is
-     * visible until dragged. Otherwise, the cursor is invisible at all times
-     * and holding the mouse button is not needed to rotate the camera.
-     * This feature is disabled by default.
-     *
-     * @param dragToRotate True if drag to rotate mode is enabled.
-     */
-    public void setDragToRotate(boolean dragToRotate) {
-        this.dragToRotate = dragToRotate;
-        if (inputManager != null) {
-            inputManager.setCursorVisible(dragToRotate);
-        }
-    }
+    private final float moveSpeed = 10f;
+    private Camera cam;
+    private Vector3f initialUpVec;
+    private boolean enabled = true;
+    private boolean canRotate = false;
+    private boolean invertY = false;
+    private InputManager inputManager;
 
     /**
      * Registers the FlyingCamera to receive input events from the provided
      * Dispatcher.
      *
-     * @param inputManager
+     * @param inputManager the inputManager
      */
     public void registerWithInput(InputManager inputManager) {
         this.inputManager = inputManager;
@@ -242,14 +118,32 @@ public class FlyingCamera implements AnalogListener, ActionListener {
         inputManager.addMapping("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Z));
 
         inputManager.addListener(this, mappings);
-        inputManager.setCursorVisible(dragToRotate || !isEnabled());
+        inputManager.setCursorVisible(!isEnabled());
     }
 
+    /**
+     * @return If enabled
+     * @see FlyingCamera#setEnabled(boolean)
+     */
+    private boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * @param enable If false, the camera will ignore input.
+     */
+    public void setEnabled(boolean enable) {
+        if (enabled && !enable) {
+            if (inputManager != null && canRotate) {
+                inputManager.setCursorVisible(true);
+            }
+        }
+        enabled = enable;
+    }
 
     /**
      * Registers the FlyingCamera to receive input events from the provided
      * Dispatcher.
-     *
      */
     public void unregisterInput() {
 
@@ -264,20 +158,64 @@ public class FlyingCamera implements AnalogListener, ActionListener {
         }
 
         inputManager.removeListener(this);
-        inputManager.setCursorVisible(!dragToRotate);
 
     }
 
-    protected void rotateCamera(float value, Vector3f axis) {
-        if (dragToRotate) {
-            if (canRotate) {
-//                value = -value;
-            } else {
-                return;
-            }
+    public void onAnalog(String name, float value, float tpf) {
+        if (!enabled)
+            return;
+
+        switch (name) {
+            case "FLYCAM_Left":
+                rotateCamera(value, initialUpVec);
+                break;
+            case "FLYCAM_Right":
+                rotateCamera(-value, initialUpVec);
+                break;
+            case "FLYCAM_Up":
+                rotateCamera(-value * (invertY ? -1 : 1), cam.getLeft());
+                break;
+            case "FLYCAM_Down":
+                rotateCamera(value * (invertY ? -1 : 1), cam.getLeft());
+                break;
+            case "FLYCAM_Forward":
+                moveCamera(value, false);
+                break;
+            case "FLYCAM_Backward":
+                moveCamera(-value, false);
+                break;
+            case "FLYCAM_StrafeLeft":
+                moveCamera(value, true);
+                break;
+            case "FLYCAM_StrafeRight":
+                moveCamera(-value, true);
+                break;
+            case "FLYCAM_Rise":
+                riseCamera(value);
+                break;
+            case "FLYCAM_Lower":
+                riseCamera(-value);
+                break;
+            case "FLYCAM_ZoomIn":
+                zoomCamera(value);
+                break;
+            case "FLYCAM_ZoomOut":
+                zoomCamera(-value);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void rotateCamera(float value, Vector3f axis) {
+
+        if (!canRotate) {
+            return;
         }
 
+
         Matrix3f mat = new Matrix3f();
+        float rotationSpeed = 1f;
         mat.fromAngleNormalAxis(rotationSpeed * value, axis);
 
         Vector3f up = cam.getUp();
@@ -295,7 +233,32 @@ public class FlyingCamera implements AnalogListener, ActionListener {
         cam.setAxes(q);
     }
 
-    protected void zoomCamera(float value) {
+    private void moveCamera(float value, boolean sideways) {
+        Vector3f vel = new Vector3f();
+        Vector3f pos = cam.getLocation().clone();
+
+        if (sideways) {
+            cam.getLeft(vel);
+        } else {
+            cam.getDirection(vel);
+        }
+        vel.multLocal(value * moveSpeed);
+
+        pos.addLocal(vel);
+
+        cam.setLocation(pos);
+    }
+
+    private void riseCamera(float value) {
+        Vector3f vel = new Vector3f(0, value * moveSpeed, 0);
+        Vector3f pos = cam.getLocation().clone();
+
+        pos.addLocal(vel);
+
+        cam.setLocation(pos);
+    }
+
+    private void zoomCamera(float value) {
         // derive fovY value
         float h = cam.getFrustumTop();
         float w = cam.getFrustumRight();
@@ -305,6 +268,7 @@ public class FlyingCamera implements AnalogListener, ActionListener {
 
         float fovY = FastMath.atan(h / near)
                 / (FastMath.DEG_TO_RAD * .5f);
+        float zoomSpeed = 10f;
         float newFovY = fovY + value * 0.1f * zoomSpeed;
         if (newFovY > 0f) {
             // Don't let the FOV go zero or negative.
@@ -320,73 +284,11 @@ public class FlyingCamera implements AnalogListener, ActionListener {
         cam.setFrustumRight(w);
     }
 
-    protected void riseCamera(float value) {
-        Vector3f vel = new Vector3f(0, value * moveSpeed, 0);
-        Vector3f pos = cam.getLocation().clone();
-
-        if (motionAllowed != null)
-            motionAllowed.checkMotionAllowed(pos, vel);
-        else
-            pos.addLocal(vel);
-
-        cam.setLocation(pos);
-    }
-
-    protected void moveCamera(float value, boolean sideways) {
-        Vector3f vel = new Vector3f();
-        Vector3f pos = cam.getLocation().clone();
-
-        if (sideways) {
-            cam.getLeft(vel);
-        } else {
-            cam.getDirection(vel);
-        }
-        vel.multLocal(value * moveSpeed);
-
-        if (motionAllowed != null)
-            motionAllowed.checkMotionAllowed(pos, vel);
-        else
-            pos.addLocal(vel);
-
-        cam.setLocation(pos);
-    }
-
-    public void onAnalog(String name, float value, float tpf) {
-        if (!enabled)
-            return;
-
-        if (name.equals("FLYCAM_Left")) {
-            rotateCamera(value, initialUpVec);
-        } else if (name.equals("FLYCAM_Right")) {
-            rotateCamera(-value, initialUpVec);
-        } else if (name.equals("FLYCAM_Up")) {
-            rotateCamera(-value * (invertY ? -1 : 1), cam.getLeft());
-        } else if (name.equals("FLYCAM_Down")) {
-            rotateCamera(value * (invertY ? -1 : 1), cam.getLeft());
-        } else if (name.equals("FLYCAM_Forward")) {
-            moveCamera(value, false);
-        } else if (name.equals("FLYCAM_Backward")) {
-            moveCamera(-value, false);
-        } else if (name.equals("FLYCAM_StrafeLeft")) {
-            moveCamera(value, true);
-        } else if (name.equals("FLYCAM_StrafeRight")) {
-            moveCamera(-value, true);
-        } else if (name.equals("FLYCAM_Rise")) {
-            riseCamera(value);
-        } else if (name.equals("FLYCAM_Lower")) {
-            riseCamera(-value);
-        } else if (name.equals("FLYCAM_ZoomIn")) {
-            zoomCamera(value);
-        } else if (name.equals("FLYCAM_ZoomOut")) {
-            zoomCamera(-value);
-        }
-    }
-
     public void onAction(String name, boolean value, float tpf) {
         if (!enabled)
             return;
 
-        if (name.equals("FLYCAM_RotateDrag") && dragToRotate) {
+        if (name.equals("FLYCAM_RotateDrag")) {
             canRotate = value;
             inputManager.setCursorVisible(!value);
         } else if (name.equals("FLYCAM_InvertY")) {

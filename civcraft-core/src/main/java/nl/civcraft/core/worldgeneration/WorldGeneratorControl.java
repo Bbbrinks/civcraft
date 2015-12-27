@@ -5,23 +5,20 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
-import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.World;
 
-public class WorldGeneratorControl extends AbstractControl {
+class WorldGeneratorControl extends AbstractControl {
 
 
     private final Node voxels;
-    private WorldManager worldManager;
 
     private final WorldGenerator worldGenerator;
 
-    public WorldGeneratorControl(WorldManager worldManager, WorldGenerator worldGenerator, Node rootNode) {
+    public WorldGeneratorControl(WorldGenerator worldGenerator, Node rootNode) {
         this.worldGenerator = worldGenerator;
         rootNode.detachChildNamed("voxels");
         voxels = new Node("voxels");
         rootNode.attachChild(voxels);
-        this.worldManager = worldManager;
     }
 
     @Override

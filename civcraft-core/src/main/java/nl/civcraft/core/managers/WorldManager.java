@@ -6,7 +6,7 @@ import nl.civcraft.core.model.World;
 public class WorldManager {
 
 
-    private World world;
+    private final World world;
 
     public WorldManager()
     {

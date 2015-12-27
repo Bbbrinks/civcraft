@@ -6,8 +6,6 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.rendering.RenderedVoxelFilter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -18,10 +16,8 @@ import java.util.List;
  */
 public class ChunkRendererControl extends AbstractControl {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    private Chunk chunk;
     private final List<RenderedVoxelFilter> voxelFilters;
+    private Chunk chunk;
 
     public ChunkRendererControl(List<RenderedVoxelFilter> voxelFilters) {
         this.voxelFilters = voxelFilters;

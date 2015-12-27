@@ -4,6 +4,7 @@ import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.model.World;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.stream.Stream;
  */
 public class WorldEdgeVoxelFilter implements RenderedVoxelFilter {
 
+    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
     @Autowired
     private WorldManager worldManager;
 
@@ -39,11 +41,11 @@ public class WorldEdgeVoxelFilter implements RenderedVoxelFilter {
                                 // Edge y front left
                                 ((voxel.findLocalChunkTranslation().z == 0) && (voxel.findLocalChunkTranslation().x == 0) && face.equals(Face.FRONT) && voxel.getNeighbours().size() == 4) ||
                                         // Edge y back left
-                                        ((voxel.findLocalChunkTranslation().z == 0) && (voxel.findLocalChunkTranslation().x == chunk.getChunkSize() - 1) && face.equals(Face.FRONT) && voxel.getNeighbours().size() == 4) ||
+                                        ((voxel.findLocalChunkTranslation().z == 0) && (voxel.findLocalChunkTranslation().x == World.CHUNK_SIZE - 1) && face.equals(Face.FRONT) && voxel.getNeighbours().size() == 4) ||
                                         // Edge y front right
-                                        ((voxel.findLocalChunkTranslation().z == chunk.getChunkSize() - 1) && (voxel.findLocalChunkTranslation().x == 0) && face.equals(Face.BACK) && voxel.getNeighbours().size() == 4) ||
+                                        ((voxel.findLocalChunkTranslation().z == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().x == 0) && face.equals(Face.BACK) && voxel.getNeighbours().size() == 4) ||
                                         // Edge y back right
-                                        ((voxel.findLocalChunkTranslation().z == chunk.getChunkSize() - 1) && (voxel.findLocalChunkTranslation().x == chunk.getChunkSize() - 1) && face.equals(Face.BACK) && voxel.getNeighbours().size() == 4)
+                                        ((voxel.findLocalChunkTranslation().z == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().x == World.CHUNK_SIZE - 1) && face.equals(Face.BACK) && voxel.getNeighbours().size() == 4)
 
                         ).forEach(unoptimizedVoxels::remove);
                     }
@@ -59,17 +61,17 @@ public class WorldEdgeVoxelFilter implements RenderedVoxelFilter {
             Stream<Voxel> stream = chunk.getFaceVoxels(face).stream();
             stream.filter(voxel -> voxel.getNeighbours().size() == 5 ||
                     // Face x y
-                    ((voxel.findLocalChunkTranslation().x == 0 || voxel.findLocalChunkTranslation().x == chunk.getChunkSize() - 1) && (voxel.findLocalChunkTranslation().y == 0 || voxel.findLocalChunkTranslation().y == chunk.getChunkSize() - 1) && voxel.getNeighbours().size() == 5) ||
+                    ((voxel.findLocalChunkTranslation().x == 0 || voxel.findLocalChunkTranslation().x == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().y == 0 || voxel.findLocalChunkTranslation().y == World.CHUNK_SIZE - 1) && voxel.getNeighbours().size() == 5) ||
                     // Face y z
-                    ((voxel.findLocalChunkTranslation().y == 0 || voxel.findLocalChunkTranslation().y == chunk.getChunkSize() - 1) && (voxel.findLocalChunkTranslation().z == 0 || voxel.findLocalChunkTranslation().z == chunk.getChunkSize() - 1) && voxel.getNeighbours().size() == 5) ||
+                    ((voxel.findLocalChunkTranslation().y == 0 || voxel.findLocalChunkTranslation().y == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().z == 0 || voxel.findLocalChunkTranslation().z == World.CHUNK_SIZE - 1) && voxel.getNeighbours().size() == 5) ||
                     // Face x z
-                    ((voxel.findLocalChunkTranslation().z == 0 || voxel.findLocalChunkTranslation().z == chunk.getChunkSize() - 1) && (voxel.findLocalChunkTranslation().x == 0 || voxel.findLocalChunkTranslation().x == chunk.getChunkSize() - 1) && voxel.getNeighbours().size() == 5) ||
+                    ((voxel.findLocalChunkTranslation().z == 0 || voxel.findLocalChunkTranslation().z == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().x == 0 || voxel.findLocalChunkTranslation().x == World.CHUNK_SIZE - 1) && voxel.getNeighbours().size() == 5) ||
                     // Edge x
-                    ((voxel.findLocalChunkTranslation().x == 0 || voxel.findLocalChunkTranslation().x == chunk.getChunkSize() - 1) && (voxel.findLocalChunkTranslation().y == 0) && voxel.getNeighbours().size() == 4) ||
+                    ((voxel.findLocalChunkTranslation().x == 0 || voxel.findLocalChunkTranslation().x == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().y == 0) && voxel.getNeighbours().size() == 4) ||
                     // Edge z
-                    ((voxel.findLocalChunkTranslation().z == 0 || voxel.findLocalChunkTranslation().z == chunk.getChunkSize() - 1) && (voxel.findLocalChunkTranslation().y == 0) && voxel.getNeighbours().size() == 4) ||
+                    ((voxel.findLocalChunkTranslation().z == 0 || voxel.findLocalChunkTranslation().z == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().y == 0) && voxel.getNeighbours().size() == 4) ||
                     //Corners
-                    ((voxel.findLocalChunkTranslation().x == 0 || voxel.findLocalChunkTranslation().x == chunk.getChunkSize() - 1) && ((voxel.findLocalChunkTranslation().z == 0 || voxel.findLocalChunkTranslation().z == chunk.getChunkSize() - 1) && (voxel.findLocalChunkTranslation().y == 0 || voxel.findLocalChunkTranslation().y == chunk.getChunkSize() - 1) && voxel.getNeighbours().size() == 3))
+                    ((voxel.findLocalChunkTranslation().x == 0 || voxel.findLocalChunkTranslation().x == World.CHUNK_SIZE - 1) && ((voxel.findLocalChunkTranslation().z == 0 || voxel.findLocalChunkTranslation().z == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().y == 0 || voxel.findLocalChunkTranslation().y == World.CHUNK_SIZE - 1) && voxel.getNeighbours().size() == 3))
             ).forEach(unoptimizedVoxels::remove);
         }
     }

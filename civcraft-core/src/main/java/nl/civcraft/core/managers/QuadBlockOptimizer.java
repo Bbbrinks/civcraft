@@ -13,12 +13,7 @@ import java.util.List;
 public class QuadBlockOptimizer implements BlockOptimizer {
     @Override
     public boolean canMerge(Voxel voxel, Voxel other) {
-        if (voxel == null || other == null) {
-            return false;
-        }
-        if (equals(voxel)) {
-            return false;
-        } else return other.getType().equals(voxel.getType());
+        return !(voxel == null || other == null) && !other.equals(voxel) && other.getType().equals(voxel.getType());
     }
 
     @Override
@@ -34,8 +29,8 @@ public class QuadBlockOptimizer implements BlockOptimizer {
     }
 
     private Spatial getOptimizedSpatialByFace(List<Voxel> voxels, Face face) {
-        String faceStr = null;
-        switch (face){
+        String faceStr;
+        switch (face) {
             case TOP:
                 faceStr = "top";
                 break;
@@ -51,11 +46,11 @@ public class QuadBlockOptimizer implements BlockOptimizer {
             case FRONT:
                 faceStr = "front";
                 break;
-            case NONE:
-                faceStr = "none";
-                break;
             case BACK:
                 faceStr = "back";
+                break;
+            default:
+                faceStr = "none";
                 break;
         }
         Node allFaces = new Node();

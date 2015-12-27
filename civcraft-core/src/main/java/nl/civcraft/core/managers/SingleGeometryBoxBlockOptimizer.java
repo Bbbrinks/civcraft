@@ -13,12 +13,7 @@ import java.util.List;
 public class SingleGeometryBoxBlockOptimizer implements BlockOptimizer {
     @Override
     public boolean canMerge(Voxel voxel, Voxel other) {
-        if (voxel == null || other == null) {
-            return false;
-        }
-        if (equals(voxel)) {
-            return false;
-        } else return other.getType().equals(voxel.getType());
+        return !(voxel == null || other == null) && !other.equals(voxel) && other.getType().equals(voxel.getType());
     }
 
     @Override
