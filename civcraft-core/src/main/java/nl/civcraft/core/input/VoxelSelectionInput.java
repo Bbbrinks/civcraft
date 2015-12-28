@@ -18,8 +18,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Voxel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -29,23 +27,21 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class VoxelSelectionInput extends AbstractAppState implements AnalogListener,ActionListener {
 
-    private static final Logger LOGGER = LogManager.getLogger();
     private static final String MOUSE_MOTION = "MOUSE_MOTION";
     private static final String DELETE_VOXEL = "DELETE_VOXEL";
-
+    private static final String SELECT_VOXEL = "SELECT_VOXEL";
+    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
     @Autowired
     private Node rootNode;
-
+    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
     @Autowired
     private WorldManager worldManager;
-
+    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
     @Autowired
     private Spatial selectionSpatial;
-
+    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
     @Autowired
     private Spatial hoverSpatial;
-
-    private static final String SELECT_VOXEL = "SELECT_VOXEL";
     private Camera cam;
     private InputManager inputManager;
     private Node selectionBoxes;
@@ -95,6 +91,20 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
 
     }
 
+    @Override
+    public void onAnalog(String name, float value, float tpf) {
+        if (name.equals(MOUSE_MOTION)) {
+            Voxel voxelAt = getVoxelAt();
+            if (voxelAt != null) {
+                currentVoxel = voxelAt;
+                hoverBoxes.detachAllChildren();
+                Spatial clone = hoverSpatial.clone();
+                clone.setLocalTranslation(clone.getLocalTranslation().x + currentVoxel.getX(), clone.getLocalTranslation().y + currentVoxel.getY(), clone.getLocalTranslation().z + currentVoxel.getZ());
+                hoverBoxes.attachChild(clone);
+            }
+        }
+    }
+
     private Voxel getVoxelAt() {
         CollisionResults results = new CollisionResults();
         Vector2f click2d = inputManager.getCursorPosition();
@@ -112,32 +122,18 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
             float x = contactPoint.x;
             float y = contactPoint.y;
             float z = contactPoint.z;
-            if (contactNormal.x == 1.0f) {
+            if (Math.round(contactNormal.x) == 1) {
                 x -= 0.5f;
             }
-            if (contactNormal.y == 1.0f) {
+            if (Math.round(contactNormal.y) == 1) {
                 y -= 0.5f;
             }
-            if (contactNormal.z == 1.0f) {
+            if (Math.round(contactNormal.z) == 1) {
                 z -= 0.5f;
             }
 
             voxelAt = worldManager.getWorld().getVoxelAt(x, y, z);
         }
         return voxelAt;
-    }
-
-    @Override
-    public void onAnalog(String name, float value, float tpf) {
-        if (name.equals(MOUSE_MOTION)) {
-            Voxel voxelAt = getVoxelAt();
-            if (voxelAt != null) {
-                currentVoxel = voxelAt;
-                hoverBoxes.detachAllChildren();
-                Spatial clone = hoverSpatial.clone();
-                clone.setLocalTranslation(clone.getLocalTranslation().x + currentVoxel.getX(), clone.getLocalTranslation().y + currentVoxel.getY(), clone.getLocalTranslation().z + currentVoxel.getZ());
-                hoverBoxes.attachChild(clone);
-            }
-        }
     }
 }

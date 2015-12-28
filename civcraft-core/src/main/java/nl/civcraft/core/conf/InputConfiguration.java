@@ -2,7 +2,6 @@ package nl.civcraft.core.conf;
 
 import com.jme3.app.DebugKeysAppState;
 import com.jme3.app.state.AppState;
-import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.input.CivCraftFlyCamState;
 import nl.civcraft.core.input.FlyingCamera;
 import nl.civcraft.core.input.GlobalInput;
@@ -13,10 +12,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class InputConfiguration {
-    @Bean
-    public AppState debugStatsState() {
-        return new DebugStatsState();
-    }
 
     @Bean
     public AppState globalInput() {
@@ -24,8 +19,8 @@ public class InputConfiguration {
     }
 
     @Bean
-    public AppState flyCamAppState() {
-        return new CivCraftFlyCamState();
+    public AppState flyCamAppState(FlyingCamera flyingCamera) {
+        return new CivCraftFlyCamState(flyingCamera);
     }
 
     @Bean

@@ -3,9 +3,12 @@ package nl.civcraft.core.worldgeneration;
 import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.World;
+import nl.civcraft.core.rendering.RenderedVoxelFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Created by Bob on 25-11-2015.
@@ -17,30 +20,20 @@ public class WorldGenerator implements Runnable {
     private static final Logger LOGGER = LogManager.getLogger();
     private final int heightMapWidth;
     private final int heightMapHeight;
+    private final List<RenderedVoxelFilter> renderedVoxelFilters;
     @Autowired
-    private HillsGenerator hillsGenerator;
+    private HeightMapGenerator hillsGenerator;
     @Autowired
     private ChunkBuilder chunkBuilder;
-
     private HeightMap heightMap;
-
     private boolean generationDone;
-
     @Autowired
     private WorldManager worldManager;
 
-    public WorldGenerator(int heightMapWidth, int heightMapHeight) {
+    public WorldGenerator(int heightMapWidth, int heightMapHeight, List<RenderedVoxelFilter> renderedVoxelFilters) {
         this.heightMapWidth = heightMapWidth;
         this.heightMapHeight = heightMapHeight;
-    }
-
-
-    public void generateChunk(int chunkX, int chunkZ) {
-        chunkBuilder.buildChunk(chunkX, chunkZ, heightMap, worldManager.getWorld());
-    }
-
-    public void generateHeightMap() {
-        this.heightMap = hillsGenerator.generateRandomHeightMap(heightMapWidth, heightMapHeight);
+        this.renderedVoxelFilters = renderedVoxelFilters;
     }
 
     @Override
@@ -49,21 +42,28 @@ public class WorldGenerator implements Runnable {
         LOGGER.trace(DebugStatsState.LAST_MESSAGE);
 
         generateHeightMap();
-        DebugStatsState.LAST_MESSAGE ="End generating height map";
+        DebugStatsState.LAST_MESSAGE = "End generating height map";
         LOGGER.trace(DebugStatsState.LAST_MESSAGE);
         worldManager.getWorld().clearChunks();
         int chunkCount = 0;
-        for (int x = 0; x < 10; x++) {
-            for (int z = 0; z < 10; z++) {
-                generateChunk(x, z);
-                DebugStatsState.LAST_MESSAGE = "Generating chunk: " + chunkCount + "/100";
-                LOGGER.trace(DebugStatsState.LAST_MESSAGE );
+        for (int x = 0; x < 3; x++) {
+            for (int z = 0; z < 3; z++) {
+                generateChunk(x, z, renderedVoxelFilters);
+                DebugStatsState.LAST_MESSAGE = "Generating chunk: " + chunkCount + "/36";
+                LOGGER.trace(DebugStatsState.LAST_MESSAGE);
                 chunkCount++;
             }
         }
-        generationDone = true;
+        setGenerationDone(true);
     }
 
+    private void generateHeightMap() {
+        this.heightMap = hillsGenerator.generateRandomHeightMap(heightMapWidth, heightMapHeight);
+    }
+
+    private void generateChunk(int chunkX, int chunkZ, List<RenderedVoxelFilter> renderedVoxelFilters) {
+        chunkBuilder.buildChunk(chunkX, chunkZ, heightMap, worldManager.getWorld(), renderedVoxelFilters);
+    }
 
     public boolean isGenerationDone() {
         return generationDone;

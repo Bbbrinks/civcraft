@@ -5,68 +5,32 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import jme3tools.optimize.GeometryBatchFactory;
-import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.Voxel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuadBlockOptimizer implements BlockOptimizer {
     @Override
     public boolean canMerge(Voxel voxel, Voxel other) {
-        if (voxel == null || other == null) {
-            return false;
-        }
-        if (equals(voxel)) {
-            return false;
-        } else return other.getType().equals(voxel.getType());
+        return !(voxel == null || other == null) && !other.equals(voxel) && other.getType().equals(voxel.getType());
     }
 
     @Override
     public Spatial optimize(List<Voxel> voxels) {
-        Node combined = new Node();
-        combined.attachChild(getOptimizedSpatialByFace(voxels, Face.TOP));
-        combined.attachChild(getOptimizedSpatialByFace(voxels, Face.BOTTOM));
-        combined.attachChild(getOptimizedSpatialByFace(voxels, Face.LEFT));
-        combined.attachChild(getOptimizedSpatialByFace(voxels, Face.RIGHT));
-        combined.attachChild(getOptimizedSpatialByFace(voxels, Face.FRONT));
-        combined.attachChild(getOptimizedSpatialByFace(voxels, Face.BACK));
-        return combined;
-    }
-
-    private Spatial getOptimizedSpatialByFace(List<Voxel> voxels, Face face) {
-        String faceStr = null;
-        switch (face){
-            case TOP:
-                faceStr = "top";
-                break;
-            case BOTTOM:
-                faceStr = "bottom";
-                break;
-            case LEFT:
-                faceStr = "left";
-                break;
-            case RIGHT:
-                faceStr = "right";
-                break;
-            case FRONT:
-                faceStr = "front";
-                break;
-            case NONE:
-                faceStr = "none";
-                break;
-            case BACK:
-                faceStr = "back";
-                break;
-        }
-        Node allFaces = new Node();
-
+        List<Geometry> allGeometries = new ArrayList<>();
         for (Voxel voxel : voxels) {
-            Geometry geometry = (Geometry) voxel.getBlock().getChild(faceStr).clone();
-            geometry.setLocalTranslation(geometry.getLocalTranslation().add(voxel.getX(), voxel.getY(), voxel.getZ()));
-            allFaces.attachChild(geometry);
+            List<Geometry> geometries = voxel.cloneBlock().descendantMatches(Geometry.class);
+            for (Geometry geometry : geometries) {
+                geometry.setLocalTranslation(geometry.getLocalTranslation().add(voxel.getX(), voxel.getY(), voxel.getZ()));
+                allGeometries.add(geometry);
+            }
         }
-        Spatial spatial = GeometryBatchFactory.optimize(allFaces);
-        spatial.setMaterial(((Geometry) voxels.get(0).getBlock().getChild(faceStr)).getMaterial());
-        return spatial;
+        List<Geometry> batches = GeometryBatchFactory.makeBatches(allGeometries);
+        Node optimizedVoxels = new Node();
+        for (Geometry batch : batches) {
+            optimizedVoxels.attachChild(batch);
+        }
+        return optimizedVoxels;
     }
 }

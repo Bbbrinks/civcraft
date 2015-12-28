@@ -6,5 +6,5 @@ package nl.civcraft.core.model;
  * This is probably not worth documenting
  */
 public enum Face {
-    TOP, BOTTOM, LEFT, RIGHT, FRONT, NONE, BACK
+    TOP, BOTTOM, LEFT, RIGHT, FRONT, BACK
 }

@@ -1,5 +1,7 @@
 package nl.civcraft.core.model;
 
+import com.jme3.math.Vector3f;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +17,11 @@ public class Voxel {
     private final int y;
     private final int z;
     private final Block block;
+    private final List<Voxel> neighbours;
     private Chunk chunk;
-
-    private List<Voxel> neighbours;
+    private int localX;
+    private int localY;
+    private int localZ;
 
     public Voxel(int x, int y, int z, String type, Block block) {
 
@@ -47,8 +51,8 @@ public class Voxel {
         return z;
     }
 
-    public Block getBlock() {
-        return block;
+    public Block cloneBlock() {
+        return (Block) block.clone();
     }
 
     public void breakBlock() {
@@ -59,25 +63,19 @@ public class Voxel {
         this.chunk = chunk;
     }
 
-    public Chunk getChunk() {
-        return chunk;
-    }
-
-    public boolean isVisible(){
-        if(y == 0){
-            return neighbours.size() != 5;
-        }
+    public boolean isVisible() {
         return neighbours.size() != 6;
     }
 
-    public void addNeighbour(Voxel voxel){
-        if(!neighbours.contains(voxel)) {
+    private void addNeighbour(Voxel voxel) {
+        if (!neighbours.contains(voxel)) {
             neighbours.add(voxel);
             voxel.addNeighbour(this);
         }
     }
-    public void removeNeighbour(Voxel voxel){
-        if(neighbours.contains(voxel)) {
+
+    private void removeNeighbour(Voxel voxel) {
+        if (neighbours.contains(voxel)) {
             voxel.removeNeighbour(voxel);
             neighbours.remove(voxel);
         }
@@ -90,12 +88,43 @@ public class Voxel {
     }
 
     public void addNeighbours(List<Voxel> voxelNeighbours) {
-        for (Voxel voxelNeighbour : voxelNeighbours) {
-            this.addNeighbour(voxelNeighbour);
-        }
+        voxelNeighbours.forEach(this::addNeighbour);
     }
 
     public List<Voxel> getNeighbours() {
         return neighbours;
+    }
+
+    public Vector3f findLocalChunkTranslation() {
+        return new Vector3f(x, y, z).subtract(new Vector3f(chunk.getChunkX() * World.CHUNK_SIZE, 0, chunk.getChunkZ() * World.CHUNK_SIZE));
+    }
+
+    @Override
+    public String toString() {
+        return type + "@" + x + "x" + y + "x" + z + " local " + localX + "x" + localY + "x" + localZ;
+    }
+
+    public int getLocalX() {
+        return localX;
+    }
+
+    public void setLocalX(int localX) {
+        this.localX = localX;
+    }
+
+    public int getLocalY() {
+        return localY;
+    }
+
+    public void setLocalY(int localY) {
+        this.localY = localY;
+    }
+
+    public int getLocalZ() {
+        return localZ;
+    }
+
+    public void setLocalZ(int localZ) {
+        this.localZ = localZ;
     }
 }

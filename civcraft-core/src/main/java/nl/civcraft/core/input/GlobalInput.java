@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GlobalInput extends AbstractAppState implements ActionListener {
-    public static final String EXIT = "EXIT";
+    private static final String EXIT = "EXIT";
     private Application app;
 
 

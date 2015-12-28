@@ -1,10 +1,10 @@
 package nl.civcraft.core.worldgeneration;
 
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.rendering.RenderedVoxelFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,12 +18,13 @@ import java.util.stream.Collectors;
  * <p>
  * This is probably not worth documenting
  */
-public class ChunkOptimizer implements Runnable {
-    private final Chunk chunk;
-
+class ChunkOptimizer implements Runnable {
     private static final Logger LOGGER = LogManager.getLogger();
+    private final Chunk chunk;
+    private final List<RenderedVoxelFilter> voxelFilters;
 
-    public ChunkOptimizer(Chunk chunk) {
+    public ChunkOptimizer(List<RenderedVoxelFilter> voxelFilters, Chunk chunk) {
+        this.voxelFilters = voxelFilters;
         this.chunk = chunk;
     }
 
@@ -31,18 +32,18 @@ public class ChunkOptimizer implements Runnable {
     public void run() {
         chunk.setOptimizing(true);
         LOGGER.info(String.format("Starting chunk optimization: %s", chunk));
-        List<Voxel> unoptimizedVoxels = Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).filter(Voxel::isVisible).collect(Collectors.toList());
-        List<List<Voxel>> optimizedVoxels = optimzeVoxels(unoptimizedVoxels);
-        List<Spatial> optimizedSpatials = new ArrayList<>();
-        for (List<Voxel> optimizedVoxel : optimizedVoxels) {
-            optimizedSpatials.add(buildOpitmizedVoxelMesh(optimizedVoxel));
+        List<Voxel> unoptimizedVoxels = Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).collect(Collectors.toList());
+        for (RenderedVoxelFilter voxelFilter : voxelFilters) {
+            unoptimizedVoxels = voxelFilter.filter(unoptimizedVoxels);
         }
+        List<List<Voxel>> optimizedVoxels = optimizeVoxels(unoptimizedVoxels);
+        List<Spatial> optimizedSpatials = optimizedVoxels.stream().map(this::buildOptimizedVoxelMesh).collect(Collectors.toList());
         chunk.setOptimizedVoxels(optimizedSpatials);
         chunk.setOptimizing(false);
         chunk.setOptimizingDone(true);
     }
 
-    private List<List<Voxel>> optimzeVoxels(List<Voxel> unoptimizedVoxels) {
+    private List<List<Voxel>> optimizeVoxels(List<Voxel> unoptimizedVoxels) {
         DebugStatsState.LAST_MESSAGE = "Start optimizing chunk";
         LOGGER.info(DebugStatsState.LAST_MESSAGE);
         List<List<Voxel>> optimizedVoxelGroups = new ArrayList<>();
@@ -62,18 +63,16 @@ public class ChunkOptimizer implements Runnable {
     }
 
     private void getOptimizedVoxel(Voxel toBeOptimized, List<Voxel> optimizedVoxel, List<Voxel> unoptimizedVoxels) {
-        List<Voxel> mergableNeighbours = toBeOptimized.getNeighbours().stream().filter(v -> unoptimizedVoxels.contains(v)).filter(Voxel::isVisible).filter(v -> toBeOptimized.getBlock().getBlockOptimizer().canMerge(v, toBeOptimized)).filter(v -> !optimizedVoxel.contains(v)).collect(Collectors.toList());
+        List<Voxel> mergableNeighbours = toBeOptimized.getNeighbours().stream().filter(unoptimizedVoxels::contains).filter(Voxel::isVisible).filter(v -> toBeOptimized.cloneBlock().getBlockOptimizer().canMerge(v, toBeOptimized)).filter(v -> !optimizedVoxel.contains(v)).collect(Collectors.toList());
         optimizedVoxel.addAll(mergableNeighbours);
         for (Voxel mergableNeighbour : mergableNeighbours) {
             getOptimizedVoxel(mergableNeighbour, optimizedVoxel, unoptimizedVoxels);
         }
     }
 
-    private Spatial buildOpitmizedVoxelMesh(List<Voxel> optimizedVoxel) {
+    private Spatial buildOptimizedVoxelMesh(List<Voxel> optimizedVoxel) {
 
-        Spatial optimize = optimizedVoxel.get(0).getBlock().getBlockOptimizer().optimize(optimizedVoxel);
-        optimize.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-        return optimize;
+        return optimizedVoxel.get(0).cloneBlock().getBlockOptimizer().optimize(optimizedVoxel);
 
     }
 }
