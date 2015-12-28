@@ -12,41 +12,29 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class CivCraftFlyCamState extends AbstractAppState {
 
-    private Application app;
-    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
-    @Autowired
-    private FlyingCamera flyCam;
+    private final FlyingCamera flyCam;
 
-    public CivCraftFlyCamState() {
+    @Autowired
+    public CivCraftFlyCamState(FlyingCamera camera) {
+        this.flyCam = camera;
     }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-
-        this.app = app;
-
-        if (app.getInputManager() != null) {
-
-            flyCam.init(app.getCamera());
-
-            flyCam.registerWithInput(app.getInputManager());
-        }
+        flyCam.init(app.getCamera());
+        flyCam.registerWithInput(app.getInputManager());
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-
         flyCam.setEnabled(enabled);
     }
 
     @Override
     public void cleanup() {
         super.cleanup();
-
-        if (app.getInputManager() != null) {
-            flyCam.unregisterInput();
-        }
+        flyCam.unregisterInput();
     }
 }

@@ -17,19 +17,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class DebugStatsState extends AbstractAppState implements ActionListener {
 
-    private static final String TOGGLE_DEBUG_INFO = "TOGGLE_DEBUG_INFO";
+    protected static final String TOGGLE_DEBUG_INFO = "TOGGLE_DEBUG_INFO";
     public static String LAST_MESSAGE; //NOSONAR
+    private final Node guiNode;
+    private final BitmapText fpsText;
+    private final BitmapText logMessageText;
     private Application app;
-    @Autowired
-    private Node guiNode;
-    @Autowired
-    private BitmapText fpsText;
-    @Autowired
-    private BitmapText logMessageText;
     private float secondCounter;
     private int frameCounter;
     private boolean show = false;
     private Node debugNode;
+
+    @Autowired
+    public DebugStatsState(Node guiNode, BitmapText fpsText, BitmapText logMessageText) {
+        this.guiNode = guiNode;
+        this.fpsText = fpsText;
+        this.logMessageText = logMessageText;
+    }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
