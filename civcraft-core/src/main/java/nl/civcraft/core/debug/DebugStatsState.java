@@ -13,6 +13,7 @@ import com.jme3.scene.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+//TODO: after intellij 16 release refactor jmonkey engine to allow renderer to be injected.
 @Service
 public class DebugStatsState extends AbstractAppState implements ActionListener {
 
