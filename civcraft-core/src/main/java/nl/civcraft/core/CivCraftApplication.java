@@ -28,6 +28,12 @@ public class CivCraftApplication extends Application {
         super();
     }
 
+    public void addAppStates(List<AppState> states) {
+        for (AppState a : states) {
+            stateManager.attach(a);
+        }
+    }
+
     @Override
     public void initialize() {
         super.initialize();
@@ -59,16 +65,5 @@ public class CivCraftApplication extends Application {
         stateManager.render(renderManager);
         renderManager.render(tpf, context.isRenderable());
         stateManager.postRender();
-    }
-
-    public void start(List<AppState> appStateList) {
-        addAppStates(appStateList);
-        super.start();
-    }
-
-    public void addAppStates(List<AppState> states) {
-        for (AppState a : states) {
-            stateManager.attach(a);
-        }
     }
 }
