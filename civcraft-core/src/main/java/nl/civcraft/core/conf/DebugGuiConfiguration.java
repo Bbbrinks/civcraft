@@ -1,11 +1,8 @@
 package nl.civcraft.core.conf;
 
-import com.jme3.app.state.AppState;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import nl.civcraft.core.debug.DebugStatsState;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,12 +27,6 @@ public class DebugGuiConfiguration {
         logMessageText.setCullHint(Spatial.CullHint.Never);
         return logMessageText;
     }
-
-    @Bean
-    public AppState debugStatsState(Node guiNode, BitmapText fpsText, BitmapText logMessageText) {
-        return new DebugStatsState(guiNode, fpsText, logMessageText);
-    }
-
 
 
 }

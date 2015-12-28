@@ -5,7 +5,6 @@ import com.jme3.app.state.AppState;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.system.JmeContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -64,17 +63,12 @@ public class CivCraftApplication extends Application {
 
     public void start(List<AppState> appStateList) {
         addAppStates(appStateList);
-        context.create(false);
+        super.start();
     }
 
     public void addAppStates(List<AppState> states) {
         for (AppState a : states) {
             stateManager.attach(a);
         }
-    }
-
-    public void setContext(JmeContext context) {
-        this.context = context;
-        context.setSystemListener(this);
     }
 }
