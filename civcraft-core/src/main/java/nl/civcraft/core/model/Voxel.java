@@ -19,6 +19,9 @@ public class Voxel {
     private final Block block;
     private final List<Voxel> neighbours;
     private Chunk chunk;
+    private int localX;
+    private int localY;
+    private int localZ;
 
     public Voxel(int x, int y, int z, String type, Block block) {
 
@@ -61,9 +64,6 @@ public class Voxel {
     }
 
     public boolean isVisible() {
-        if (y == 0) {
-            return neighbours.size() != 5;
-        }
         return neighbours.size() != 6;
     }
 
@@ -101,6 +101,30 @@ public class Voxel {
 
     @Override
     public String toString() {
-        return type + "@" + x + "x" + y + "x" + z;
+        return type + "@" + x + "x" + y + "x" + z + " local " + localX + "x" + localY + "x" + localZ;
+    }
+
+    public int getLocalX() {
+        return localX;
+    }
+
+    public void setLocalX(int localX) {
+        this.localX = localX;
+    }
+
+    public int getLocalY() {
+        return localY;
+    }
+
+    public void setLocalY(int localY) {
+        this.localY = localY;
+    }
+
+    public int getLocalZ() {
+        return localZ;
+    }
+
+    public void setLocalZ(int localZ) {
+        this.localZ = localZ;
     }
 }

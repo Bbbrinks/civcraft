@@ -24,40 +24,21 @@ public class WorldEdgeVoxelFilter implements RenderedVoxelFilter {
 
     @Override
     public List<Voxel> filter(List<Voxel> unoptimizedVoxels) {
-        List<Chunk> worldEdgeChunks = worldManager.getWorld().getChunks().stream().filter(c -> c.getNeighbours().size() != 4).collect(Collectors.toList());
+        List<Chunk> worldEdgeChunks = worldManager.getWorld().getChunks().stream().filter(c -> c.getNeighbours().size() != 6).collect(Collectors.toList());
         for (Chunk chunk : worldEdgeChunks) {
-            if (chunk.getNeighbours().size() == 3) {
-                for (Face face : Face.values()) {
-                    basicEdgeFiltering(unoptimizedVoxels, chunk, face);
-                }
-            }
-            if (chunk.getNeighbours().size() == 2) {
-                for (Face face : Face.values()) {
-                    Chunk neighbour = chunk.getNeighbour(face);
-                    basicEdgeFiltering(unoptimizedVoxels, chunk, face);
-                    if (neighbour == null) {
-                        Stream<Voxel> stream = chunk.getFaceVoxels(face).stream();
-                        stream.filter(voxel ->
-                                // Edge y front left
-                                ((voxel.findLocalChunkTranslation().z == 0) && (voxel.findLocalChunkTranslation().x == 0) && face.equals(Face.FRONT) && voxel.getNeighbours().size() == 4) ||
-                                        // Edge y back left
-                                        ((voxel.findLocalChunkTranslation().z == 0) && (voxel.findLocalChunkTranslation().x == World.CHUNK_SIZE - 1) && face.equals(Face.FRONT) && voxel.getNeighbours().size() == 4) ||
-                                        // Edge y front right
-                                        ((voxel.findLocalChunkTranslation().z == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().x == 0) && face.equals(Face.BACK) && voxel.getNeighbours().size() == 4) ||
-                                        // Edge y back right
-                                        ((voxel.findLocalChunkTranslation().z == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().x == World.CHUNK_SIZE - 1) && face.equals(Face.BACK) && voxel.getNeighbours().size() == 4)
-
-                        ).forEach(unoptimizedVoxels::remove);
-                    }
+            for (Face face : Face.values()) {
+                Chunk neighbour = chunk.getNeighbour(face);
+                if (neighbour == null) {
+                    faceFiltering(unoptimizedVoxels, chunk, face);
+                    edgeFiltering(unoptimizedVoxels, chunk, face);
                 }
             }
         }
         return unoptimizedVoxels;
     }
 
-    private void basicEdgeFiltering(List<Voxel> unoptimizedVoxels, Chunk chunk, Face face) {
-        Chunk neighbour = chunk.getNeighbour(face);
-        if (neighbour == null) {
+    private void faceFiltering(List<Voxel> unoptimizedVoxels, Chunk chunk, Face face) {
+        if (!face.equals(Face.TOP)) {
             Stream<Voxel> stream = chunk.getFaceVoxels(face).stream();
             stream.filter(voxel -> voxel.getNeighbours().size() == 5 ||
                     // Face x y
@@ -65,14 +46,50 @@ public class WorldEdgeVoxelFilter implements RenderedVoxelFilter {
                     // Face y z
                     ((voxel.findLocalChunkTranslation().y == 0 || voxel.findLocalChunkTranslation().y == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().z == 0 || voxel.findLocalChunkTranslation().z == World.CHUNK_SIZE - 1) && voxel.getNeighbours().size() == 5) ||
                     // Face x z
-                    ((voxel.findLocalChunkTranslation().z == 0 || voxel.findLocalChunkTranslation().z == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().x == 0 || voxel.findLocalChunkTranslation().x == World.CHUNK_SIZE - 1) && voxel.getNeighbours().size() == 5) ||
-                    // Edge x
-                    ((voxel.findLocalChunkTranslation().x == 0 || voxel.findLocalChunkTranslation().x == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().y == 0) && voxel.getNeighbours().size() == 4) ||
-                    // Edge z
-                    ((voxel.findLocalChunkTranslation().z == 0 || voxel.findLocalChunkTranslation().z == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().y == 0) && voxel.getNeighbours().size() == 4) ||
-                    //Corners
-                    ((voxel.findLocalChunkTranslation().x == 0 || voxel.findLocalChunkTranslation().x == World.CHUNK_SIZE - 1) && ((voxel.findLocalChunkTranslation().z == 0 || voxel.findLocalChunkTranslation().z == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().y == 0 || voxel.findLocalChunkTranslation().y == World.CHUNK_SIZE - 1) && voxel.getNeighbours().size() == 3))
+                    ((voxel.findLocalChunkTranslation().z == 0 || voxel.findLocalChunkTranslation().z == World.CHUNK_SIZE - 1) && (voxel.findLocalChunkTranslation().x == 0 || voxel.findLocalChunkTranslation().x == World.CHUNK_SIZE - 1) && voxel.getNeighbours().size() == 5)
             ).forEach(unoptimizedVoxels::remove);
+        }
+    }
+
+    private void edgeFiltering(List<Voxel> unoptimizedVoxels, Chunk chunk, Face face) {
+        if (Face.BOTTOM.equals(face)) {
+            Chunk leftNeighbour = chunk.getNeighbour(Face.LEFT);
+            Chunk rightNeighbour = chunk.getNeighbour(Face.RIGHT);
+            if (leftNeighbour == null || rightNeighbour == null) {
+                chunk.getFaceVoxels(face).stream().filter(voxel -> voxel.getNeighbours().size() == 4 &&
+                        (voxel.getY() == chunk.getY() &&
+                                ((voxel.getX() == chunk.getX() && leftNeighbour == null) || (voxel.getX() == chunk.getX() + World.CHUNK_SIZE - 1 && rightNeighbour == null)))
+                ).forEach(unoptimizedVoxels::remove);
+            }
+            Chunk frontNeighbour = chunk.getNeighbour(Face.FRONT);
+            Chunk backNeighbour = chunk.getNeighbour(Face.BACK);
+            if (frontNeighbour == null || backNeighbour == null) {
+                chunk.getFaceVoxels(face).stream().filter(voxel -> voxel.getNeighbours().size() == 4 &&
+                        (voxel.getY() == chunk.getY() &&
+                                ((voxel.getZ() == chunk.getZ() && frontNeighbour == null) || (voxel.getZ() == chunk.getZ() + World.CHUNK_SIZE - 1 && backNeighbour == null)))
+                ).forEach(unoptimizedVoxels::remove);
+            }
+        }
+        if (Face.FRONT.equals(face)) {
+            Chunk leftNeighbour = chunk.getNeighbour(Face.LEFT);
+            Chunk rightNeighbour = chunk.getNeighbour(Face.RIGHT);
+            if (leftNeighbour == null || rightNeighbour == null) {
+                chunk.getFaceVoxels(face).stream().filter(voxel -> voxel.getNeighbours().size() == 4 &&
+                        (voxel.getZ() == chunk.getZ() &&
+                                ((voxel.getX() == chunk.getX() && leftNeighbour == null) || (voxel.getX() == chunk.getX() + World.CHUNK_SIZE - 1 && rightNeighbour == null)))
+                ).forEach(unoptimizedVoxels::remove);
+            }
+        }
+
+        if (Face.BACK.equals(face)) {
+            Chunk leftNeighbour = chunk.getNeighbour(Face.LEFT);
+            Chunk rightNeighbour = chunk.getNeighbour(Face.RIGHT);
+            if (leftNeighbour == null || rightNeighbour == null) {
+                chunk.getFaceVoxels(face).stream().filter(voxel -> voxel.getNeighbours().size() == 4 &&
+                        (voxel.getZ() == chunk.getZ() + World.CHUNK_SIZE - 1 &&
+                                ((voxel.getX() == chunk.getX() && leftNeighbour == null) || (voxel.getX() == chunk.getX() + World.CHUNK_SIZE - 1 && rightNeighbour == null)))
+                ).forEach(unoptimizedVoxels::remove);
+            }
         }
     }
 

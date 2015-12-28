@@ -20,12 +20,12 @@ public class World {
         this.chunks.clear();
     }
 
-    public void addVoxel(Voxel voxel, ChunkRendererControl chunkRendererControl){
+    public void addVoxel(Voxel voxel, ChunkRendererControl chunkRendererControl) {
         int x = voxel.getX();
         int y = voxel.getY();
         int z = voxel.getZ();
         Chunk chunkAt = getChunkAt(x, y, z);
-        if(chunkAt == null){
+        if (chunkAt == null) {
             chunkAt = addChunkAt(x, y, z, chunkRendererControl);
         }
 
@@ -34,22 +34,24 @@ public class World {
         chunkAt.addVoxel(voxel);
     }
 
-    private Chunk getChunkAt(int x, @SuppressWarnings("UnusedParameters") int y, int z) {
-        List<Chunk> found = chunks.stream().filter(c -> c.getChunkZ() == z / CHUNK_SIZE && c.getChunkX() == x / CHUNK_SIZE).limit(1).collect(Collectors.toList());
+    private Chunk getChunkAt(int x, int y, int z) {
+        List<Chunk> found = chunks.stream().filter(c -> c.containsCoors(x, y, z)).limit(1).collect(Collectors.toList());
         if (!found.isEmpty()) {
             return found.get(0);
         }
         return null;
     }
 
-    private Chunk addChunkAt(int x, @SuppressWarnings("UnusedParameters") int y, int z, ChunkRendererControl chunkRendererControl) {
-        Chunk chunk = new Chunk(x / CHUNK_SIZE, z / CHUNK_SIZE, chunkRendererControl);
+    private Chunk addChunkAt(int x, int y, int z, ChunkRendererControl chunkRendererControl) {
+        Chunk chunk = new Chunk(x / CHUNK_SIZE, y / CHUNK_SIZE, z / CHUNK_SIZE, chunkRendererControl);
         chunks.add(chunk);
         List<Chunk> neighbours = new ArrayList<>();
-        addIfNotNull(neighbours, getChunkAt(x - CHUNK_SIZE, 1, z));
-        addIfNotNull(neighbours, getChunkAt(x + CHUNK_SIZE, 1, z));
-        addIfNotNull(neighbours, getChunkAt(x, 1, z + CHUNK_SIZE));
-        addIfNotNull(neighbours, getChunkAt(x, 1, z - CHUNK_SIZE));
+        addIfNotNull(neighbours, getChunkAt(x - CHUNK_SIZE, y, z));
+        addIfNotNull(neighbours, getChunkAt(x + CHUNK_SIZE, y, z));
+        addIfNotNull(neighbours, getChunkAt(x, y, z + CHUNK_SIZE));
+        addIfNotNull(neighbours, getChunkAt(x, y, z - CHUNK_SIZE));
+        addIfNotNull(neighbours, getChunkAt(x, y + CHUNK_SIZE, z));
+        addIfNotNull(neighbours, getChunkAt(x, y - CHUNK_SIZE, z));
         chunk.addNeighbours(neighbours);
         return chunk;
     }
