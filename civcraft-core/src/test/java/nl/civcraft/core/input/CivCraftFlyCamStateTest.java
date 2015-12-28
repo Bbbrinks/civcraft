@@ -39,8 +39,8 @@ public class CivCraftFlyCamStateTest {
     @Test
     public void testInitialize_flyCamIsInitialized() throws Exception {
         underTest.initialize(stateManager, app);
-        verify(camera).init(any(Camera.class));
-        verify(camera).registerWithInput(any(InputManager.class));
+        verify(camera).init(any(Camera.class), any(InputManager.class));
+        verify(camera).registerWithInput();
     }
 
     @Test

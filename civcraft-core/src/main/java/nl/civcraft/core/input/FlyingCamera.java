@@ -54,7 +54,7 @@ import com.jme3.renderer.Camera;
  */
 public class FlyingCamera implements AnalogListener, ActionListener {
 
-    private static final String[] mappings = new String[]{
+    protected static final String[] MAPPINGS = new String[]{
             "FLYCAM_Left",
             "FLYCAM_Right",
             "FLYCAM_Up",
@@ -88,8 +88,7 @@ public class FlyingCamera implements AnalogListener, ActionListener {
      *
      * @param inputManager the inputManager
      */
-    public void registerWithInput(InputManager inputManager) {
-        this.inputManager = inputManager;
+    public void registerWithInput() {
 
         // both mouse and button - rotation of cam
         inputManager.addMapping("FLYCAM_Left", new MouseAxisTrigger(MouseInput.AXIS_X, true),
@@ -117,46 +116,29 @@ public class FlyingCamera implements AnalogListener, ActionListener {
         inputManager.addMapping("FLYCAM_Rise", new KeyTrigger(KeyInput.KEY_Q));
         inputManager.addMapping("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Z));
 
-        inputManager.addListener(this, mappings);
-        inputManager.setCursorVisible(!isEnabled());
-    }
-
-    /**
-     * @return If enabled
-     * @see FlyingCamera#setEnabled(boolean)
-     */
-    private boolean isEnabled() {
-        return enabled;
+        inputManager.addListener(this, MAPPINGS);
     }
 
     /**
      * @param enable If false, the camera will ignore input.
      */
     public void setEnabled(boolean enable) {
-        if (enabled && !enable) {
-            if (inputManager != null && canRotate) {
-                inputManager.setCursorVisible(true);
-            }
+        if (!enable) {
+            inputManager.setCursorVisible(true);
         }
-        enabled = enable;
     }
 
     /**
      * Registers the FlyingCamera to receive input events from the provided
      * Dispatcher.
      */
+
     public void unregisterInput() {
-
-        if (inputManager == null) {
-            return;
-        }
-
-        for (String s : mappings) {
+        for (String s : MAPPINGS) {
             if (inputManager.hasMapping(s)) {
                 inputManager.deleteMapping(s);
             }
         }
-
         inputManager.removeListener(this);
 
     }
@@ -299,8 +281,10 @@ public class FlyingCamera implements AnalogListener, ActionListener {
         }
     }
 
-    public void init(Camera camera) {
+    public void init(Camera camera, InputManager inputManager) {
         this.cam = camera;
         initialUpVec = cam.getUp().clone();
+        this.inputManager = inputManager;
     }
+
 }

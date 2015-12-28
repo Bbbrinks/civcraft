@@ -22,8 +22,8 @@ public class CivCraftFlyCamState extends AbstractAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-        flyCam.init(app.getCamera());
-        flyCam.registerWithInput(app.getInputManager());
+        flyCam.init(app.getCamera(), app.getInputManager());
+        flyCam.registerWithInput();
     }
 
     @Override
