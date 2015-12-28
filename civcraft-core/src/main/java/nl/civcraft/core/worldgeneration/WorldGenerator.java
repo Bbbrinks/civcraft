@@ -46,8 +46,8 @@ public class WorldGenerator implements Runnable {
         LOGGER.trace(DebugStatsState.LAST_MESSAGE);
         worldManager.getWorld().clearChunks();
         int chunkCount = 0;
-        for (int x = 0; x < 6; x++) {
-            for (int z = 0; z < 6; z++) {
+        for (int x = 0; x < 3; x++) {
+            for (int z = 0; z < 3; z++) {
                 generateChunk(x, z, renderedVoxelFilters);
                 DebugStatsState.LAST_MESSAGE = "Generating chunk: " + chunkCount + "/36";
                 LOGGER.trace(DebugStatsState.LAST_MESSAGE);
