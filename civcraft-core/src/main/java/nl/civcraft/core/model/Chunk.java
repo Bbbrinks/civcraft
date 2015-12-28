@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  */
 public class Chunk extends Node {
 
+    public static final int WORLD_HEIGHT = 100;
     private static final Logger LOGGER = LogManager.getLogger();
     private final List<Chunk> neighbours;
     private final int chunkX;
@@ -30,7 +31,7 @@ public class Chunk extends Node {
 
     public Chunk(int chunkX, int chunkZ, ChunkRendererControl lodControl) {
         addControl(lodControl);
-        voxels = new Voxel[World.CHUNK_SIZE * 100 * World.CHUNK_SIZE];
+        voxels = new Voxel[World.CHUNK_SIZE * WORLD_HEIGHT * World.CHUNK_SIZE];
         this.chunkX = chunkX;
         this.chunkZ = chunkZ;
         this.name = chunkX + "x" + chunkZ;
@@ -51,7 +52,9 @@ public class Chunk extends Node {
     }
 
     private int getArrayIndex(int x, int y, int z) {
+
         int arrayIndex = x - (chunkX * World.CHUNK_SIZE) + (y * 100) + (z * World.CHUNK_SIZE) - (chunkZ * World.CHUNK_SIZE);
+        LOGGER.warn("Array index for voxel " + x + "x" + y + "x" + z + " = " + arrayIndex + " in Chunk " + toString());
         if (arrayIndex < 0 || arrayIndex >= voxels.length) {
             return -1;
         }

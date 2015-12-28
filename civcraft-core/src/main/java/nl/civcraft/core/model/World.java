@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class World {
 
-    public static final int CHUNK_SIZE = 10;
+    public static final int CHUNK_SIZE = 20;
     private final List<Chunk> chunks;
 
     public World() {

@@ -63,7 +63,7 @@ class ChunkOptimizer implements Runnable {
     }
 
     private void getOptimizedVoxel(Voxel toBeOptimized, List<Voxel> optimizedVoxel, List<Voxel> unoptimizedVoxels) {
-        List<Voxel> mergableNeighbours = toBeOptimized.getNeighbours().stream().filter(unoptimizedVoxels::contains).filter(Voxel::isVisible).filter(v -> toBeOptimized.getBlock().getBlockOptimizer().canMerge(v, toBeOptimized)).filter(v -> !optimizedVoxel.contains(v)).collect(Collectors.toList());
+        List<Voxel> mergableNeighbours = toBeOptimized.getNeighbours().stream().filter(unoptimizedVoxels::contains).filter(Voxel::isVisible).filter(v -> toBeOptimized.cloneBlock().getBlockOptimizer().canMerge(v, toBeOptimized)).filter(v -> !optimizedVoxel.contains(v)).collect(Collectors.toList());
         optimizedVoxel.addAll(mergableNeighbours);
         for (Voxel mergableNeighbour : mergableNeighbours) {
             getOptimizedVoxel(mergableNeighbour, optimizedVoxel, unoptimizedVoxels);
@@ -72,7 +72,7 @@ class ChunkOptimizer implements Runnable {
 
     private Spatial buildOptimizedVoxelMesh(List<Voxel> optimizedVoxel) {
 
-        return optimizedVoxel.get(0).getBlock().getBlockOptimizer().optimize(optimizedVoxel);
+        return optimizedVoxel.get(0).cloneBlock().getBlockOptimizer().optimize(optimizedVoxel);
 
     }
 }

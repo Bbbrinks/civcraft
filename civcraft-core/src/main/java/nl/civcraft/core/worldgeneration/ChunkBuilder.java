@@ -17,16 +17,14 @@ import java.util.List;
  */
 public class ChunkBuilder {
 
-    private static final int CHUNK_SIZE = 10;
-
     @Autowired
     public BlockManager blockManager;
 
     public void buildChunk(int chunkX, int chunkZ, HeightMap heightMap, World world, List<RenderedVoxelFilter> renderedVoxelFilters) {
-        int chunkMinX = chunkX * CHUNK_SIZE;
-        int chunkMinZ = chunkZ * CHUNK_SIZE;
-        for (int x = chunkMinX; x < chunkMinX + CHUNK_SIZE; x++) {
-            for (int z = chunkMinZ; z < chunkMinZ + CHUNK_SIZE; z++) {
+        int chunkMinX = chunkX * World.CHUNK_SIZE;
+        int chunkMinZ = chunkZ * World.CHUNK_SIZE;
+        for (int x = chunkMinX; x < chunkMinX + World.CHUNK_SIZE; x++) {
+            for (int z = chunkMinZ; z < chunkMinZ + World.CHUNK_SIZE; z++) {
                 int voxelY = (int) heightMap.getHeight(x, z);
                 for (int y = 0; y <= voxelY; y++) {
                     String type;

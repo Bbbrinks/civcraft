@@ -48,8 +48,8 @@ public class Voxel {
         return z;
     }
 
-    public Block getBlock() {
-        return block;
+    public Block cloneBlock() {
+        return (Block) block.clone();
     }
 
     public void breakBlock() {
