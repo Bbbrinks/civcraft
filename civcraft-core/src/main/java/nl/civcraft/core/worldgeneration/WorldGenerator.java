@@ -1,9 +1,13 @@
 package nl.civcraft.core.worldgeneration;
 
 import nl.civcraft.core.debug.DebugStatsState;
+import nl.civcraft.core.managers.NpcManager;
 import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.World;
+import nl.civcraft.core.npc.Civvy;
+import nl.civcraft.core.npc.Npc;
 import nl.civcraft.core.rendering.RenderedVoxelFilter;
+import nl.civcraft.core.utils.MathUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +34,9 @@ public class WorldGenerator implements Runnable {
     @Autowired
     private WorldManager worldManager;
 
+    @Autowired
+    private NpcManager civvyManager;
+
     public WorldGenerator(int heightMapWidth, int heightMapHeight, List<RenderedVoxelFilter> renderedVoxelFilters) {
         this.heightMapWidth = heightMapWidth;
         this.heightMapHeight = heightMapHeight;
@@ -53,6 +60,14 @@ public class WorldGenerator implements Runnable {
                 LOGGER.trace(DebugStatsState.LAST_MESSAGE);
                 chunkCount++;
             }
+        }
+        for (int i = 0; i < 3; i++) {
+            float civX = MathUtil.rnd(0f, 120f);
+            float civZ = MathUtil.rnd(0f, 120f);
+            float civY = heightMap.getHeight((int) civX, (int) civZ) + 1;
+            Npc npc = civvyManager.getNpc("civvy");
+            Civvy civvy = new Civvy(civX, civY, civZ, "civvy", npc);
+            worldManager.getWorld().addCivvy(civvy);
         }
         setGenerationDone(true);
     }

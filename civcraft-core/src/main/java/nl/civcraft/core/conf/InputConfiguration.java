@@ -2,6 +2,7 @@ package nl.civcraft.core.conf;
 
 import com.jme3.app.DebugKeysAppState;
 import com.jme3.app.state.AppState;
+import com.jme3.scene.Node;
 import nl.civcraft.core.input.CivCraftFlyCamState;
 import nl.civcraft.core.input.FlyingCamera;
 import nl.civcraft.core.input.GlobalInput;
@@ -39,8 +40,8 @@ public class InputConfiguration {
     }
 
     @Bean
-    public WorldManager worldManager()
+    public WorldManager worldManager(Node rootNode)
     {
-        return new WorldManager();
+        return new WorldManager(rootNode);
     }
 }

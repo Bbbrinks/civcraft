@@ -1,6 +1,9 @@
 package nl.civcraft.core.model;
 
 
+import com.jme3.scene.Node;
+import nl.civcraft.core.npc.Civvy;
+import nl.civcraft.core.npc.Npc;
 import nl.civcraft.core.worldgeneration.ChunkRendererControl;
 
 import java.util.ArrayList;
@@ -11,9 +14,14 @@ public class World {
 
     public static final int CHUNK_SIZE = 40;
     private final List<Chunk> chunks;
+    private final Node civvyNode;
+    private final List<Civvy> civvies;
 
-    public World() {
+    public World(Node rootNode) {
+        civvyNode = new Node("civvies");
+        rootNode.attachChild(civvyNode);
         chunks = new ArrayList<>();
+        civvies = new ArrayList<>();
     }
 
     public void clearChunks() {
@@ -88,4 +96,11 @@ public class World {
         return chunks;
     }
 
+    public void addCivvy(Civvy civvy) {
+        civvies.add(civvy);
+        civvy.setWorld(this);
+        Npc npc = civvy.cloneNpc();
+        npc.setLocalTranslation(npc.getLocalTranslation().add(civvy.getX(), civvy.getY(), civvy.getZ()));
+        civvyNode.attachChild(npc);
+    }
 }
