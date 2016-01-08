@@ -1,8 +1,10 @@
 package nl.civcraft.core.worldgeneration;
 
 import nl.civcraft.core.debug.DebugStatsState;
+import nl.civcraft.core.events.CivvyCreated;
 import nl.civcraft.core.managers.NpcManager;
 import nl.civcraft.core.managers.WorldManager;
+import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.npc.Npc;
@@ -11,6 +13,7 @@ import nl.civcraft.core.utils.MathUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 
@@ -33,6 +36,8 @@ public class WorldGenerator implements Runnable {
     private boolean generationDone;
     @Autowired
     private WorldManager worldManager;
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     @Autowired
     private NpcManager civvyManager;
@@ -64,10 +69,14 @@ public class WorldGenerator implements Runnable {
         for (int i = 0; i < 3; i++) {
             float civX = MathUtil.rnd(0f, 120f);
             float civZ = MathUtil.rnd(0f, 120f);
-            float civY = heightMap.getHeight((int) civX, (int) civZ) + 1;
+            float civY = heightMap.getHeight((int) civX, (int) civZ);
+            Voxel voxelAt = worldManager.getWorld().getVoxelAt(civX, civY, civZ);
             Npc npc = civvyManager.getNpc("civvy");
-            Civvy civvy = new Civvy(civX, civY, civZ, "civvy", npc);
-            worldManager.getWorld().addCivvy(civvy);
+            Civvy civvy = new Civvy(civX, civY + 1, civZ, "civvy", npc);
+            civvy.setCurrentVoxel(voxelAt);
+            civvy.setWorld(worldManager.getWorld());
+            publisher.publishEvent(new CivvyCreated(civvy, this));
+
         }
         setGenerationDone(true);
     }

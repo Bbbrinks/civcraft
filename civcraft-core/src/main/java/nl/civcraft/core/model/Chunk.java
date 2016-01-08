@@ -2,7 +2,7 @@ package nl.civcraft.core.model;
 
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import nl.civcraft.core.worldgeneration.ChunkRendererControl;
+import nl.civcraft.core.rendering.ChunkRendererControl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

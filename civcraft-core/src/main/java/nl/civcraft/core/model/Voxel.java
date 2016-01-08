@@ -4,6 +4,7 @@ import com.jme3.math.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Bob on 25-11-2015.
@@ -126,5 +127,21 @@ public class Voxel {
 
     public void setLocalZ(int localZ) {
         this.localZ = localZ;
+    }
+
+    public List<Voxel> getEnterableNeighbours() {
+        return neighbours.stream().filter(v -> v.getNeighbour(Face.TOP) == null).collect(Collectors.toList());
+    }
+
+    public Voxel getNeighbour(Face face) {
+        List<Voxel> collect = neighbours.stream().filter(v -> v.getLocation().equals(face.getTranslation().add(getLocation()))).limit(1).collect(Collectors.toList());
+        if (!collect.isEmpty()) {
+            return collect.get(0);
+        }
+        return null;
+    }
+
+    public Vector3f getLocation() {
+        return new Vector3f(x, y, z);
     }
 }

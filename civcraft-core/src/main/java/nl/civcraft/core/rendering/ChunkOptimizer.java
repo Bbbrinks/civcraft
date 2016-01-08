@@ -1,10 +1,9 @@
-package nl.civcraft.core.worldgeneration;
+package nl.civcraft.core.rendering;
 
 import com.jme3.scene.Spatial;
 import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.rendering.RenderedVoxelFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

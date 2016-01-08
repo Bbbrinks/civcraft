@@ -1,10 +1,11 @@
 package nl.civcraft.core.model;
 
 
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.npc.Civvy;
-import nl.civcraft.core.npc.Npc;
-import nl.civcraft.core.worldgeneration.ChunkRendererControl;
+import nl.civcraft.core.rendering.ChunkRendererControl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +15,13 @@ public class World {
 
     public static final int CHUNK_SIZE = 40;
     private final List<Chunk> chunks;
-    private final Node civvyNode;
     private final List<Civvy> civvies;
+    private TaskManager taskManager;
 
-    public World(Node rootNode) {
-        civvyNode = new Node("civvies");
-        rootNode.attachChild(civvyNode);
+    public World(Node rootNode, TaskManager taskManager) {
         chunks = new ArrayList<>();
         civvies = new ArrayList<>();
+        this.taskManager = taskManager;
     }
 
     public void clearChunks() {
@@ -98,9 +98,13 @@ public class World {
 
     public void addCivvy(Civvy civvy) {
         civvies.add(civvy);
-        civvy.setWorld(this);
-        Npc npc = civvy.cloneNpc();
-        npc.setLocalTranslation(npc.getLocalTranslation().add(civvy.getX(), civvy.getY(), civvy.getZ()));
-        civvyNode.attachChild(npc);
+    }
+
+    public List<Civvy> getCivvies() {
+        return civvies;
+    }
+
+    public Voxel getVoxelAt(Vector3f target) {
+        return getVoxelAt(target.x, target.y, target.z);
     }
 }

@@ -4,6 +4,7 @@ import nl.civcraft.core.managers.BlockManager;
 import nl.civcraft.core.model.Block;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
+import nl.civcraft.core.rendering.ChunkRendererControl;
 import nl.civcraft.core.rendering.RenderedVoxelFilter;
 import nl.civcraft.core.utils.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;

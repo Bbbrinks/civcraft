@@ -1,11 +1,10 @@
-package nl.civcraft.core.worldgeneration;
+package nl.civcraft.core.rendering;
 
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import nl.civcraft.core.model.Chunk;
-import nl.civcraft.core.rendering.RenderedVoxelFilter;
 
 import java.util.List;
 
