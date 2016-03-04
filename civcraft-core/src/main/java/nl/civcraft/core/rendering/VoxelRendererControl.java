@@ -2,6 +2,7 @@ package nl.civcraft.core.rendering;
 
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
@@ -125,7 +126,10 @@ public class VoxelRendererControl extends AbstractControl {
 
     private Spatial buildOptimizedVoxelMesh(List<Voxel> optimizedVoxel) {
 
-        return optimizedVoxel.get(0).cloneBlock().getBlockOptimizer().optimize(optimizedVoxel);
+        Spatial optimize = optimizedVoxel.get(0).cloneBlock().getBlockOptimizer().optimize(optimizedVoxel);
+
+        optimize.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        return optimize;
 
     }
 }
