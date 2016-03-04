@@ -4,6 +4,7 @@ import com.jme3.math.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Bob on 25-11-2015.
@@ -22,7 +23,6 @@ public class Voxel {
     private int localX;
     private int localY;
     private int localZ;
-
     public Voxel(int x, int y, int z, String type, Block block) {
 
         this.x = x;
@@ -33,6 +33,14 @@ public class Voxel {
         this.block = block;
 
         neighbours = new ArrayList<>();
+    }
+
+    public Chunk getChunk() {
+        return chunk;
+    }
+
+    public void setChunk(Chunk chunk) {
+        this.chunk = chunk;
     }
 
     public String getType() {
@@ -57,10 +65,6 @@ public class Voxel {
 
     public void breakBlock() {
         chunk.removeVoxel(this);
-    }
-
-    public void setChunk(Chunk chunk) {
-        this.chunk = chunk;
     }
 
     public boolean isVisible() {
@@ -126,5 +130,33 @@ public class Voxel {
 
     public void setLocalZ(int localZ) {
         this.localZ = localZ;
+    }
+
+    public List<Voxel> getEnterableNeighbours() {
+        return neighbours.stream().filter(v -> v.getNeighbour(Face.TOP) == null).collect(Collectors.toList());
+    }
+
+    public Voxel getNeighbour(Face face) {
+        List<Voxel> collect = neighbours.stream().filter(v -> v.getLocation().equals(face.getTranslation().add(getLocation()))).limit(1).collect(Collectors.toList());
+        if (!collect.isEmpty()) {
+            return collect.get(0);
+        }
+        return null;
+    }
+
+    public Vector3f getLocation() {
+        return new Vector3f(x, y, z);
+    }
+
+    public String getName() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("voxel[");
+        stringBuilder.append(x);
+        stringBuilder.append(",");
+        stringBuilder.append(y);
+        stringBuilder.append(",");
+        stringBuilder.append(z);
+        stringBuilder.append("]");
+        return stringBuilder.toString();
     }
 }

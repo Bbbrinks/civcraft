@@ -1,10 +1,8 @@
 package nl.civcraft.core.model;
 
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import nl.civcraft.core.worldgeneration.ChunkRendererControl;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import nl.civcraft.core.model.events.ChunkModifiedEvent;
+import nl.civcraft.core.model.events.VoxelRemovedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,9 +14,9 @@ import java.util.stream.Collectors;
  * <p>
  * This is probably not worth documenting
  */
-public class Chunk extends Node {
+public class Chunk {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+
     private final List<Chunk> neighbours;
     private final int chunkX;
     private final int chunkZ;
@@ -27,13 +25,12 @@ public class Chunk extends Node {
     private final int x;
     private final int y;
     private final int z;
-    private boolean optimized;
-    private List<Spatial> optimizedVoxels;
-    private boolean optimizing;
-    private boolean optimizingDone;
+    private final String name;
+    private final ApplicationEventPublisher publisher;
 
-    public Chunk(int chunkX, int chunkY, int chunkZ, ChunkRendererControl lodControl) {
-        addControl(lodControl);
+
+    public Chunk(int chunkX, int chunkY, int chunkZ, ApplicationEventPublisher publisher) {
+        this.publisher = publisher;
         voxels = new Voxel[World.CHUNK_SIZE * World.CHUNK_SIZE * World.CHUNK_SIZE];
         this.chunkX = chunkX;
         this.chunkZ = chunkZ;
@@ -45,13 +42,6 @@ public class Chunk extends Node {
         neighbours = new ArrayList<>();
     }
 
-    public boolean isOptimized() {
-        return optimized;
-    }
-
-    public void setOptimized(boolean optimized) {
-        this.optimized = optimized;
-    }
 
     public void addVoxel(Voxel voxel) {
         voxel.setLocalX(voxel.getX() - chunkX * World.CHUNK_SIZE);
@@ -59,6 +49,7 @@ public class Chunk extends Node {
         voxel.setLocalZ(voxel.getZ() - chunkZ * World.CHUNK_SIZE);
         voxels[getArrayIndex(voxel)] = voxel;
         voxel.setChunk(this);
+        publisher.publishEvent(new ChunkModifiedEvent(this, this));
     }
 
     private int getArrayIndex(Voxel voxel) {
@@ -85,39 +76,13 @@ public class Chunk extends Node {
         return voxels;
     }
 
-    public void setOptimizedVoxels(List<Spatial> optimizedVoxels) {
-        this.optimizedVoxels = optimizedVoxels;
-    }
-
-    public void updateVoxelCache() {
-        LOGGER.trace("Start updating voxel cache");
-        detachAllChildren();
-        optimizedVoxels.forEach(this::attachChild);
-        setOptimized(true);
-        LOGGER.trace("End updating voxel cache");
-    }
-
-    public boolean isOptimizing() {
-        return optimizing;
-    }
-
-    public void setOptimizing(boolean optimizing) {
-        this.optimizing = optimizing;
-    }
-
-    public boolean isOptimizingDone() {
-        return optimizingDone;
-    }
-
-    public void setOptimizingDone(boolean optimizingDone) {
-        this.optimizingDone = optimizingDone;
-    }
 
     public void removeVoxel(Voxel voxel) {
         voxel.remove();
         int arrayIndex = getArrayIndex(voxel.getLocalX(), voxel.getLocalY(), voxel.getLocalZ());
         voxels[arrayIndex] = null;
-        this.optimized = false;
+        publisher.publishEvent(new ChunkModifiedEvent(this, this));
+        publisher.publishEvent(new VoxelRemovedEvent(voxel, this));
     }
 
     public void addNeighbours(List<Chunk> neighbours) {
@@ -283,5 +248,9 @@ public class Chunk extends Node {
 
     public int getY() {
         return y;
+    }
+
+    public String getName() {
+        return name;
     }
 }

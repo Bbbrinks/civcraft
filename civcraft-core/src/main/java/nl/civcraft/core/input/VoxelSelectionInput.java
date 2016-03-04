@@ -17,6 +17,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import nl.civcraft.core.managers.WorldManager;
+import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.Voxel;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -75,6 +76,7 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
             if (currentVoxel != null) {
                 if(name.equals(SELECT_VOXEL)) {
                     currentVoxel.isVisible();
+                    currentVoxel.getNeighbour(Face.TOP);
                     selectionBoxes.detachAllChildren();
                     Spatial clone = selectionSpatial.clone();
                     clone.setLocalTranslation(clone.getLocalTranslation().x + currentVoxel.getX(), clone.getLocalTranslation().y + currentVoxel.getY(), clone.getLocalTranslation().z + currentVoxel.getZ());

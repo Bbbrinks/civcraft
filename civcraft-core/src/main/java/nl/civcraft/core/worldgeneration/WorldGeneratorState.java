@@ -7,9 +7,11 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.scene.Node;
+import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Chunk;
+import nl.civcraft.core.model.events.ChunkModifiedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +26,10 @@ public class WorldGeneratorState extends AbstractAppState implements ActionListe
     private WorldGenerator worldGenerator;
 
     @Autowired
-    private Node rootNode;
+    private WorldManager worldManager;
+
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -47,19 +52,16 @@ public class WorldGeneratorState extends AbstractAppState implements ActionListe
             generateInitialChunk();
         }
         if (name.equals(OPTIMIZE_CHUNKS)) {
-            List<Chunk> chunks = rootNode.descendantMatches(Chunk.class);
+            List<Chunk> chunks = worldManager.getWorld().getChunks();
             for (Chunk chunk : chunks) {
-                chunk.setOptimized(false);
+                applicationEventPublisher.publishEvent(new ChunkModifiedEvent(chunk, this));
             }
         }
     }
 
     private void generateInitialChunk() {
-        if(rootNode.getControl(WorldGeneratorControl.class) == null) {
-            rootNode.addControl(new WorldGeneratorControl(worldGenerator, rootNode));
-            Thread thread = new Thread(worldGenerator, "World generation thread");
-            thread.start();
-        }
+        Thread thread = new Thread(worldGenerator, "World generation thread");
+        thread.start();
     }
 
 

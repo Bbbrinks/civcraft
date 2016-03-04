@@ -4,10 +4,10 @@ import nl.civcraft.core.managers.BlockManager;
 import nl.civcraft.core.model.Block;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
-import nl.civcraft.core.rendering.RenderedVoxelFilter;
 import nl.civcraft.core.utils.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,9 +21,10 @@ public class ChunkBuilder {
     @Autowired
     public BlockManager blockManager;
 
-    public void buildChunk(int chunkX, int chunkZ, HeightMap heightMap, World world, List<RenderedVoxelFilter> renderedVoxelFilters) {
+    public void buildChunk(int chunkX, int chunkZ, HeightMap heightMap, World world) {
         int chunkMinX = chunkX * World.CHUNK_SIZE;
         int chunkMinZ = chunkZ * World.CHUNK_SIZE;
+        List<Voxel> voxels = new ArrayList<>();
         for (int x = chunkMinX; x < chunkMinX + World.CHUNK_SIZE; x++) {
             for (int z = chunkMinZ; z < chunkMinZ + World.CHUNK_SIZE; z++) {
                 int voxelY = (int) heightMap.getHeight(x, z);
@@ -35,16 +36,18 @@ public class ChunkBuilder {
                         type = "cobble";
                     } else {
                         if (voxelY == y) {
-                            type = "grass";
+                            type = "dirt";
                         } else {
                             type = "dirt";
                         }
                     }
                     Block block = blockManager.findBlock(type);
                     Voxel voxel = new Voxel(x, y, z, type, block);
-                    world.addVoxel(voxel, new ChunkRendererControl(renderedVoxelFilters));
+                    voxels.add(voxel);
                 }
             }
         }
+
+        world.addVoxels(voxels);
     }
 }

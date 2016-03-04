@@ -34,12 +34,7 @@ public class BlockConfiguration {
     }
 
     @Bean
-    public Block dirt(@Qualifier("singleGeometryBoxBlockOptimizer") BlockOptimizer blockOptimizer) {
-        Texture dirtTexture = assetManager.loadTexture(
-                "textures/bdc_dirt03.png");
-        Material dirtMaterial = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        dirtMaterial.setTexture("ColorMap", dirtTexture);
+    public Block dirt(@Qualifier("singleGeometryBoxBlockOptimizer") BlockOptimizer blockOptimizer, Material dirtMaterial) {
         return createSingleGeometryBoxBlock(dirtMaterial, "dirt", blockOptimizer);
     }
 
@@ -54,14 +49,11 @@ public class BlockConfiguration {
     }
 
     @Bean
-    public Block cobbleStone(@Qualifier("singleGeometryBoxBlockOptimizer") BlockOptimizer blockOptimizer) {
-        Texture cobbleTexture = assetManager.loadTexture(
-                "textures/bdc_cobblestone01.png");
-        Material cobbleMaterial = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        cobbleMaterial.setTexture("ColorMap", cobbleTexture);
+    public Block cobbleStone(@Qualifier("singleGeometryBoxBlockOptimizer") BlockOptimizer blockOptimizer, Material cobbleMaterial) {
+
         return createSingleGeometryBoxBlock(cobbleMaterial, "cobble", blockOptimizer);
     }
+
 
     @Bean
     public Block grass(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer) {

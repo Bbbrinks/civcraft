@@ -7,6 +7,7 @@ import nl.civcraft.core.input.FlyingCamera;
 import nl.civcraft.core.input.GlobalInput;
 import nl.civcraft.core.input.VoxelSelectionInput;
 import nl.civcraft.core.managers.WorldManager;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,8 +40,8 @@ public class InputConfiguration {
     }
 
     @Bean
-    public WorldManager worldManager()
+    public WorldManager worldManager(ApplicationEventPublisher publisher)
     {
-        return new WorldManager();
+        return new WorldManager(publisher);
     }
 }
