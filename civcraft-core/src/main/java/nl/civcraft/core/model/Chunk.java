@@ -1,6 +1,7 @@
 package nl.civcraft.core.model;
 
 import nl.civcraft.core.model.events.ChunkModifiedEvent;
+import nl.civcraft.core.model.events.VoxelRemovedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
@@ -81,6 +82,7 @@ public class Chunk {
         int arrayIndex = getArrayIndex(voxel.getLocalX(), voxel.getLocalY(), voxel.getLocalZ());
         voxels[arrayIndex] = null;
         publisher.publishEvent(new ChunkModifiedEvent(this, this));
+        publisher.publishEvent(new VoxelRemovedEvent(voxel, this));
     }
 
     public void addNeighbours(List<Chunk> neighbours) {

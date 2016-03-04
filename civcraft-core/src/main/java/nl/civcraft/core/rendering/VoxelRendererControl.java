@@ -9,6 +9,8 @@ import javafx.util.Pair;
 import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.model.World;
+import nl.civcraft.core.model.events.VoxelRemovedEvent;
 import nl.civcraft.core.model.events.VoxelsAddedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +19,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -29,18 +32,24 @@ public class VoxelRendererControl extends AbstractControl {
     private final List<RenderedVoxelFilter> voxelFilters;
     private final Node chunks;
     private Queue<Pair<Chunk, Spatial>> newSpatials;
+    private Queue<Chunk> modifiedChunks;
 
     @Autowired
     public VoxelRendererControl(List<RenderedVoxelFilter> voxelFilters, Node chunks) {
         this.voxelFilters = voxelFilters;
         this.chunks = chunks;
         newSpatials = new ConcurrentLinkedQueue<>();
+        modifiedChunks = new ConcurrentLinkedQueue<>();
     }
 
 
     @EventListener
     public void handleVoxelsAdded(VoxelsAddedEvent voxelsAddedEvent) {
         List<Voxel> voxels = voxelsAddedEvent.getVoxels();
+        renderVoxels(voxels);
+    }
+
+    private void renderVoxels(List<Voxel> voxels) {
         for (RenderedVoxelFilter voxelFilter : voxelFilters) {
             voxels = voxelFilter.filter(voxels);
         }
@@ -49,16 +58,26 @@ public class VoxelRendererControl extends AbstractControl {
             Spatial spatial = buildOptimizedVoxelMesh(optimizedVoxels);
             newSpatials.add(new Pair<>(optimizedVoxels.get(0).getChunk(), spatial));
         }
+    }
 
-
+    @EventListener
+    public void handleVoxelRemovedEvent(VoxelRemovedEvent voxelRemovedEvent) {
+        Chunk chunk = voxelRemovedEvent.getVoxel().getChunk();
+        modifiedChunks.add(chunk);
+        renderVoxels(Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).collect(Collectors.toList()));
     }
 
     @Override
     protected void controlUpdate(float tpf) {
+        while (modifiedChunks.peek() != null) {
+            Node voxelChunkNode = (Node) chunks.getChild(modifiedChunks.poll().getName());
+            voxelChunkNode.detachAllChildren();
+        }
+
         List<Pair<Chunk, Spatial>> failedVoxels = new ArrayList<>();
 
         int voxelsAdded = 0;
-        while (newSpatials.peek() != null && voxelsAdded < 100) {
+        while (newSpatials.peek() != null && voxelsAdded < Math.pow(World.CHUNK_SIZE, 3)) {
             Pair<Chunk, Spatial> poll = newSpatials.poll();
 
             Node voxelChunkNode = (Node) chunks.getChild(poll.getKey().getName());
