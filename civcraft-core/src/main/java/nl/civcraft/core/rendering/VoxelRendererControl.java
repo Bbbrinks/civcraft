@@ -6,54 +6,51 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import javafx.util.Pair;
-import nl.civcraft.core.model.Block;
+import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.events.VoxelsAddedEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 
 @Component
 public class VoxelRendererControl extends AbstractControl {
 
+    private static final Logger LOGGER = LogManager.getLogger();
     private final List<RenderedVoxelFilter> voxelFilters;
     private final Node chunks;
     private Queue<Pair<Chunk, Spatial>> newSpatials;
-    private List<Voxel> renderedVoxels;
 
     @Autowired
     public VoxelRendererControl(List<RenderedVoxelFilter> voxelFilters, Node chunks) {
         this.voxelFilters = voxelFilters;
         this.chunks = chunks;
         newSpatials = new ConcurrentLinkedQueue<>();
-        renderedVoxels = new ArrayList<>();
     }
 
 
     @EventListener
-    public void handleVoxelAdded(VoxelsAddedEvent voxelsAddedEvent) {
+    public void handleVoxelsAdded(VoxelsAddedEvent voxelsAddedEvent) {
         List<Voxel> voxels = voxelsAddedEvent.getVoxels();
         for (RenderedVoxelFilter voxelFilter : voxelFilters) {
             voxels = voxelFilter.filter(voxels);
         }
-        for (Voxel voxel : voxels) {
-
-            if (renderedVoxels.contains(voxel) || renderedVoxels.size() > 1) {
-                continue;
-            }
-            Block block = voxel.cloneBlock();
-            Pair<Spatial, Collection<Voxel>> optimize = block.getBlockOptimizer().optimize(voxel);
-
-            renderedVoxels.addAll(optimize.getValue());
-            newSpatials.add(new Pair<>(voxel.getChunk(), optimize.getKey()));
+        List<List<Voxel>> lists = optimizeVoxels(voxels);
+        for (List<Voxel> optimizedVoxels : lists) {
+            Spatial spatial = buildOptimizedVoxelMesh(optimizedVoxels);
+            newSpatials.add(new Pair<>(optimizedVoxels.get(0).getChunk(), spatial));
         }
+
+
     }
 
     @Override
@@ -77,6 +74,39 @@ public class VoxelRendererControl extends AbstractControl {
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
+
+    }
+
+    private List<List<Voxel>> optimizeVoxels(List<Voxel> unoptimizedVoxels) {
+        DebugStatsState.LAST_MESSAGE = "Start optimizing chunk";
+        LOGGER.info(DebugStatsState.LAST_MESSAGE);
+        List<List<Voxel>> optimizedVoxelGroups = new ArrayList<>();
+        while (unoptimizedVoxels.size() > 0) {
+            DebugStatsState.LAST_MESSAGE = "Unoptimized voxels left: " + unoptimizedVoxels.size();
+            LOGGER.trace(DebugStatsState.LAST_MESSAGE);
+            Voxel toBeOptimized = unoptimizedVoxels.get(0);
+            List<Voxel> optimizedVoxel = new ArrayList<>();
+            optimizedVoxel.add(toBeOptimized);
+            getOptimizedVoxel(toBeOptimized, optimizedVoxel, unoptimizedVoxels);
+            unoptimizedVoxels.removeAll(optimizedVoxel);
+            optimizedVoxelGroups.add(optimizedVoxel);
+        }
+        DebugStatsState.LAST_MESSAGE = "End optimizing chunk";
+        LOGGER.info(DebugStatsState.LAST_MESSAGE);
+        return optimizedVoxelGroups;
+    }
+
+    private void getOptimizedVoxel(Voxel toBeOptimized, List<Voxel> optimizedVoxel, List<Voxel> unoptimizedVoxels) {
+        List<Voxel> mergableNeighbours = toBeOptimized.getNeighbours().stream().filter(unoptimizedVoxels::contains).filter(Voxel::isVisible).filter(v -> toBeOptimized.cloneBlock().getBlockOptimizer().canMerge(v, toBeOptimized)).filter(v -> !optimizedVoxel.contains(v)).collect(Collectors.toList());
+        optimizedVoxel.addAll(mergableNeighbours);
+        for (Voxel mergableNeighbour : mergableNeighbours) {
+            getOptimizedVoxel(mergableNeighbour, optimizedVoxel, unoptimizedVoxels);
+        }
+    }
+
+    private Spatial buildOptimizedVoxelMesh(List<Voxel> optimizedVoxel) {
+
+        return optimizedVoxel.get(0).cloneBlock().getBlockOptimizer().optimize(optimizedVoxel);
 
     }
 }
