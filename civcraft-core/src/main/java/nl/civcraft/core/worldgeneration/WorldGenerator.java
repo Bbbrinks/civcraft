@@ -8,14 +8,11 @@ import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.npc.Npc;
-import nl.civcraft.core.rendering.RenderedVoxelFilter;
 import nl.civcraft.core.utils.MathUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-
-import java.util.List;
 
 /**
  * Created by Bob on 25-11-2015.
@@ -27,7 +24,7 @@ public class WorldGenerator implements Runnable {
     private static final Logger LOGGER = LogManager.getLogger();
     private final int heightMapWidth;
     private final int heightMapHeight;
-    private final List<RenderedVoxelFilter> renderedVoxelFilters;
+
     @Autowired
     private HeightMapGenerator hillsGenerator;
     @Autowired
@@ -42,10 +39,9 @@ public class WorldGenerator implements Runnable {
     @Autowired
     private NpcManager civvyManager;
 
-    public WorldGenerator(int heightMapWidth, int heightMapHeight, List<RenderedVoxelFilter> renderedVoxelFilters) {
+    public WorldGenerator(int heightMapWidth, int heightMapHeight) {
         this.heightMapWidth = heightMapWidth;
         this.heightMapHeight = heightMapHeight;
-        this.renderedVoxelFilters = renderedVoxelFilters;
     }
 
     @Override
@@ -60,7 +56,7 @@ public class WorldGenerator implements Runnable {
         int chunkCount = 0;
         for (int x = 0; x < 3; x++) {
             for (int z = 0; z < 3; z++) {
-                generateChunk(x, z, renderedVoxelFilters);
+                generateChunk(x, z);
                 DebugStatsState.LAST_MESSAGE = "Generating chunk: " + chunkCount + "/36";
                 LOGGER.trace(DebugStatsState.LAST_MESSAGE);
                 chunkCount++;
@@ -85,8 +81,8 @@ public class WorldGenerator implements Runnable {
         this.heightMap = hillsGenerator.generateRandomHeightMap(heightMapWidth, heightMapHeight);
     }
 
-    private void generateChunk(int chunkX, int chunkZ, List<RenderedVoxelFilter> renderedVoxelFilters) {
-        chunkBuilder.buildChunk(chunkX, chunkZ, heightMap, worldManager.getWorld(), renderedVoxelFilters);
+    private void generateChunk(int chunkX, int chunkZ) {
+        chunkBuilder.buildChunk(chunkX, chunkZ, heightMap, worldManager.getWorld());
     }
 
     public boolean isGenerationDone() {

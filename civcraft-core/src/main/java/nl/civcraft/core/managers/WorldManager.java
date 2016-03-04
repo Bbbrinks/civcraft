@@ -1,10 +1,10 @@
 package nl.civcraft.core.managers;
 
 
-import com.jme3.scene.Node;
 import nl.civcraft.core.events.CivvyCreated;
 import nl.civcraft.core.model.World;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 
 public class WorldManager {
@@ -12,8 +12,8 @@ public class WorldManager {
     private final World world;
 
     @Autowired
-    public WorldManager(Node rootNode, TaskManager taskManager) {
-        world = new World(rootNode, taskManager);
+    public WorldManager(ApplicationEventPublisher publisher) {
+        world = new World(publisher);
     }
 
     @EventListener

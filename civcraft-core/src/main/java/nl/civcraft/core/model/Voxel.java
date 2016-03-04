@@ -23,7 +23,6 @@ public class Voxel {
     private int localX;
     private int localY;
     private int localZ;
-
     public Voxel(int x, int y, int z, String type, Block block) {
 
         this.x = x;
@@ -34,6 +33,14 @@ public class Voxel {
         this.block = block;
 
         neighbours = new ArrayList<>();
+    }
+
+    public Chunk getChunk() {
+        return chunk;
+    }
+
+    public void setChunk(Chunk chunk) {
+        this.chunk = chunk;
     }
 
     public String getType() {
@@ -58,10 +65,6 @@ public class Voxel {
 
     public void breakBlock() {
         chunk.removeVoxel(this);
-    }
-
-    public void setChunk(Chunk chunk) {
-        this.chunk = chunk;
     }
 
     public boolean isVisible() {
@@ -143,5 +146,17 @@ public class Voxel {
 
     public Vector3f getLocation() {
         return new Vector3f(x, y, z);
+    }
+
+    public String getName() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("voxel[");
+        stringBuilder.append(x);
+        stringBuilder.append(",");
+        stringBuilder.append(y);
+        stringBuilder.append(",");
+        stringBuilder.append(z);
+        stringBuilder.append("]");
+        return stringBuilder.toString();
     }
 }

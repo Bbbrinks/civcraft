@@ -2,10 +2,10 @@ package nl.civcraft.core.model;
 
 
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import nl.civcraft.core.managers.TaskManager;
+import nl.civcraft.core.model.events.ChunkAddedEvent;
+import nl.civcraft.core.model.events.VoxelsAddedEvent;
 import nl.civcraft.core.npc.Civvy;
-import nl.civcraft.core.rendering.ChunkRendererControl;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,30 +16,38 @@ public class World {
     public static final int CHUNK_SIZE = 40;
     private final List<Chunk> chunks;
     private final List<Civvy> civvies;
-    private TaskManager taskManager;
+    private final ApplicationEventPublisher publisher;
 
-    public World(Node rootNode, TaskManager taskManager) {
+    public World(ApplicationEventPublisher publisher) {
+        this.publisher = publisher;
         chunks = new ArrayList<>();
         civvies = new ArrayList<>();
-        this.taskManager = taskManager;
     }
 
     public void clearChunks() {
         this.chunks.clear();
     }
 
-    public void addVoxel(Voxel voxel, ChunkRendererControl chunkRendererControl) {
-        int x = voxel.getX();
-        int y = voxel.getY();
-        int z = voxel.getZ();
-        Chunk chunkAt = getChunkAt(x, y, z);
-        if (chunkAt == null) {
-            chunkAt = addChunkAt(x, y, z, chunkRendererControl);
+    public void addVoxel(Voxel voxel) {
+
+    }
+
+    public void addVoxels(List<Voxel> voxels) {
+        for (Voxel voxel : voxels) {
+            int x = voxel.getX();
+            int y = voxel.getY();
+            int z = voxel.getZ();
+            Chunk chunkAt = getChunkAt(x, y, z);
+            if (chunkAt == null) {
+                chunkAt = addChunkAt(x, y, z);
+            }
+
+            voxel.addNeighbours(getVoxelNeighbours(voxel));
+
+            chunkAt.addVoxel(voxel);
         }
 
-        voxel.addNeighbours(getVoxelNeighbours(voxel));
-
-        chunkAt.addVoxel(voxel);
+        publisher.publishEvent(new VoxelsAddedEvent(voxels, this));
     }
 
     private Chunk getChunkAt(int x, int y, int z) {
@@ -50,8 +58,8 @@ public class World {
         return null;
     }
 
-    private Chunk addChunkAt(int x, int y, int z, ChunkRendererControl chunkRendererControl) {
-        Chunk chunk = new Chunk(x / CHUNK_SIZE, y / CHUNK_SIZE, z / CHUNK_SIZE, chunkRendererControl);
+    private Chunk addChunkAt(int x, int y, int z) {
+        Chunk chunk = new Chunk(x / CHUNK_SIZE, y / CHUNK_SIZE, z / CHUNK_SIZE, publisher);
         chunks.add(chunk);
         List<Chunk> neighbours = new ArrayList<>();
         addIfNotNull(neighbours, getChunkAt(x - CHUNK_SIZE, y, z));
@@ -61,6 +69,7 @@ public class World {
         addIfNotNull(neighbours, getChunkAt(x, y + CHUNK_SIZE, z));
         addIfNotNull(neighbours, getChunkAt(x, y - CHUNK_SIZE, z));
         chunk.addNeighbours(neighbours);
+        publisher.publishEvent(new ChunkAddedEvent(chunk, this));
         return chunk;
     }
 
@@ -107,4 +116,6 @@ public class World {
     public Voxel getVoxelAt(Vector3f target) {
         return getVoxelAt(target.x, target.y, target.z);
     }
+
+
 }

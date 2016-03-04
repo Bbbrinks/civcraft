@@ -2,54 +2,67 @@ package nl.civcraft.core.rendering;
 
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import nl.civcraft.core.model.Chunk;
+import nl.civcraft.core.model.events.ChunkAddedEvent;
+import nl.civcraft.core.model.events.ChunkModifiedEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-/**
- * Created by Bob on 26-11-2015.
- * <p>
- * This is probably not worth documenting
- */
+@Component
 public class ChunkRendererControl extends AbstractControl {
 
-    private final List<RenderedVoxelFilter> voxelFilters;
-    private Chunk chunk;
 
-    public ChunkRendererControl(List<RenderedVoxelFilter> voxelFilters) {
-        this.voxelFilters = voxelFilters;
+    private static final Logger LOGGER = LogManager.getLogger();
+    private Node chunks;
+    private Queue<Node> newChunks;
+
+    @Autowired
+    public ChunkRendererControl() {
+        newChunks = new ConcurrentLinkedQueue<>();
     }
 
 
     @Override
     public void setSpatial(Spatial spatial) {
-        if (!(spatial instanceof Chunk)) {
-            throw new IllegalArgumentException("ChunkRendererControl can only be attached to Chunk!");
+        if (!(spatial instanceof Node)) {
+            throw new IllegalArgumentException("ChunkRendererControl can only be attached to Node!");
         }
-        this.chunk = (Chunk) spatial;
+        this.chunks = (Node) spatial;
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-        if (!chunk.isOptimized() && !chunk.isOptimizing()) {
-            ChunkOptimizer chunkOptimizer = new ChunkOptimizer(voxelFilters, chunk);
-            Thread optimizeThread = new Thread(chunkOptimizer);
-            optimizeThread.start();
-        }
-        if (chunk.isOptimizingDone()){
-            chunk.updateVoxelCache();
-            chunk.setOptimizingDone(false);
+        while (newChunks.peek() != null) {
+            Node newChunkNode = newChunks.poll();
+            chunks.detachChildNamed(newChunkNode.getName());
+            chunks.attachChild(newChunkNode);
         }
     }
+
 
 
 
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-
     }
 
+    @EventListener
+    public void handleChunkAddedEvent(ChunkAddedEvent chunkAddedEvent) {
+        Node chunkNode = new Node(chunkAddedEvent.getChunk().getName());
+        newChunks.add(chunkNode);
+    }
+
+    @EventListener
+    public void handleChunkModifiedEvent(ChunkModifiedEvent chunkModifiedEvent) {
+
+    }
 }
