@@ -36,7 +36,7 @@ public class ChunkBuilder {
                         type = "cobble";
                     } else {
                         if (voxelY == y) {
-                            type = "grass";
+                            type = "dirt";
                         } else {
                             type = "dirt";
                         }
