@@ -30,21 +30,34 @@ public class World {
     }
 
     public void addVoxels(List<Voxel> voxels) {
+        List<Voxel> addedVoxels = new ArrayList<>();
         for (Voxel voxel : voxels) {
-            int x = voxel.getX();
-            int y = voxel.getY();
-            int z = voxel.getZ();
-            Chunk chunkAt = getChunkAt(x, y, z);
-            if (chunkAt == null) {
-                chunkAt = addChunkAt(x, y, z);
+            if (getVoxelAt(voxel.getX(), voxel.getY(), voxel.getZ()) == null) {
+
+                int x = voxel.getX();
+                int y = voxel.getY();
+                int z = voxel.getZ();
+                Chunk chunkAt = getChunkAt(x, y, z);
+                if (chunkAt == null) {
+                    chunkAt = addChunkAt(x, y, z);
+                }
+
+                voxel.addNeighbours(getVoxelNeighbours(voxel));
+
+                chunkAt.addVoxel(voxel);
+                addedVoxels.add(voxel);
             }
-
-            voxel.addNeighbours(getVoxelNeighbours(voxel));
-
-            chunkAt.addVoxel(voxel);
         }
 
-        publisher.publishEvent(new VoxelsAddedEvent(voxels, this));
+        publisher.publishEvent(new VoxelsAddedEvent(addedVoxels, this));
+    }
+
+    public Voxel getVoxelAt(float x, float y, float z) {
+        Chunk chunkAt = getChunkAt((int) x, (int) y, (int) z);
+        if (chunkAt == null) {
+            return null;
+        }
+        return chunkAt.getVoxelAt((int) x, (int) y, (int) z);
     }
 
     private Chunk getChunkAt(int x, int y, int z) {
@@ -56,7 +69,10 @@ public class World {
     }
 
     private Chunk addChunkAt(int x, int y, int z) {
-        Chunk chunk = new Chunk(x / CHUNK_SIZE, y / CHUNK_SIZE, z / CHUNK_SIZE, publisher);
+        double dx = x;
+        double dy = y;
+        double dz = z;
+        Chunk chunk = new Chunk((int) Math.floor(dx / CHUNK_SIZE), (int) Math.floor(dy / CHUNK_SIZE), (int) Math.floor(dz / CHUNK_SIZE), publisher);
         chunks.add(chunk);
         List<Chunk> neighbours = new ArrayList<>();
         addIfNotNull(neighbours, getChunkAt(x - CHUNK_SIZE, y, z));
@@ -88,14 +104,6 @@ public class World {
         if (voxelAt != null) {
             neighbours.add(voxelAt);
         }
-    }
-
-    public Voxel getVoxelAt(float x, float y, float z) {
-        Chunk chunkAt = getChunkAt((int) x, (int) y, (int) z);
-        if (chunkAt == null) {
-            return null;
-        }
-        return chunkAt.getVoxelAt((int) x, (int) y, (int) z);
     }
 
     public List<Chunk> getChunks() {
