@@ -37,8 +37,6 @@ public class WorldGenerator implements Runnable {
 
     @Autowired
     private NpcManager civvyManager;
-    @Autowired
-    private TreeGenerator treeGenerator;
 
     public WorldGenerator(int heightMapWidth, int heightMapHeight) {
         this.heightMapWidth = heightMapWidth;
