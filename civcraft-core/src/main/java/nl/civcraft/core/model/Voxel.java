@@ -132,8 +132,26 @@ public class Voxel {
         this.localZ = localZ;
     }
 
+    //TODO move this out of Voxel class
     public List<Voxel> getEnterableNeighbours() {
-        return neighbours.stream().filter(v -> v.getNeighbour(Face.TOP) == null).collect(Collectors.toList());
+        List<Voxel> enterableNeighbours = neighbours.stream().filter(v -> v.getNeighbour(Face.TOP) == null).collect(Collectors.toList());
+        List<Voxel> verticalDiagonals = new ArrayList<>();
+        for (Voxel enterableNeighbour : getNeighbours(Face.BACK, Face.FRONT, Face.LEFT, Face.RIGHT)) {
+            if (enterableNeighbour != null) {
+                Voxel neighbour = enterableNeighbour.getNeighbour(Face.TOP);
+                if (neighbour != null && neighbour.getNeighbour(Face.TOP) == null) {
+                    verticalDiagonals.add(neighbour);
+                }
+            }
+        }
+        for (Voxel neighbour : getNeighbour(Face.BOTTOM).getNeighbours(Face.BACK, Face.FRONT, Face.LEFT, Face.RIGHT)) {
+            if (neighbour != null && neighbour.getNeighbour(Face.TOP) == null) {
+                verticalDiagonals.add(neighbour);
+            }
+        }
+
+        enterableNeighbours.addAll(verticalDiagonals);
+        return enterableNeighbours;
     }
 
     public Voxel getNeighbour(Face face) {
@@ -142,6 +160,14 @@ public class Voxel {
             return collect.get(0);
         }
         return null;
+    }
+
+    private List<Voxel> getNeighbours(Face... faces) {
+        List<Voxel> neighbours = new ArrayList<>();
+        for (Face face : faces) {
+            neighbours.add(getNeighbour(face));
+        }
+        return neighbours;
     }
 
     public Vector3f getLocation() {
