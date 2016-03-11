@@ -38,8 +38,7 @@ public class MoveTo extends Task {
             return true;
         }
         civvy.moveToward(peek, tpf);
-        if (civvy.distance(peek) < 0.01f) {
-            civvy.setCurrentVoxel(target);
+        if (civvy.getCurrentVoxel().equals(peek)) {
             path.poll();
         }
         return false;

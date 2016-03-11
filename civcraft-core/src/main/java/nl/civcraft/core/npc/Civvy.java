@@ -5,6 +5,8 @@ import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.tasks.Task;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by Bob on 29-12-2015.
@@ -12,6 +14,7 @@ import nl.civcraft.core.tasks.Task;
  * This is probably not worth documenting
  */
 public class Civvy {
+    private static final Logger LOGGER = LogManager.getLogger();
     private final String type;
     private final Npc npc;
     private final float speed;
@@ -25,7 +28,7 @@ public class Civvy {
         location = new Vector3f(x, y, z);
         this.type = type;
         this.npc = npc;
-        speed = 1.0f;
+        speed = 2.0f;
     }
 
     public World getWorld() {
@@ -89,8 +92,17 @@ public class Civvy {
     }
 
     public void moveToward(Voxel target, float tpf) {
-        Vector3f direction = target.getLocation().add(0, 1, 0).subtract(location).normalize();
-        location = location.add(direction.mult(tpf * speed));
+        Vector3f location = target.getLocation().add(new Vector3f(0, 1, 0));
+        Vector3f movement = location.subtract(this.location);
+        if (distance(target) >= tpf * speed) {
+            movement.normalizeLocal();
+            movement = movement.mult(tpf * speed);
+
+        } else {
+            currentVoxel = target;
+        }
+
+        this.location = this.location.add(movement);
     }
 
     public float distance(Voxel target) {
