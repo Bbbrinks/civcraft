@@ -80,6 +80,11 @@ public class InitialConfiguration {
     }
 
     @Bean
+    public Spatial moveToSpatial(AssetManager assetManager) {
+        return getColoredBlock(assetManager, new ColorRGBA(0.5f, 0.3f, 0.2f, 0.5f));
+    }
+
+    @Bean
     public Spatial hoverSpatial(AssetManager assetManager) {
         return getColoredBlock(assetManager, new ColorRGBA(0.7f, 0.7f, 0.1f, 0.5f));
     }

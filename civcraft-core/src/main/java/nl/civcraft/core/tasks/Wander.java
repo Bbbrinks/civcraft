@@ -28,7 +28,9 @@ public class Wander extends Task {
             List<Voxel> possibleNextVoxels = voxel.getEnterableNeighbours();
             if (!possibleNextVoxels.isEmpty()) {
                 Voxel target = possibleNextVoxels.get(RandomUtil.getNextInt(possibleNextVoxels.size()));
-                civvy.setTask(new MoveTo(target, pathFinder));
+                MoveTo task = new MoveTo(target, pathFinder);
+                task.setState(State.DOING);
+                civvy.setTask(task);
             }
         }
         return false;

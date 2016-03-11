@@ -63,7 +63,15 @@ public class WorldGenerator implements Runnable {
                 chunkCount++;
             }
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 50; i++) {
+            float treeX = MathUtil.rnd(0f, 120f);
+            float treeZ = MathUtil.rnd(0f, 120f);
+            float treeY = heightMap.getHeight((int) treeX, (int) treeZ);
+            treeGenerator.addTree((int) treeX, (int) treeY, (int) treeZ, worldManager.getWorld());
+
+        }
+
+        for (int i = 0; i < 1; i++) {
             float civX = MathUtil.rnd(0f, 120f);
             float civZ = MathUtil.rnd(0f, 120f);
             float civY = heightMap.getHeight((int) civX, (int) civZ);
@@ -74,13 +82,7 @@ public class WorldGenerator implements Runnable {
             worldManager.getWorld().addCivvy(civvy);
 
         }
-        for (int i = 0; i < 50; i++) {
-            float treeX = MathUtil.rnd(0f, 120f);
-            float treeZ = MathUtil.rnd(0f, 120f);
-            float treeY = heightMap.getHeight((int) treeX, (int) treeZ);
-            treeGenerator.addTree((int) treeX, (int) treeY, (int) treeZ, worldManager.getWorld());
 
-        }
         setGenerationDone(true);
     }
 

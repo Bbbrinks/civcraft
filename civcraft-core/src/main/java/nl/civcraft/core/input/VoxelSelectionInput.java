@@ -5,20 +5,21 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.AnalogListener;
-import com.jme3.input.controls.MouseAxisTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.input.controls.*;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.pathfinding.AStarPathFinder;
+import nl.civcraft.core.tasks.MoveTo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -31,6 +32,7 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
     private static final String MOUSE_MOTION = "MOUSE_MOTION";
     private static final String DELETE_VOXEL = "DELETE_VOXEL";
     private static final String SELECT_VOXEL = "SELECT_VOXEL";
+    private static final String MOVE_TO = "MOVE_TO";
     @SuppressWarnings("SpringJavaAutowiredMembersInspection")
     @Autowired
     private Node rootNode;
@@ -48,6 +50,10 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
     private Node selectionBoxes;
     private Node hoverBoxes;
     private Voxel currentVoxel;
+    @Autowired
+    private TaskManager taskManger;
+    @Autowired
+    private AStarPathFinder pathFinder;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -65,7 +71,8 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
         inputManager.addMapping(SELECT_VOXEL, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addMapping(DELETE_VOXEL, new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
         inputManager.addMapping(MOUSE_MOTION, new MouseAxisTrigger(MouseInput.AXIS_X, true), new MouseAxisTrigger(MouseInput.AXIS_X, false), new MouseAxisTrigger(MouseInput.AXIS_Y, true), new MouseAxisTrigger(MouseInput.AXIS_Y, false));
-        inputManager.addListener(this, SELECT_VOXEL,MOUSE_MOTION, DELETE_VOXEL);
+        inputManager.addMapping(MOVE_TO, new KeyTrigger(KeyInput.KEY_M));
+        inputManager.addListener(this, SELECT_VOXEL, MOUSE_MOTION, DELETE_VOXEL, MOVE_TO);
     }
 
 
@@ -86,6 +93,9 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
                     selectionBoxes.detachAllChildren();
                     hoverBoxes.detachAllChildren();
                     currentVoxel.breakBlock();
+                }
+                if (name.equals(MOVE_TO)) {
+                    taskManger.addTask(new MoveTo(currentVoxel, pathFinder));
                 }
             }
         }

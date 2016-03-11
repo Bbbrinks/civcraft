@@ -16,7 +16,7 @@ public class MathUtil {
     }
 
     public static long rnd(int min, int max) {
-        return min + Math.round(Math.random() * max);
+        return min + (int) Math.floor(Math.random() * max);
     }
 
     @SuppressWarnings("unused")

@@ -16,15 +16,20 @@ public class MoveTo extends Task {
     private final AStarPathFinder pathFinder;
     protected Voxel target;
     private Queue<Voxel> path;
+    private Civvy civvy;
 
     public MoveTo(Voxel target, AStarPathFinder pathFinder) {
-        super(State.DOING);
+        super(State.TODO);
         this.target = target;
         this.pathFinder = pathFinder;
     }
 
     @Override
     public boolean affect(Civvy civvy, float tpf) {
+        if (this.civvy != civvy) {
+            path = null;
+        }
+        this.civvy = civvy;
         if (path == null) {
             path = pathFinder.findPath(civvy, civvy.getCurrentVoxel(), target);
         }
@@ -38,5 +43,9 @@ public class MoveTo extends Task {
             path.poll();
         }
         return false;
+    }
+
+    public Voxel getTarget() {
+        return target;
     }
 }

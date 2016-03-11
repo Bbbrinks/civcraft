@@ -2,15 +2,12 @@ package nl.civcraft.core.pathfinding;
 
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.npc.Civvy;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.LinkedBlockingDeque;
 
-/**
- * Created by Bob on 11-3-2016.
- * <p>
- * This is probably not worth documenting
- */
+@Component
 public class AStarPathFinder {
 
     public Queue<Voxel> findPath(Civvy civvy, Voxel start, Voxel target) {
@@ -28,15 +25,18 @@ public class AStarPathFinder {
             closedList.add(current);
             openList.remove(current);
             for (Voxel voxel : current.getVoxel().getEnterableNeighbours()) {
-                Optional<AStarNode> currentAdjecent = openList.stream().filter(n -> n.getVoxel().equals(voxel)).findFirst();
-                if (!currentAdjecent.isPresent()) {
+                Optional<AStarNode> currentAdjacent = openList.stream().filter(n -> n.getVoxel().equals(voxel)).findFirst();
+                if (!currentAdjacent.isPresent()) {
+                    if (closedList.stream().filter(n -> n.getVoxel().equals(voxel)).findFirst().isPresent()) {
+                        continue;
+                    }
                     AStarNode neighbour = new AStarNode(voxel);
                     neighbour.setPrevious(current);
                     neighbour.sethCost(calculateCost(neighbour, target));
                     neighbour.setgCost(current);
                     openList.add(neighbour);
                 } else {
-                    AStarNode aStarNode = currentAdjecent.get();
+                    AStarNode aStarNode = currentAdjacent.get();
                     if (aStarNode.getgCost() > aStarNode.calcGCost(current)) {
                         aStarNode.setPrevious(current);
                         aStarNode.setgCost(current);
