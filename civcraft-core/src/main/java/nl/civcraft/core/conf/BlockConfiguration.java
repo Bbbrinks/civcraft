@@ -157,6 +157,37 @@ public class BlockConfiguration {
     }
 
     @Bean
+    public Block leaf(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer) {
+        Texture grassTopTex = assetManager.loadTexture(
+                "textures/leaves_oak.png");
+
+        Material grassTopMaterial = new Material(assetManager,
+                "matdefs/GrayScaleColorMap.j3md");
+        grassTopMaterial.setTexture("TextureMap", grassTopTex);
+        grassTopMaterial.setColor("Color", new ColorRGBA(0.51f, 0.83f, 0.24f, 1.0f));
+
+        return getQuadBlock(blockOptimizer, "treeLeaf", grassTopMaterial, grassTopMaterial, grassTopMaterial);
+    }
+
+    @Bean
+    public Block treeTrunk(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer) {
+        Texture treeTrunkTop = assetManager.loadTexture(
+                "textures/log_oak_top.png");
+
+        Material treeTrunkTopMaterial = new Material(assetManager,
+                "matdefs/GrayScaleColorMap.j3md");
+        treeTrunkTopMaterial.setTexture("TextureMap", treeTrunkTop);
+
+        Texture treeTrunkSideTex = assetManager.loadTexture(
+                "textures/log_oak.png");
+        Material treeTrunkSideMaterial = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        treeTrunkSideMaterial.setTexture("ColorMap", treeTrunkSideTex);
+
+        return getQuadBlock(blockOptimizer, "treeTrunk", treeTrunkTopMaterial, treeTrunkSideMaterial, treeTrunkTopMaterial);
+    }
+
+    @Bean
     public BlockOptimizer singleGeometryBoxBlockOptimizer() {
         return new SingleGeometryBoxBlockOptimizer();
     }

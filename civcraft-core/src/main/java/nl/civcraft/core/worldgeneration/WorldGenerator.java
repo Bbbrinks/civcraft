@@ -37,6 +37,8 @@ public class WorldGenerator implements Runnable {
 
     @Autowired
     private NpcManager civvyManager;
+    @Autowired
+    private TreeGenerator treeGenerator;
 
     public WorldGenerator(int heightMapWidth, int heightMapHeight) {
         this.heightMapWidth = heightMapWidth;
@@ -72,11 +74,11 @@ public class WorldGenerator implements Runnable {
             worldManager.getWorld().addCivvy(civvy);
 
         }
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 50; i++) {
             float treeX = MathUtil.rnd(0f, 120f);
-            float treeY = MathUtil.rnd(0f, 120f);
-            float treeZ = heightMap.getHeight((int) treeX, (int) treeY);
-            treeGenerator.addTree(treeX, treeY, treeZ, worldManager.getWorld());
+            float treeZ = MathUtil.rnd(0f, 120f);
+            float treeY = heightMap.getHeight((int) treeX, (int) treeZ);
+            treeGenerator.addTree((int) treeX, (int) treeY, (int) treeZ, worldManager.getWorld());
 
         }
         setGenerationDone(true);

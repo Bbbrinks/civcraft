@@ -29,10 +29,6 @@ public class World {
         this.chunks.clear();
     }
 
-    public void addVoxel(Voxel voxel) {
-
-    }
-
     public void addVoxels(List<Voxel> voxels) {
         for (Voxel voxel : voxels) {
             int x = voxel.getX();
