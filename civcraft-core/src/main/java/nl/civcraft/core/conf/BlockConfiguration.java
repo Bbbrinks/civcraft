@@ -2,14 +2,12 @@ package nl.civcraft.core.conf;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
-import com.jme3.texture.Texture;
 import nl.civcraft.core.managers.BlockManager;
 import nl.civcraft.core.managers.BlockOptimizer;
 import nl.civcraft.core.managers.QuadBlockOptimizer;
@@ -56,26 +54,9 @@ public class BlockConfiguration {
 
 
     @Bean
-    public Block grass(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer) {
-        Texture grassTopTex = assetManager.loadTexture(
-                "textures/grass_top.png");
+    public Block grass(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer, Material dirtMaterial, Material grassTopMaterial) {
 
-        Material grassTopMaterial = new Material(assetManager,
-                "matdefs/GrayScaleColorMap.j3md");
-        grassTopMaterial.setTexture("TextureMap", grassTopTex);
-        grassTopMaterial.setColor("Color", new ColorRGBA(0.51f, 0.83f, 0.24f, 1.0f));
 
-        Texture grassSideTex = assetManager.loadTexture(
-                "textures/bdc_grass_side01.png");
-        Material grassSideMaterial = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        grassSideMaterial.setTexture("ColorMap", grassSideTex);
-
-        Texture grassBottomTex = assetManager.loadTexture(
-                "textures/bdc_dirt03.png");
-        Material grassBottomMaterial = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        grassBottomMaterial.setTexture("ColorMap", grassBottomTex);
 
         Block block = new Block("grass", blockOptimizer);
 
@@ -84,23 +65,23 @@ public class BlockConfiguration {
         block.attachChild(topGeometry);
 
         Geometry bottomGeometry = getBlockQuadGeometry(Face.BOTTOM);
-        bottomGeometry.setMaterial(grassBottomMaterial);
+        bottomGeometry.setMaterial(dirtMaterial);
         block.attachChild(bottomGeometry);
 
         Geometry leftGeometry = getBlockQuadGeometry(Face.LEFT);
-        leftGeometry.setMaterial(grassSideMaterial);
+        leftGeometry.setMaterial(dirtMaterial);
         block.attachChild(leftGeometry);
 
         Geometry rightGeometry = getBlockQuadGeometry(Face.RIGHT);
-        rightGeometry.setMaterial(grassSideMaterial);
+        rightGeometry.setMaterial(dirtMaterial);
         block.attachChild(rightGeometry);
 
         Geometry frontGeometry = getBlockQuadGeometry(Face.FRONT);
-        frontGeometry.setMaterial(grassSideMaterial);
+        frontGeometry.setMaterial(dirtMaterial);
         block.attachChild(frontGeometry);
 
         Geometry backGeometry = getBlockQuadGeometry(Face.BACK);
-        backGeometry.setMaterial(grassSideMaterial);
+        backGeometry.setMaterial(dirtMaterial);
         block.attachChild(backGeometry);
 
         return block;

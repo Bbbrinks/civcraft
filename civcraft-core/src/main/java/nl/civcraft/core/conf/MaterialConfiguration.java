@@ -2,6 +2,7 @@ package nl.civcraft.core.conf;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.texture.Texture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,14 @@ public class MaterialConfiguration {
 
     @Bean
     public Material cobbleMaterial() {
-        return getUnshadedMaterial("textures/bdc_cobblestone01.png");
+
+        return getColoredMaterial(ColorRGBA.Gray);
+    }
+
+    private Material getColoredMaterial(ColorRGBA colorRGBA) {
+        Material coloredMaterial = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        coloredMaterial.setColor("Color", colorRGBA);
+        return coloredMaterial;
     }
 
     private Material getUnshadedMaterial(String name) {
@@ -28,6 +36,11 @@ public class MaterialConfiguration {
 
     @Bean
     public Material dirtMaterial() {
-        return getUnshadedMaterial("textures/bdc_dirt03.png");
+        return getColoredMaterial(ColorRGBA.Brown);
+    }
+
+    @Bean
+    public Material grassTopMaterial() {
+        return getColoredMaterial(ColorRGBA.Green);
     }
 }
