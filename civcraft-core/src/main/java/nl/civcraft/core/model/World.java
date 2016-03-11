@@ -2,6 +2,7 @@ package nl.civcraft.core.model;
 
 
 import com.jme3.math.Vector3f;
+import nl.civcraft.core.events.CivvyCreated;
 import nl.civcraft.core.model.events.ChunkAddedEvent;
 import nl.civcraft.core.model.events.VoxelsAddedEvent;
 import nl.civcraft.core.npc.Civvy;
@@ -106,7 +107,9 @@ public class World {
     }
 
     public void addCivvy(Civvy civvy) {
+        civvy.setWorld(this);
         civvies.add(civvy);
+        publisher.publishEvent(new CivvyCreated(civvy, this));
     }
 
     public List<Civvy> getCivvies() {

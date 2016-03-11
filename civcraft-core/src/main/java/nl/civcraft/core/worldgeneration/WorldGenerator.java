@@ -1,7 +1,6 @@
 package nl.civcraft.core.worldgeneration;
 
 import nl.civcraft.core.debug.DebugStatsState;
-import nl.civcraft.core.events.CivvyCreated;
 import nl.civcraft.core.managers.NpcManager;
 import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Voxel;
@@ -38,6 +37,8 @@ public class WorldGenerator implements Runnable {
 
     @Autowired
     private NpcManager civvyManager;
+    @Autowired
+    private TreeGenerator treeGenerator;
 
     public WorldGenerator(int heightMapWidth, int heightMapHeight) {
         this.heightMapWidth = heightMapWidth;
@@ -70,8 +71,14 @@ public class WorldGenerator implements Runnable {
             Npc npc = civvyManager.getNpc("civvy");
             Civvy civvy = new Civvy(civX, civY + 1, civZ, "civvy", npc);
             civvy.setCurrentVoxel(voxelAt);
-            civvy.setWorld(worldManager.getWorld());
-            publisher.publishEvent(new CivvyCreated(civvy, this));
+            worldManager.getWorld().addCivvy(civvy);
+
+        }
+        for (int i = 0; i < 10; i++) {
+            float treeX = MathUtil.rnd(0f, 120f);
+            float treeY = MathUtil.rnd(0f, 120f);
+            float treeZ = heightMap.getHeight((int) treeX, (int) treeY);
+            treeGenerator.addTree(treeX, treeY, treeZ, worldManager.getWorld());
 
         }
         setGenerationDone(true);
