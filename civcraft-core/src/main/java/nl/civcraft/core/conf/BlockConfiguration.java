@@ -34,50 +34,12 @@ public class BlockConfiguration {
     }
 
     @Bean
-    public Block dirt(@Qualifier("singleGeometryBoxBlockOptimizer") BlockOptimizer blockOptimizer, Material dirtMaterial) {
-        return createSingleGeometryBoxBlock(dirtMaterial, "dirt", blockOptimizer);
+    public Block dirt(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer, Material dirtMaterial) {
+        return getQuadBlock(blockOptimizer, "dirt", dirtMaterial, dirtMaterial, dirtMaterial);
     }
 
-    private Block createSingleGeometryBoxBlock(Material cobbleMaterial, String name, BlockOptimizer blockOptimizer) {
-        Box box = new Box(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-        Geometry geometry = new Geometry("box", box);
-        geometry.setMaterial(cobbleMaterial);
-        geometry.setLocalTranslation(0.5f, 0.5f, 0.5f);
+    private Block getQuadBlock(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer, String name, Material grassTopMaterial, Material grassSideMaterial, Material grassBottomMaterial) {
         Block block = new Block(name, blockOptimizer);
-        block.attachChild(geometry);
-        return block;
-    }
-
-    @Bean
-    public Block cobbleStone(@Qualifier("singleGeometryBoxBlockOptimizer") BlockOptimizer blockOptimizer, Material cobbleMaterial) {
-
-        return createSingleGeometryBoxBlock(cobbleMaterial, "cobble", blockOptimizer);
-    }
-
-
-    @Bean
-    public Block grass(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer) {
-        Texture grassTopTex = assetManager.loadTexture(
-                "textures/grass_top.png");
-
-        Material grassTopMaterial = new Material(assetManager,
-                "matdefs/GrayScaleColorMap.j3md");
-        grassTopMaterial.setTexture("TextureMap", grassTopTex);
-        grassTopMaterial.setColor("Color", new ColorRGBA(0.51f, 0.83f, 0.24f, 1.0f));
-
-        Texture grassSideTex = assetManager.loadTexture(
-                "textures/bdc_grass_side01.png");
-        Material grassSideMaterial = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        grassSideMaterial.setTexture("ColorMap", grassSideTex);
-
-        Texture grassBottomTex = assetManager.loadTexture(
-                "textures/bdc_dirt03.png");
-        Material grassBottomMaterial = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        grassBottomMaterial.setTexture("ColorMap", grassBottomTex);
-
-        Block block = new Block("grass", blockOptimizer);
 
         Geometry topGeometry = getBlockQuadGeometry(Face.TOP);
         topGeometry.setMaterial(grassTopMaterial);
@@ -124,23 +86,23 @@ public class BlockConfiguration {
                 break;
             case LEFT:
                 name = "left";
-                translation = new Vector3f(1f,0F, 0f);
-                rotation = new float[]{0F, 180F * FastMath.DEG_TO_RAD, 0F };
+                translation = new Vector3f(1f, 0F, 0f);
+                rotation = new float[]{0F, 180F * FastMath.DEG_TO_RAD, 0F};
                 break;
             case RIGHT:
                 name = "right";
                 translation = new Vector3f(0f, 0F, 1f);
-                rotation = new float[]{0F, 0F, 0F };
+                rotation = new float[]{0F, 0F, 0F};
                 break;
             case FRONT:
                 name = "front";
                 translation = new Vector3f(0f, 0F, 0f);
-                rotation = new float[]{0F, 270F * FastMath.DEG_TO_RAD, 0F };
+                rotation = new float[]{0F, 270F * FastMath.DEG_TO_RAD, 0F};
                 break;
             case BACK:
                 name = "back";
                 translation = new Vector3f(1f, 0F, 1f);
-                rotation = new float[]{0F, 90F * FastMath.DEG_TO_RAD, 0F };
+                rotation = new float[]{0F, 90F * FastMath.DEG_TO_RAD, 0F};
                 break;
             default:
                 break;
@@ -151,6 +113,47 @@ public class BlockConfiguration {
         geometry.setLocalTranslation(translation);
 
         return geometry;
+    }
+
+    private Block createSingleGeometryBoxBlock(Material cobbleMaterial, String name, BlockOptimizer blockOptimizer) {
+        Box box = new Box(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+        Geometry geometry = new Geometry("box", box);
+        geometry.setMaterial(cobbleMaterial);
+        geometry.setLocalTranslation(0.5f, 0.5f, 0.5f);
+        Block block = new Block(name, blockOptimizer);
+        block.attachChild(geometry);
+        return block;
+    }
+
+    @Bean
+    public Block cobbleStone(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer, Material cobbleMaterial) {
+
+        return getQuadBlock(blockOptimizer, "cobble", cobbleMaterial, cobbleMaterial, cobbleMaterial);
+    }
+
+    @Bean
+    public Block grass(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer) {
+        Texture grassTopTex = assetManager.loadTexture(
+                "textures/grass_top.png");
+
+        Material grassTopMaterial = new Material(assetManager,
+                "matdefs/GrayScaleColorMap.j3md");
+        grassTopMaterial.setTexture("TextureMap", grassTopTex);
+        grassTopMaterial.setColor("Color", new ColorRGBA(0.51f, 0.83f, 0.24f, 1.0f));
+
+        Texture grassSideTex = assetManager.loadTexture(
+                "textures/bdc_grass_side01.png");
+        Material grassSideMaterial = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        grassSideMaterial.setTexture("ColorMap", grassSideTex);
+
+        Texture grassBottomTex = assetManager.loadTexture(
+                "textures/bdc_dirt03.png");
+        Material grassBottomMaterial = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        grassBottomMaterial.setTexture("ColorMap", grassBottomTex);
+
+        return getQuadBlock(blockOptimizer, "grass", grassTopMaterial, grassSideMaterial, grassBottomMaterial);
     }
 
     @Bean

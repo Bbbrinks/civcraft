@@ -25,18 +25,24 @@ public class ChunkBuilder {
         int chunkMinX = chunkX * World.CHUNK_SIZE;
         int chunkMinZ = chunkZ * World.CHUNK_SIZE;
         List<Voxel> voxels = new ArrayList<>();
+        generateTerrain(heightMap, chunkMinX, chunkMinZ, voxels);
+
+        world.addVoxels(voxels);
+    }
+
+    private void generateTerrain(HeightMap heightMap, int chunkMinX, int chunkMinZ, List<Voxel> voxels) {
         for (int x = chunkMinX; x < chunkMinX + World.CHUNK_SIZE; x++) {
             for (int z = chunkMinZ; z < chunkMinZ + World.CHUNK_SIZE; z++) {
                 int voxelY = (int) heightMap.getHeight(x, z);
                 for (int y = 0; y <= voxelY; y++) {
                     String type;
-                    long rnd = MathUtil.rnd(2) - 1;
+                    long rnd = MathUtil.rnd(8) - 1;
 
                     if (voxelY - y - rnd > 0) {
                         type = "cobble";
                     } else {
                         if (voxelY == y) {
-                            type = "dirt";
+                            type = "grass";
                         } else {
                             type = "dirt";
                         }
@@ -47,7 +53,5 @@ public class ChunkBuilder {
                 }
             }
         }
-
-        world.addVoxels(voxels);
     }
 }
