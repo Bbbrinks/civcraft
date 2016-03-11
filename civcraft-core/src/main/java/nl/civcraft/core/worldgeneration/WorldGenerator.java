@@ -1,7 +1,6 @@
 package nl.civcraft.core.worldgeneration;
 
 import nl.civcraft.core.debug.DebugStatsState;
-import nl.civcraft.core.events.CivvyCreated;
 import nl.civcraft.core.managers.NpcManager;
 import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Voxel;
@@ -70,9 +69,7 @@ public class WorldGenerator implements Runnable {
             Npc npc = civvyManager.getNpc("civvy");
             Civvy civvy = new Civvy(civX, civY + 1, civZ, "civvy", npc);
             civvy.setCurrentVoxel(voxelAt);
-            civvy.setWorld(worldManager.getWorld());
-            publisher.publishEvent(new CivvyCreated(civvy, this));
-
+            worldManager.getWorld().addCivvy(civvy);
         }
         setGenerationDone(true);
     }
