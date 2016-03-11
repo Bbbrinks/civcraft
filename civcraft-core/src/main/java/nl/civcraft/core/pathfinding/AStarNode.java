@@ -10,47 +10,55 @@ import nl.civcraft.core.model.Voxel;
 public class AStarNode {
     private final Voxel voxel;
     private AStarNode previous;
-    private int hCost;
-    private int gCost;
+    private float hCost;
+    private float gCost;
 
     public AStarNode(Voxel voxel) {
         this.voxel = voxel;
-    }
-
-    public Voxel getVoxel() {
-        return voxel;
     }
 
     public AStarNode getPrevious() {
         return previous;
     }
 
+    public Voxel getVoxel() {
+        return voxel;
+    }
+
     public void setPrevious(AStarNode previous) {
         this.previous = previous;
     }
 
-    public int gethCost() {
+    public float gethCost() {
         return hCost;
     }
 
-    public void sethCost(int hCost) {
+    public void sethCost(float hCost) {
         this.hCost = hCost;
     }
 
-    public void setgCost(int gCost) {
+    public void setgCost(float gCost) {
         this.gCost = gCost;
     }
 
-    public int getgCost() {
+
+    public float getgCost() {
         return gCost;
     }
 
 
-    public int calcGCost(AStarNode current) {
-        return current.getgCost() + hCost;
+    public float calcGCost(AStarNode current) {
+        float g = 1.0f;
+        if (current.getVoxel().getY() < getVoxel().getY()) {
+            g = 1.5f;
+        }
+
+        return current.getgCost() + hCost + g;
     }
 
     public void setgCost(AStarNode current) {
+
+
         this.gCost = calcGCost(current);
     }
 }

@@ -22,7 +22,7 @@ public class TreeGenerator {
 
     public void addTree(int treeX, int treeY, int treeZ, World world) {
         Block treeTrunk = blockManager.findBlock("treeTrunk");
-        long rnd = MathUtil.rnd(1, 5);
+        long rnd = MathUtil.rnd(2, 5);
         List<Voxel> voxels = new ArrayList<>();
         for (int i = 1; i <= rnd; i++) {
             voxels.add(new Voxel(treeX, treeY + i, treeZ, "treeTrunk", treeTrunk));
