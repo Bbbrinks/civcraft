@@ -9,6 +9,7 @@ import com.jme3.scene.shape.Box;
 import nl.civcraft.core.managers.NpcManager;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.npc.Npc;
+import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.rendering.CivvyRenderer;
 import nl.civcraft.core.tasks.Wander;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class CivvyConfiguration {
 
     @Autowired
     private AssetManager assetManager;
+    @Autowired
+    private AStarPathFinder pathFinder;
 
     @Bean
     public Npc civvy() {
@@ -47,7 +50,7 @@ public class CivvyConfiguration {
     @Bean
     public TaskManager taskManager() {
         TaskManager taskManager = new TaskManager();
-        taskManager.addTask(new Wander());
+        taskManager.addTask(new Wander(pathFinder));
         return taskManager;
     }
 

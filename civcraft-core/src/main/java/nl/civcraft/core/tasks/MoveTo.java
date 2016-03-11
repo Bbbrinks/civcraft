@@ -2,6 +2,9 @@ package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.npc.Civvy;
+import nl.civcraft.core.pathfinding.AStarPathFinder;
+
+import java.util.Queue;
 
 /**
  * Created by Bob on 8-1-2016.
@@ -10,24 +13,30 @@ import nl.civcraft.core.npc.Civvy;
  */
 public class MoveTo extends Task {
 
+    private final AStarPathFinder pathFinder;
     protected Voxel target;
+    private Queue<Voxel> path;
 
-    public MoveTo(State state) {
-        super(state);
-    }
-
-    public MoveTo(Voxel target) {
+    public MoveTo(Voxel target, AStarPathFinder pathFinder) {
         super(State.DOING);
         this.target = target;
+        this.pathFinder = pathFinder;
     }
 
     @Override
     public boolean affect(Civvy civvy, float tpf) {
-        if (target == null || civvy.distance(target) < 0.01f) {
-            civvy.setCurrentVoxel(target);
+        if (path == null) {
+            path = pathFinder.findPath(civvy, civvy.getCurrentVoxel(), target);
+        }
+        Voxel peek = path.peek();
+        if (peek == null) {
             return true;
         }
-        civvy.moveToward(target, tpf);
+        civvy.moveToward(peek, tpf);
+        if (civvy.distance(peek) < 0.01f) {
+            civvy.setCurrentVoxel(target);
+            path.poll();
+        }
         return false;
     }
 }

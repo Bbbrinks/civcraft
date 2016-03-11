@@ -93,15 +93,19 @@ public class Civvy {
         location = location.add(direction.mult(tpf * speed));
     }
 
-    public void setCurrentVoxel(Voxel currentVoxel) {
-        this.currentVoxel = currentVoxel;
-    }
-
     public float distance(Voxel target) {
         return target.getLocation().distance(getLocation().subtract(0, 1, 0));
     }
 
     public Vector3f getLocation() {
         return location;
+    }
+
+    public Voxel getCurrentVoxel() {
+        return currentVoxel;
+    }
+
+    public void setCurrentVoxel(Voxel currentVoxel) {
+        this.currentVoxel = currentVoxel;
     }
 }

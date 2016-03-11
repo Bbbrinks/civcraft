@@ -2,6 +2,7 @@ package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.npc.Civvy;
+import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.utils.RandomUtil;
 
 import java.util.List;
@@ -12,8 +13,11 @@ import java.util.List;
  * This is probably not worth documenting
  */
 public class Wander extends Task {
-    public Wander() {
+    private final AStarPathFinder pathFinder;
+
+    public Wander(AStarPathFinder pathFinder) {
         super(State.CONTINUAL);
+        this.pathFinder = pathFinder;
     }
 
     @Override
@@ -24,7 +28,7 @@ public class Wander extends Task {
             List<Voxel> possibleNextVoxels = voxel.getEnterableNeighbours();
             if (!possibleNextVoxels.isEmpty()) {
                 Voxel target = possibleNextVoxels.get(RandomUtil.getNextInt(possibleNextVoxels.size()));
-                civvy.setTask(new MoveTo(target));
+                civvy.setTask(new MoveTo(target, pathFinder));
             }
         }
         return false;
