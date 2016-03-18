@@ -75,7 +75,6 @@ public class InitialConfiguration {
         Geometry geometry = new Geometry("selectionBox", box);
         geometry.setMaterial(mat);
         geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
-        geometry.setLocalTranslation(0.5f, 0.5f, 0.5f);
         return geometry;
     }
 

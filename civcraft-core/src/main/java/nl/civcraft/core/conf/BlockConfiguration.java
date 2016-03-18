@@ -7,13 +7,11 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Texture;
 import nl.civcraft.core.managers.BlockManager;
 import nl.civcraft.core.managers.BlockOptimizer;
 import nl.civcraft.core.managers.QuadBlockOptimizer;
-import nl.civcraft.core.managers.SingleGeometryBoxBlockOptimizer;
 import nl.civcraft.core.model.Block;
 import nl.civcraft.core.model.Face;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,32 +74,32 @@ public class BlockConfiguration {
         switch (face) {
             case TOP:
                 name = "top";
-                translation = new Vector3f(0f, 1f, 1f);
+                translation = new Vector3f(-0.5f, 0.5f, 0.5f);
                 rotation = new float[]{-90F * FastMath.DEG_TO_RAD, 0F, 0F};
                 break;
             case BOTTOM:
                 name = "bottom";
-                translation = new Vector3f(0f, 0f, 0f);
+                translation = new Vector3f(-0.5f, -0.5f, 0.5f);
                 rotation = new float[]{90F * FastMath.DEG_TO_RAD, 0F, 0F};
                 break;
             case LEFT:
                 name = "left";
-                translation = new Vector3f(1f, 0F, 0f);
+                translation = new Vector3f(0.5f, -0.5F, -0.5f);
                 rotation = new float[]{0F, 180F * FastMath.DEG_TO_RAD, 0F};
                 break;
             case RIGHT:
                 name = "right";
-                translation = new Vector3f(0f, 0F, 1f);
+                translation = new Vector3f(-0.5f, -0.5F, 0.5f);
                 rotation = new float[]{0F, 0F, 0F};
                 break;
             case FRONT:
                 name = "front";
-                translation = new Vector3f(0f, 0F, 0f);
+                translation = new Vector3f(-0.5f, -0.5F, -0.5f);
                 rotation = new float[]{0F, 270F * FastMath.DEG_TO_RAD, 0F};
                 break;
             case BACK:
                 name = "back";
-                translation = new Vector3f(1f, 0F, 1f);
+                translation = new Vector3f(0.5f, -0.5F, 0.5f);
                 rotation = new float[]{0F, 90F * FastMath.DEG_TO_RAD, 0F};
                 break;
             default:
@@ -113,16 +111,6 @@ public class BlockConfiguration {
         geometry.setLocalTranslation(translation);
 
         return geometry;
-    }
-
-    private Block createSingleGeometryBoxBlock(Material cobbleMaterial, String name, BlockOptimizer blockOptimizer) {
-        Box box = new Box(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-        Geometry geometry = new Geometry("box", box);
-        geometry.setMaterial(cobbleMaterial);
-        geometry.setLocalTranslation(0.5f, 0.5f, 0.5f);
-        Block block = new Block(name, blockOptimizer);
-        block.attachChild(geometry);
-        return block;
     }
 
     @Bean
@@ -185,11 +173,6 @@ public class BlockConfiguration {
         treeTrunkSideMaterial.setTexture("ColorMap", treeTrunkSideTex);
 
         return getQuadBlock(blockOptimizer, "treeTrunk", treeTrunkTopMaterial, treeTrunkSideMaterial, treeTrunkTopMaterial);
-    }
-
-    @Bean
-    public BlockOptimizer singleGeometryBoxBlockOptimizer() {
-        return new SingleGeometryBoxBlockOptimizer();
     }
 
     @Bean

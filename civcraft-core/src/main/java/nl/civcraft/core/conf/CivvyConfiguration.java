@@ -37,7 +37,7 @@ public class CivvyConfiguration {
         Box box = new Box(0.25f, 2.0f, 0.35f);
         Geometry geometry = new Geometry("box", box);
         geometry.setMaterial(cobbleMaterial);
-        geometry.setLocalTranslation(0.25f, 2.0f, 0.35f);
+        geometry.setLocalTranslation(0.0f, 1.0f, 0.0f);
         Npc block = new Npc(name);
         block.attachChild(geometry);
         block.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
