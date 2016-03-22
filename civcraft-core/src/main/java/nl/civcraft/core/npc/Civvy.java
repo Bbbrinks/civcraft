@@ -78,9 +78,11 @@ public class Civvy {
 
     public void update(float tpf) {
         if (task != null) {
-            boolean affect = task.affect(this, tpf);
-            if (affect) {
+            Task.Result affect = task.affect(this, tpf);
+            if (affect.equals(Task.Result.COMPLETED)) {
                 task.completed(this);
+            } else if (affect.equals(Task.Result.FAILED)) {
+                task.failed(this);
             }
         } else {
             taskManager.requestTask(this);
@@ -119,5 +121,13 @@ public class Civvy {
 
     public void setCurrentVoxel(Voxel currentVoxel) {
         this.currentVoxel = currentVoxel;
+    }
+
+    public Vector3f getLocationAtVoxel(Voxel voxel) {
+        return voxel.getLocation().add(new Vector3f(0, 1, 0));
+    }
+
+    public void harvest(Voxel target) {
+        target.breakBlock();
     }
 }

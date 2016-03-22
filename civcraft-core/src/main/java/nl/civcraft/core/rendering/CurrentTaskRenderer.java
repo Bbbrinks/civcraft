@@ -7,6 +7,7 @@ import nl.civcraft.core.events.CivvyCreated;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.tasks.MoveTo;
+import nl.civcraft.core.tasks.MoveToRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 
@@ -45,6 +46,11 @@ public class CurrentTaskRenderer extends AbstractAppState {
             if (civvy.getTask() instanceof MoveTo) {
                 Spatial clone = moveToSpatial.clone();
                 Voxel voxel = ((MoveTo) civvy.getTask()).getTarget();
+                clone.setLocalTranslation(clone.getLocalTranslation().x + voxel.getX(), clone.getLocalTranslation().y + voxel.getY(), clone.getLocalTranslation().z + voxel.getZ());
+                highlightNode.attachChild(clone);
+            } else if (civvy.getTask() instanceof MoveToRange) {
+                Spatial clone = moveToSpatial.clone();
+                Voxel voxel = ((MoveToRange) civvy.getTask()).getTarget();
                 clone.setLocalTranslation(clone.getLocalTranslation().x + voxel.getX(), clone.getLocalTranslation().y + voxel.getY(), clone.getLocalTranslation().z + voxel.getZ());
                 highlightNode.attachChild(clone);
             }

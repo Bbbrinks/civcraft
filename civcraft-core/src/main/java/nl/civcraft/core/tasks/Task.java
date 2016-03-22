@@ -9,17 +9,25 @@ import nl.civcraft.core.npc.Civvy;
  */
 public abstract class Task {
 
+
     private State state;
 
     public Task(State state) {
         this.state = state;
     }
 
-    public abstract boolean affect(Civvy civvy, float tpf);
+    public abstract Result affect(Civvy civvy, float tpf);
 
     public void completed(Civvy civvy) {
         if (!State.CONTINUAL.equals(state)) {
             setState(State.DONE);
+        }
+        civvy.setTask(null);
+    }
+
+    public void failed(Civvy civvy) {
+        if (!State.CONTINUAL.equals(state)) {
+            setState(State.FAILED);
         }
         civvy.setTask(null);
     }
@@ -32,7 +40,11 @@ public abstract class Task {
         this.state = state;
     }
 
+    public enum Result {
+        COMPLETED, FAILED, IN_PROGRESS
+    }
+
     public enum State {
-        TODO, DOING, DONE, CONTINUAL
+        TODO, DOING, DONE, FAILED, CONTINUAL
     }
 }

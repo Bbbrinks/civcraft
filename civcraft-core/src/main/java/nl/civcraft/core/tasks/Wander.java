@@ -21,7 +21,7 @@ public class Wander extends Task {
     }
 
     @Override
-    public boolean affect(Civvy civvy, float tpf) {
+    public Result affect(Civvy civvy, float tpf) {
 
         Voxel voxel = civvy.currentVoxel();
         if (voxel != null) {
@@ -33,6 +33,6 @@ public class Wander extends Task {
                 civvy.setTask(task);
             }
         }
-        return false;
+        return Result.COMPLETED;
     }
 }

@@ -19,6 +19,7 @@ import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
+import nl.civcraft.core.tasks.Harvest;
 import nl.civcraft.core.tasks.MoveTo;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,6 +34,7 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
     private static final String DELETE_VOXEL = "DELETE_VOXEL";
     private static final String SELECT_VOXEL = "SELECT_VOXEL";
     private static final String MOVE_TO = "MOVE_TO";
+    private static final String HARVEST = "HARVEST";
     @SuppressWarnings("SpringJavaAutowiredMembersInspection")
     @Autowired
     private Node rootNode;
@@ -72,7 +74,8 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
         inputManager.addMapping(DELETE_VOXEL, new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
         inputManager.addMapping(MOUSE_MOTION, new MouseAxisTrigger(MouseInput.AXIS_X, true), new MouseAxisTrigger(MouseInput.AXIS_X, false), new MouseAxisTrigger(MouseInput.AXIS_Y, true), new MouseAxisTrigger(MouseInput.AXIS_Y, false));
         inputManager.addMapping(MOVE_TO, new KeyTrigger(KeyInput.KEY_M));
-        inputManager.addListener(this, SELECT_VOXEL, MOUSE_MOTION, DELETE_VOXEL, MOVE_TO);
+        inputManager.addMapping(HARVEST, new KeyTrigger(KeyInput.KEY_H));
+        inputManager.addListener(this, SELECT_VOXEL, MOUSE_MOTION, DELETE_VOXEL, MOVE_TO, HARVEST);
     }
 
 
@@ -96,6 +99,9 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
                 }
                 if (name.equals(MOVE_TO)) {
                     taskManger.addTask(new MoveTo(currentVoxel, pathFinder));
+                }
+                if (name.equals(HARVEST)) {
+                    taskManger.addTask(new Harvest(currentVoxel, pathFinder));
                 }
             }
         }

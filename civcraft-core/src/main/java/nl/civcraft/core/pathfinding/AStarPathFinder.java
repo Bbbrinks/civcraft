@@ -10,7 +10,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 @Component
 public class AStarPathFinder {
 
-    public Queue<Voxel> findPath(Civvy civvy, Voxel start, Voxel target) {
+    public Queue<Voxel> findPath(Civvy civvy, Voxel start, PathFindingTarget target) {
         if (start.equals(target)) {
             return new LinkedBlockingDeque<>();
         }
@@ -20,7 +20,8 @@ public class AStarPathFinder {
         Set<AStarNode> closedList = new HashSet<>();
         AStarNode current = null;
         boolean done = false;
-        while (!done) {
+        int maxSearchArea = target.getMaxSearchArea(start);
+        while (!done && closedList.size() < maxSearchArea) {
             current = findLowestCost(openList, target);
             closedList.add(current);
             openList.remove(current);
@@ -47,20 +48,22 @@ public class AStarPathFinder {
             if (openList.isEmpty()) {
                 return new LinkedBlockingDeque<>();
             }
-            done = target.equals(current.getVoxel());
+            done = target.isReached(civvy, current);
         }
-        return buildPath(current);
+        if (done) {
+            return buildPath(current);
+        } else {
+            return null;
+        }
     }
 
-    private AStarNode findLowestCost(Set<AStarNode> openList, Voxel target) {
+    private AStarNode findLowestCost(Set<AStarNode> openList, PathFindingTarget target) {
         return openList.stream().min((v1, v2) -> calculateCost(v1, target) - calculateCost(v2, target)).get();
     }
 
-    private int calculateCost(AStarNode next, Voxel target) {
-        int xCost = Math.abs(next.getVoxel().getX() - target.getX());
-        int yCost = Math.abs(next.getVoxel().getY() - target.getY());
-        int zCost = Math.abs(next.getVoxel().getZ() - target.getZ());
-        return xCost + yCost + zCost;
+    private int calculateCost(AStarNode next, PathFindingTarget target) {
+        return target.getCostFrom(next);
+
     }
 
     private Queue<Voxel> buildPath(AStarNode current) {

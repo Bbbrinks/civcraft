@@ -23,6 +23,7 @@ public class Voxel {
     private int localX;
     private int localY;
     private int localZ;
+
     public Voxel(int x, int y, int z, String type, Block block) {
 
         this.x = x;
@@ -144,9 +145,12 @@ public class Voxel {
                 }
             }
         }
-        for (Voxel neighbour : getNeighbour(Face.BOTTOM).getNeighbours(Face.BACK, Face.FRONT, Face.LEFT, Face.RIGHT)) {
-            if (neighbour != null && neighbour.getNeighbour(Face.TOP) == null) {
-                verticalDiagonals.add(neighbour);
+        Voxel bottom = getNeighbour(Face.BOTTOM);
+        if (bottom != null) {
+            for (Voxel neighbour : bottom.getNeighbours(Face.BACK, Face.FRONT, Face.LEFT, Face.RIGHT)) {
+                if (neighbour != null && neighbour.getNeighbour(Face.TOP) == null) {
+                    verticalDiagonals.add(neighbour);
+                }
             }
         }
 
