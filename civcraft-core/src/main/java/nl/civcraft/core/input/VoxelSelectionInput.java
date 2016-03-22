@@ -130,7 +130,6 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
         Voxel voxelAt = null;
         if (results.size() > 0) {
             Vector3f contactPoint = results.getCollision(0).getContactPoint();
-            Vector3f contactNormal = results.getCollision(0).getContactNormal();
             int x = Math.round(contactPoint.x);
             int y = Math.round(contactPoint.y);
             int z = Math.round(contactPoint.z);
