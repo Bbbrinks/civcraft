@@ -1,25 +1,28 @@
 package nl.civcraft.core.worldgeneration;
 
-import nl.civcraft.core.managers.BlockManager;
-import nl.civcraft.core.model.Block;
 import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.model.VoxelProducer;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.utils.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Bob on 26-11-2015.
- * <p>
- * This is probably not worth documenting
- */
+@Component
 public class ChunkBuilder {
 
+    private final VoxelProducer dirtVoxelProducer;
+    private final VoxelProducer cobbleVoxelProducer;
+    private final VoxelProducer grassVoxelProducer;
 
     @Autowired
-    public BlockManager blockManager;
+    public ChunkBuilder(VoxelProducer dirtVoxelProducer, VoxelProducer cobbleVoxelProducer, VoxelProducer grassVoxelProducer) {
+        this.dirtVoxelProducer = dirtVoxelProducer;
+        this.cobbleVoxelProducer = cobbleVoxelProducer;
+        this.grassVoxelProducer = grassVoxelProducer;
+    }
 
     public void buildChunk(int chunkX, int chunkZ, HeightMap heightMap, World world) {
         int chunkMinX = chunkX * World.CHUNK_SIZE;
@@ -35,20 +38,18 @@ public class ChunkBuilder {
             for (int z = chunkMinZ; z < chunkMinZ + World.CHUNK_SIZE; z++) {
                 int voxelY = (int) heightMap.getHeight(x, z);
                 for (int y = 0; y <= voxelY; y++) {
-                    String type;
-                    long rnd = MathUtil.rnd(8) - 1;
 
+                    long rnd = MathUtil.rnd(8) - 1;
+                    Voxel voxel;
                     if (voxelY - y - rnd > 0) {
-                        type = "cobble";
+                        voxel = cobbleVoxelProducer.produce(x, y, z);
                     } else {
                         if (voxelY == y) {
-                            type = "grass";
+                            voxel = grassVoxelProducer.produce(x, y, z);
                         } else {
-                            type = "dirt";
+                            voxel = dirtVoxelProducer.produce(x, y, z);
                         }
                     }
-                    Block block = blockManager.findBlock(type);
-                    Voxel voxel = new Voxel(x, y, z, type, block);
                     voxels.add(voxel);
                 }
             }

@@ -11,7 +11,7 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-public class GameObject {
+public abstract class GameObject {
 
     private List<GameComponent> components;
 
@@ -27,4 +27,6 @@ public class GameObject {
         component.addTo(this);
         components.add(component);
     }
+
+    public abstract void changed();
 }

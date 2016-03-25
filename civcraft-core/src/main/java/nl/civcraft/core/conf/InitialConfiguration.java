@@ -15,7 +15,6 @@ import com.jme3.system.JmeSystem;
 import nl.civcraft.core.rendering.RenderedVoxelFilter;
 import nl.civcraft.core.rendering.VisibleVoxelFilter;
 import nl.civcraft.core.rendering.WorldEdgeVoxelFilter;
-import nl.civcraft.core.worldgeneration.ChunkBuilder;
 import nl.civcraft.core.worldgeneration.WorldGeneratorState;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -31,11 +30,6 @@ public class InitialConfiguration {
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
-    }
-
-    @Bean
-    public ChunkBuilder chunkBuilder() {
-        return new ChunkBuilder();
     }
 
     @Bean

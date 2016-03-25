@@ -11,4 +11,6 @@ public interface Inventory {
     Item getFirstItem();
 
     boolean addItem(Item item);
+
+    boolean isEmpty();
 }

@@ -22,7 +22,7 @@ public abstract class Task {
     public abstract Result affect(Civvy civvy, float tpf);
 
     public void completed(Civvy civvy) {
-        LOGGER.info(this.getClass().getSimpleName() + " completed");
+        LOGGER.warn(this.getClass().getSimpleName() + " completed");
         if (!State.CONTINUAL.equals(state)) {
             setState(State.DONE);
         }
@@ -30,7 +30,7 @@ public abstract class Task {
     }
 
     public void failed(Civvy civvy) {
-        LOGGER.info(this.getClass().getSimpleName() + " failed");
+        LOGGER.warn(this.getClass().getSimpleName() + " failed");
         if (!State.CONTINUAL.equals(state)) {
             setState(State.FAILED);
         }

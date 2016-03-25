@@ -1,6 +1,7 @@
 package nl.civcraft.core.worldgeneration;
 
 import nl.civcraft.core.debug.DebugStatsState;
+import nl.civcraft.core.gamecomponents.LimitedInventory;
 import nl.civcraft.core.managers.NpcManager;
 import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Voxel;

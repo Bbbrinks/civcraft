@@ -1,7 +1,6 @@
 package nl.civcraft.core.model;
 
 import com.jme3.scene.Node;
-import nl.civcraft.core.managers.BlockOptimizer;
 
 /**
  * Created by Bob on 20-12-2015.
@@ -10,17 +9,8 @@ import nl.civcraft.core.managers.BlockOptimizer;
  */
 public class Block extends Node {
 
-    private final BlockOptimizer blockOptimizer;
 
-    public Block(String name, BlockOptimizer blockOptimizer) {
+    public Block(String name) {
         super(name);
-        this.blockOptimizer = blockOptimizer;
     }
-
-
-    public BlockOptimizer getBlockOptimizer() {
-        return blockOptimizer;
-    }
-
-
 }

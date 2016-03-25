@@ -129,4 +129,8 @@ public class Civvy extends GameObject {
     }
 
 
+    @Override
+    public void changed() {
+        //TODO
+    }
 }

@@ -10,12 +10,9 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Texture;
 import nl.civcraft.core.managers.BlockManager;
-import nl.civcraft.core.managers.BlockOptimizer;
-import nl.civcraft.core.managers.QuadBlockOptimizer;
 import nl.civcraft.core.model.Block;
 import nl.civcraft.core.model.Face;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,12 +29,12 @@ public class BlockConfiguration {
     }
 
     @Bean
-    public Block dirt(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer, Material dirtMaterial) {
-        return getQuadBlock(blockOptimizer, "dirt", dirtMaterial, dirtMaterial, dirtMaterial);
+    public Block dirt(Material dirtMaterial) {
+        return getQuadBlock("dirt", dirtMaterial, dirtMaterial, dirtMaterial);
     }
 
-    private Block getQuadBlock(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer, String name, Material grassTopMaterial, Material grassSideMaterial, Material grassBottomMaterial) {
-        Block block = new Block(name, blockOptimizer);
+    private Block getQuadBlock(String name, Material grassTopMaterial, Material grassSideMaterial, Material grassBottomMaterial) {
+        Block block = new Block(name);
 
         Geometry topGeometry = getBlockQuadGeometry(Face.TOP);
         topGeometry.setMaterial(grassTopMaterial);
@@ -79,7 +76,7 @@ public class BlockConfiguration {
                 break;
             case BOTTOM:
                 name = "bottom";
-                translation = new Vector3f(-0.5f, -0.5f, 0.5f);
+                translation = new Vector3f(-0.5f, -0.5f, -0.5f);
                 rotation = new float[]{90F * FastMath.DEG_TO_RAD, 0F, 0F};
                 break;
             case LEFT:
@@ -114,13 +111,13 @@ public class BlockConfiguration {
     }
 
     @Bean
-    public Block cobbleStone(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer, Material cobbleMaterial) {
+    public Block cobbleStone(Material cobbleMaterial) {
 
-        return getQuadBlock(blockOptimizer, "cobble", cobbleMaterial, cobbleMaterial, cobbleMaterial);
+        return getQuadBlock("cobble", cobbleMaterial, cobbleMaterial, cobbleMaterial);
     }
 
     @Bean
-    public Block grass(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer) {
+    public Block grass() {
         Texture grassTopTex = assetManager.loadTexture(
                 "textures/grass_top.png");
 
@@ -141,24 +138,23 @@ public class BlockConfiguration {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         grassBottomMaterial.setTexture("ColorMap", grassBottomTex);
 
-        return getQuadBlock(blockOptimizer, "grass", grassTopMaterial, grassSideMaterial, grassBottomMaterial);
+        return getQuadBlock("grass", grassTopMaterial, grassSideMaterial, grassBottomMaterial);
     }
 
     @Bean
-    public Block leaf(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer) {
+    public Block leaf() {
         Texture grassTopTex = assetManager.loadTexture(
                 "textures/leaves_oak.png");
 
-        Material grassTopMaterial = new Material(assetManager,
-                "matdefs/GrayScaleColorMap.j3md");
-        grassTopMaterial.setTexture("TextureMap", grassTopTex);
-        grassTopMaterial.setColor("Color", new ColorRGBA(0.51f, 0.83f, 0.24f, 1.0f));
+        Material grassBottomMaterial = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        grassBottomMaterial.setTexture("ColorMap", grassTopTex);
 
-        return getQuadBlock(blockOptimizer, "treeLeaf", grassTopMaterial, grassTopMaterial, grassTopMaterial);
+        return getQuadBlock("treeLeaf", grassBottomMaterial, grassBottomMaterial, grassBottomMaterial);
     }
 
     @Bean
-    public Block appleLeaf(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer) {
+    public Block appleLeaf() {
         Texture grassTopTex = assetManager.loadTexture(
                 "textures/leaves_apple.png");
 
@@ -166,11 +162,11 @@ public class BlockConfiguration {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         grassBottomMaterial.setTexture("ColorMap", grassTopTex);
 
-        return getQuadBlock(blockOptimizer, "treeLeaf", grassBottomMaterial, grassBottomMaterial, grassBottomMaterial);
+        return getQuadBlock("appleLeaf", grassBottomMaterial, grassBottomMaterial, grassBottomMaterial);
     }
 
     @Bean
-    public Block treeTrunk(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer) {
+    public Block treeTrunk() {
         Texture treeTrunkTop = assetManager.loadTexture(
                 "textures/log_oak_top.png");
 
@@ -184,11 +180,6 @@ public class BlockConfiguration {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         treeTrunkSideMaterial.setTexture("ColorMap", treeTrunkSideTex);
 
-        return getQuadBlock(blockOptimizer, "treeTrunk", treeTrunkTopMaterial, treeTrunkSideMaterial, treeTrunkTopMaterial);
-    }
-
-    @Bean
-    public BlockOptimizer quadBlockOptimizer() {
-        return new QuadBlockOptimizer();
+        return getQuadBlock("treeTrunk", treeTrunkTopMaterial, treeTrunkSideMaterial, treeTrunkTopMaterial);
     }
 }

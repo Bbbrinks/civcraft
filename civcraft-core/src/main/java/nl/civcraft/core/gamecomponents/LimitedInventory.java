@@ -1,7 +1,5 @@
-package nl.civcraft.core.worldgeneration;
+package nl.civcraft.core.gamecomponents;
 
-import nl.civcraft.core.gamecomponents.GameComponent;
-import nl.civcraft.core.gamecomponents.Inventory;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Item;
 
@@ -12,6 +10,7 @@ import nl.civcraft.core.model.Item;
  */
 public class LimitedInventory implements Inventory, GameComponent {
     private final Item[] items;
+    private GameObject gameObject;
 
     public LimitedInventory(int size) {
         items = new Item[size];
@@ -19,13 +18,16 @@ public class LimitedInventory implements Inventory, GameComponent {
 
     @Override
     public void addTo(GameObject gameObject) {
-        //No stuff needed
+        this.gameObject = gameObject;
     }
 
     @Override
     public Item getFirstItem() {
         Item firstItem = items[0];
         items[0] = items[1];
+        if (gameObject != null) {
+            gameObject.changed();
+        }
         return firstItem;
     }
 
@@ -35,9 +37,22 @@ public class LimitedInventory implements Inventory, GameComponent {
             Item slotItem = items[i];
             if (slotItem == null) {
                 items[i] = item;
+                if (gameObject != null) {
+                    gameObject.changed();
+                }
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] != null) {
+                return false;
+            }
+        }
+        return true;
     }
 }

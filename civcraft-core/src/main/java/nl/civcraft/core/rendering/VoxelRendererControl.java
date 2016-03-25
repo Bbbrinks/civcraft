@@ -3,14 +3,17 @@ package nl.civcraft.core.rendering;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import javafx.util.Pair;
-import nl.civcraft.core.debug.DebugStatsState;
+import jme3tools.optimize.GeometryBatchFactory;
+import nl.civcraft.core.gamecomponents.VoxelRenderer;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
+import nl.civcraft.core.model.events.VoxelChangedEvent;
 import nl.civcraft.core.model.events.VoxelRemovedEvent;
 import nl.civcraft.core.model.events.VoxelsAddedEvent;
 import org.apache.logging.log4j.LogManager;
@@ -54,11 +57,35 @@ public class VoxelRendererControl extends AbstractControl {
         for (RenderedVoxelFilter voxelFilter : voxelFilters) {
             voxels = voxelFilter.filter(voxels);
         }
-        List<List<Voxel>> lists = optimizeVoxels(voxels);
-        for (List<Voxel> optimizedVoxels : lists) {
-            Spatial spatial = buildOptimizedVoxelMesh(optimizedVoxels);
-            newSpatials.add(new Pair<>(optimizedVoxels.get(0).getChunk(), spatial));
+        List<VoxelRenderer> voxelRenderers = voxels.stream().map(v -> v.getComponent(VoxelRenderer.class).get()).collect(Collectors.toList());
+        Node optimize = optimize(voxelRenderers);
+
+        newSpatials.add(new Pair<>(voxelRenderers.get(0).getVoxel().getChunk(), optimize));
+    }
+
+    private Node optimize(List<VoxelRenderer> voxelRenders) {
+        List<Geometry> allGeometries = new ArrayList<>();
+        for (VoxelRenderer voxelRenderer : voxelRenders) {
+            List<Geometry> geometries = voxelRenderer.getNode().descendantMatches(Geometry.class);
+            for (Geometry geometry : geometries) {
+                geometry.setLocalTranslation(geometry.getLocalTranslation().add(voxelRenderer.getVoxel().getX(), voxelRenderer.getVoxel().getY(), voxelRenderer.getVoxel().getZ()));
+                allGeometries.add(geometry);
+            }
         }
+        List<Geometry> batches = GeometryBatchFactory.makeBatches(allGeometries);
+        Node optimizedVoxels = new Node();
+        for (Geometry batch : batches) {
+            batch.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+            optimizedVoxels.attachChild(batch);
+        }
+        return optimizedVoxels;
+    }
+
+    @EventListener
+    public void handleVoxelChanged(VoxelChangedEvent voxelChangedEvent) {
+        Chunk chunk = voxelChangedEvent.getVoxel().getChunk();
+        modifiedChunks.add(chunk);
+        renderVoxels(Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).collect(Collectors.toList()));
     }
 
     @EventListener
@@ -94,42 +121,6 @@ public class VoxelRendererControl extends AbstractControl {
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-
-    }
-
-    private List<List<Voxel>> optimizeVoxels(List<Voxel> unoptimizedVoxels) {
-        DebugStatsState.LAST_MESSAGE = "Start optimizing chunk";
-        LOGGER.info(DebugStatsState.LAST_MESSAGE);
-        List<List<Voxel>> optimizedVoxelGroups = new ArrayList<>();
-        while (unoptimizedVoxels.size() > 0) {
-            DebugStatsState.LAST_MESSAGE = "Unoptimized voxels left: " + unoptimizedVoxels.size();
-            LOGGER.trace(DebugStatsState.LAST_MESSAGE);
-            Voxel toBeOptimized = unoptimizedVoxels.get(0);
-            List<Voxel> optimizedVoxel = new ArrayList<>();
-            optimizedVoxel.add(toBeOptimized);
-            getOptimizedVoxel(toBeOptimized, optimizedVoxel, unoptimizedVoxels);
-            unoptimizedVoxels.removeAll(optimizedVoxel);
-            optimizedVoxelGroups.add(optimizedVoxel);
-        }
-        DebugStatsState.LAST_MESSAGE = "End optimizing chunk";
-        LOGGER.info(DebugStatsState.LAST_MESSAGE);
-        return optimizedVoxelGroups;
-    }
-
-    private void getOptimizedVoxel(Voxel toBeOptimized, List<Voxel> optimizedVoxel, List<Voxel> unoptimizedVoxels) {
-        List<Voxel> mergableNeighbours = toBeOptimized.getNeighbours().stream().filter(unoptimizedVoxels::contains).filter(Voxel::isVisible).filter(v -> toBeOptimized.cloneBlock().getBlockOptimizer().canMerge(v, toBeOptimized)).filter(v -> !optimizedVoxel.contains(v)).collect(Collectors.toList());
-        optimizedVoxel.addAll(mergableNeighbours);
-        for (Voxel mergableNeighbour : mergableNeighbours) {
-            getOptimizedVoxel(mergableNeighbour, optimizedVoxel, unoptimizedVoxels);
-        }
-    }
-
-    private Spatial buildOptimizedVoxelMesh(List<Voxel> optimizedVoxel) {
-
-        Spatial optimize = optimizedVoxel.get(0).cloneBlock().getBlockOptimizer().optimize(optimizedVoxel);
-
-        optimize.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-        return optimize;
 
     }
 }

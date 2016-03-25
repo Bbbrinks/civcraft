@@ -2,7 +2,6 @@ package nl.civcraft.core.conf;
 
 import com.jme3.app.state.AppState;
 import nl.civcraft.core.worldgeneration.HillsGenerator;
-import nl.civcraft.core.worldgeneration.TreeGenerator;
 import nl.civcraft.core.worldgeneration.WorldGenerator;
 import nl.civcraft.core.worldgeneration.WorldGeneratorState;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,8 +44,4 @@ public class WorldGeneration {
         return new WorldGenerator(heightMapWidth, heightMapHeight);
     }
 
-    @Bean
-    public TreeGenerator treeGenerator() {
-        return new TreeGenerator();
-    }
 }

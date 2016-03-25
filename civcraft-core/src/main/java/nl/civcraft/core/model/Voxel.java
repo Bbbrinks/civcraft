@@ -1,6 +1,8 @@
 package nl.civcraft.core.model;
 
 import com.jme3.math.Vector3f;
+import nl.civcraft.core.model.events.VoxelChangedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,22 +19,20 @@ public class Voxel extends GameObject {
     private final int x;
     private final int y;
     private final int z;
-    private final Block block;
     private final List<Voxel> neighbours;
+    private final ApplicationEventPublisher publisher;
     private Chunk chunk;
     private int localX;
     private int localY;
     private int localZ;
 
-    public Voxel(int x, int y, int z, String type, Block block) {
+    public Voxel(int x, int y, int z, String type, ApplicationEventPublisher publisher) {
 
         this.x = x;
         this.y = y;
         this.z = z;
         this.type = type;
-
-        this.block = block;
-
+        this.publisher = publisher;
         neighbours = new ArrayList<>();
     }
 
@@ -58,10 +58,6 @@ public class Voxel extends GameObject {
 
     public int getZ() {
         return z;
-    }
-
-    public Block cloneBlock() {
-        return (Block) block.clone();
     }
 
     public void breakBlock() {
@@ -188,5 +184,10 @@ public class Voxel extends GameObject {
         stringBuilder.append(z);
         stringBuilder.append("]");
         return stringBuilder.toString();
+    }
+
+    @Override
+    public void changed() {
+        publisher.publishEvent(new VoxelChangedEvent(this, this));
     }
 }
