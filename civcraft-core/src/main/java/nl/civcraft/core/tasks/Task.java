@@ -22,7 +22,6 @@ public abstract class Task {
     public abstract Result affect(Civvy civvy, float tpf);
 
     public void completed(Civvy civvy) {
-        LOGGER.warn(this.getClass().getSimpleName() + " completed");
         if (!State.CONTINUAL.equals(state)) {
             setState(State.DONE);
         }
