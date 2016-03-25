@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * <p>
  * This is probably not worth documenting
  */
-public class Voxel {
+public class Voxel extends GameObject {
 
     private final String type;
     private final int x;

@@ -27,7 +27,6 @@ public class MoveInRangeOfVoxelTarget implements PathFindingTarget {
     public boolean isReached(Civvy civvy, AStarNode current) {
         Vector3f locationAtVoxel = civvy.getLocationAtVoxel(current.getVoxel());
         float distance = locationAtVoxel.distance(target.getLocation());
-        LOGGER.warn("Distance " + distance);
         return distance < range;
     }
 

@@ -21,4 +21,6 @@ public class Block extends Node {
     public BlockOptimizer getBlockOptimizer() {
         return blockOptimizer;
     }
+
+
 }

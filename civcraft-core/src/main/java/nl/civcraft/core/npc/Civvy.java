@@ -2,6 +2,7 @@ package nl.civcraft.core.npc;
 
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.managers.TaskManager;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.tasks.Task;
@@ -13,7 +14,7 @@ import org.apache.logging.log4j.Logger;
  * <p>
  * This is probably not worth documenting
  */
-public class Civvy {
+public class Civvy extends GameObject {
     private static final Logger LOGGER = LogManager.getLogger();
     private final String type;
     private final Npc npc;
@@ -127,7 +128,5 @@ public class Civvy {
         return voxel.getLocation().add(new Vector3f(0, 1, 0));
     }
 
-    public void harvest(Voxel target) {
-        target.breakBlock();
-    }
+
 }

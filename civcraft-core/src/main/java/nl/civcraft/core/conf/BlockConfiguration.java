@@ -158,6 +158,18 @@ public class BlockConfiguration {
     }
 
     @Bean
+    public Block appleLeaf(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer) {
+        Texture grassTopTex = assetManager.loadTexture(
+                "textures/leaves_apple.png");
+
+        Material grassBottomMaterial = new Material(assetManager,
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        grassBottomMaterial.setTexture("ColorMap", grassTopTex);
+
+        return getQuadBlock(blockOptimizer, "treeLeaf", grassBottomMaterial, grassBottomMaterial, grassBottomMaterial);
+    }
+
+    @Bean
     public Block treeTrunk(@Qualifier("quadBlockOptimizer") BlockOptimizer blockOptimizer) {
         Texture treeTrunkTop = assetManager.loadTexture(
                 "textures/log_oak_top.png");

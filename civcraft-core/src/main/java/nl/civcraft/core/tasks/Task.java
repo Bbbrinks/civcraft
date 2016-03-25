@@ -1,6 +1,8 @@
 package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.npc.Civvy;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by Bob on 31-12-2015.
@@ -9,6 +11,7 @@ import nl.civcraft.core.npc.Civvy;
  */
 public abstract class Task {
 
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private State state;
 
@@ -19,6 +22,7 @@ public abstract class Task {
     public abstract Result affect(Civvy civvy, float tpf);
 
     public void completed(Civvy civvy) {
+        LOGGER.info(this.getClass().getSimpleName() + " completed");
         if (!State.CONTINUAL.equals(state)) {
             setState(State.DONE);
         }
@@ -26,6 +30,7 @@ public abstract class Task {
     }
 
     public void failed(Civvy civvy) {
+        LOGGER.info(this.getClass().getSimpleName() + " failed");
         if (!State.CONTINUAL.equals(state)) {
             setState(State.FAILED);
         }

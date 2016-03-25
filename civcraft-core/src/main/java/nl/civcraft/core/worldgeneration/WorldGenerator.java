@@ -79,6 +79,7 @@ public class WorldGenerator implements Runnable {
             Npc npc = civvyManager.getNpc("civvy");
             Civvy civvy = new Civvy(civX, civY + 1, civZ, "civvy", npc);
             civvy.setCurrentVoxel(voxelAt);
+            civvy.addComponent(new LimitedInventory(2));
             worldManager.getWorld().addCivvy(civvy);
 
         }

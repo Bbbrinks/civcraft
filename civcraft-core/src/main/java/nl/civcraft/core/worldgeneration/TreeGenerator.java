@@ -1,10 +1,12 @@
 package nl.civcraft.core.worldgeneration;
 
+import nl.civcraft.core.gamecomponents.HarvestFromInventory;
 import nl.civcraft.core.managers.BlockManager;
 import nl.civcraft.core.model.Block;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.utils.MathUtil;
+import nl.civcraft.core.utils.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ public class TreeGenerator {
                     int leafZ = treeZ - 2 + k;
                     int leafY = (int) (treeY + rnd + i);
                     if (!voxels.stream().filter(v -> v.getX() == leafX && v.getY() == leafY && v.getZ() == leafZ).findFirst().isPresent()) {
-                        voxels.add(new Voxel(leafX, leafY, leafZ, "treeLeaf", treeLeaf));
+                        voxels.add(addLeafVoxel(treeLeaf, leafX, leafZ, leafY));
                     }
                 }
             }
@@ -47,11 +49,23 @@ public class TreeGenerator {
                 int leafZ = treeZ - 1 + k;
                 int leafY = (int) (treeY + rnd + 2);
                 if (!voxels.stream().filter(v -> v.getX() == leafX && v.getY() == leafY && v.getZ() == leafZ).findFirst().isPresent()) {
-                    voxels.add(new Voxel(leafX, leafY, leafZ, "treeLeaf", treeLeaf));
+                    voxels.add(addLeafVoxel(treeLeaf, leafX, leafZ, leafY));
                 }
             }
         }
 
         world.addVoxels(voxels);
+    }
+
+    private Voxel addLeafVoxel(Block treeLeaf, int leafX, int leafZ, int leafY) {
+        Voxel treeLeafVoxel = new Voxel(leafX, leafY, leafZ, "treeLeaf", treeLeaf);
+        LimitedInventory limitedInventory = new LimitedInventory(4);
+        int nextInt = RandomUtil.getNextInt(4);
+        for (int i = 0; i < nextInt; i++) {
+            limitedInventory.addItem(new Apple());
+        }
+        treeLeafVoxel.addComponent(limitedInventory);
+        treeLeafVoxel.addComponent(new HarvestFromInventory());
+        return treeLeafVoxel;
     }
 }
