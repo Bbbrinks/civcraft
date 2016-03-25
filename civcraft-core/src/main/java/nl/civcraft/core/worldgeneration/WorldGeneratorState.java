@@ -22,14 +22,21 @@ public class WorldGeneratorState extends AbstractAppState implements ActionListe
     private static final String GENERATE_WORLD = "GENERATE_WORLD";
     private static final String OPTIMIZE_CHUNKS = "OPTIMIZE_CHUNKS";
 
-    @Autowired
-    private WorldGenerator worldGenerator;
+
+    private final WorldGenerator worldGenerator;
+
+
+    private final WorldManager worldManager;
+
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    private WorldManager worldManager;
-
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
+    public WorldGeneratorState(WorldGenerator worldGenerator, WorldManager worldManager, ApplicationEventPublisher applicationEventPublisher) {
+        this.worldGenerator = worldGenerator;
+        this.worldManager = worldManager;
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {

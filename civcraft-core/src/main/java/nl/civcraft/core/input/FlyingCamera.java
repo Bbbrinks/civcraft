@@ -40,18 +40,9 @@ import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import org.springframework.stereotype.Component;
 
-/**
- * A first person view camera controller.
- * After creation, you must register the camera controller with the
- * dispatcher using #registerWithDispatcher().
- * <p>
- * Controls:
- * - Move the mouse to rotate the camera
- * - Mouse wheel for zooming in or out
- * - WASD keys for moving forward/backward and strafing
- * - QZ keys raise or lower the camera
- */
+@Component
 public class FlyingCamera implements AnalogListener, ActionListener {
 
     protected static final String[] MAPPINGS = new String[]{

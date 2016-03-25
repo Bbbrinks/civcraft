@@ -5,7 +5,6 @@ import com.jme3.app.state.AppState;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -16,16 +15,14 @@ import java.util.List;
  */
 public class CivCraftApplication extends Application {
 
-    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
-    @Autowired
-    private Node rootNode;
 
-    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
-    @Autowired
-    private Node guiNode;
+    private final Node rootNode;
+    private final Node guiNode;
 
-    public CivCraftApplication() {
+    public CivCraftApplication(Node rootNode, Node guiNode) {
         super();
+        this.rootNode = rootNode;
+        this.guiNode = guiNode;
     }
 
     @Override

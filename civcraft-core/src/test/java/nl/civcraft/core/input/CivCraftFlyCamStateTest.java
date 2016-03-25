@@ -2,8 +2,10 @@ package nl.civcraft.core.input;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.asset.AssetManager;
 import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Spatial;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,11 +31,15 @@ public class CivCraftFlyCamStateTest {
     private AppStateManager stateManager;
     @Mock
     private Application app;
+    @Mock
+    private Spatial rootNode;
+    @Mock
+    private AssetManager assetManager;
 
 
     @Before
     public void setUp() throws Exception {
-        underTest = new CivCraftFlyCamState(camera);
+        underTest = new CivCraftFlyCamState(camera, rootNode, assetManager);
     }
 
     @Test

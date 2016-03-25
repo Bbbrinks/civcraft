@@ -22,12 +22,9 @@ import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.tasks.Harvest;
 import nl.civcraft.core.tasks.MoveTo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-/**
- * Created by Bob on 20-12-2015.
- * <p>
- * This is probably not worth documenting
- */
+@Component
 public class VoxelSelectionInput extends AbstractAppState implements AnalogListener,ActionListener {
 
     private static final String MOUSE_MOTION = "MOUSE_MOTION";
@@ -35,27 +32,29 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
     private static final String SELECT_VOXEL = "SELECT_VOXEL";
     private static final String MOVE_TO = "MOVE_TO";
     private static final String HARVEST = "HARVEST";
-    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
-    @Autowired
-    private Node rootNode;
-    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
-    @Autowired
-    private WorldManager worldManager;
-    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
-    @Autowired
-    private Spatial selectionSpatial;
-    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
-    @Autowired
-    private Spatial hoverSpatial;
+
+    private final Node rootNode;
+
+    private final WorldManager worldManager;
+    private final Spatial selectionSpatial;
+    private final Spatial hoverSpatial;
+    private final TaskManager taskManger;
+    private final AStarPathFinder pathFinder;
     private Camera cam;
     private InputManager inputManager;
     private Node selectionBoxes;
     private Node hoverBoxes;
     private Voxel currentVoxel;
+
     @Autowired
-    private TaskManager taskManger;
-    @Autowired
-    private AStarPathFinder pathFinder;
+    public VoxelSelectionInput(Node rootNode, WorldManager worldManager, Spatial selectionSpatial, Spatial hoverSpatial, TaskManager taskManger, AStarPathFinder pathFinder) {
+        this.rootNode = rootNode;
+        this.worldManager = worldManager;
+        this.selectionSpatial = selectionSpatial;
+        this.hoverSpatial = hoverSpatial;
+        this.taskManger = taskManger;
+        this.pathFinder = pathFinder;
+    }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {

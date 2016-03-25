@@ -1,6 +1,7 @@
 package nl.civcraft.core.conf;
 
 import com.jme3.app.Application;
+import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import nl.civcraft.core.CivCraftApplication;
 import org.springframework.context.annotation.Bean;
@@ -12,8 +13,8 @@ public class ApplicationConfiguration {
 
     @Bean
     @Scope("singleton")
-    public Application mainApplication(AppSettings settings) {
-        CivCraftApplication application = new CivCraftApplication();
+    public Application mainApplication(AppSettings settings, Node rootNode, Node guiNode) {
+        CivCraftApplication application = new CivCraftApplication(rootNode, guiNode);
         application.setSettings(settings);
         return application;
     }

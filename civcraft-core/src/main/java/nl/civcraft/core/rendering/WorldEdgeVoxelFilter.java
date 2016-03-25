@@ -6,21 +6,23 @@ import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * Created by Bob on 26-12-2015.
- * <p>
- * This is probably not worth documenting
- */
+@Component
 public class WorldEdgeVoxelFilter implements RenderedVoxelFilter {
 
     @SuppressWarnings("SpringJavaAutowiredMembersInspection")
+
+    private final WorldManager worldManager;
+
     @Autowired
-    private WorldManager worldManager;
+    public WorldEdgeVoxelFilter(WorldManager worldManager) {
+        this.worldManager = worldManager;
+    }
 
     @Override
     public List<Voxel> filter(List<Voxel> unoptimizedVoxels) {

@@ -9,13 +9,8 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.LodControl;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.JmeSystem;
-import nl.civcraft.core.rendering.RenderedVoxelFilter;
-import nl.civcraft.core.rendering.VisibleVoxelFilter;
-import nl.civcraft.core.rendering.WorldEdgeVoxelFilter;
-import nl.civcraft.core.worldgeneration.WorldGeneratorState;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,9 +18,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
-@ComponentScan(basePackageClasses = {WorldGeneratorState.class, WorldGeneration.class, BlockConfiguration.class})
+@ComponentScan(basePackages = {"nl.civcraft"})
 public class InitialConfiguration {
-
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
@@ -40,11 +34,6 @@ public class InitialConfiguration {
     @Bean
     public Node guiNode() {
         return new Node("Gui Node");
-    }
-
-    @Bean
-    public LodControl lodControl() {
-        return new LodControl();
     }
 
     @Bean
@@ -80,16 +69,6 @@ public class InitialConfiguration {
     @Bean
     public Spatial hoverSpatial(AssetManager assetManager) {
         return getColoredBlock(assetManager, new ColorRGBA(0.7f, 0.7f, 0.1f, 0.5f));
-    }
-
-    @Bean
-    public RenderedVoxelFilter visibleVoxelFilter() {
-        return new VisibleVoxelFilter();
-    }
-
-    @Bean
-    public RenderedVoxelFilter worldEdgeVoxelFilter() {
-        return new WorldEdgeVoxelFilter();
     }
 
     @Bean

@@ -9,7 +9,6 @@ import nl.civcraft.core.model.events.ChunkAddedEvent;
 import nl.civcraft.core.model.events.ChunkModifiedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +23,7 @@ public class ChunkRendererControl extends AbstractControl {
     private Node chunks;
     private Queue<Node> newChunks;
 
-    @Autowired
+
     public ChunkRendererControl() {
         newChunks = new ConcurrentLinkedQueue<>();
     }

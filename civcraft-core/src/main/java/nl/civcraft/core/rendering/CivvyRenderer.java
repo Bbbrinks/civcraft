@@ -5,21 +5,20 @@ import com.jme3.scene.Node;
 import nl.civcraft.core.events.CivvyCreated;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.npc.Npc;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
- * Created by Bob on 8-1-2016.
- * <p>
- * This is probably not worth documenting
- */
+@Component
 public class CivvyRenderer extends AbstractAppState {
 
     private final Node civvyNode;
     private List<Civvy> civvies;
 
+    @Autowired
     public CivvyRenderer(Node rootNode) {
         civvyNode = new Node("civvies");
         rootNode.attachChild(civvyNode);

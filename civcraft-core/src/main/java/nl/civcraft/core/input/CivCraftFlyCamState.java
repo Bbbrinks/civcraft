@@ -14,23 +14,20 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-/**
- * Created by Bob on 20-12-2015.
- * <p>
- * This is probably not worth documenting
- */
+@Component
 public class CivCraftFlyCamState extends AbstractAppState {
 
     private final FlyingCamera flyCam;
-    @Autowired
-    private Spatial rootNode;
-    @Autowired
-    private AssetManager assetManager;
+    private final Spatial rootNode;
+    private final AssetManager assetManager;
 
     @Autowired
-    public CivCraftFlyCamState(FlyingCamera camera) {
+    public CivCraftFlyCamState(FlyingCamera camera, Spatial rootNode, AssetManager assetManager) {
         this.flyCam = camera;
+        this.rootNode = rootNode;
+        this.assetManager = assetManager;
     }
 
     @Override

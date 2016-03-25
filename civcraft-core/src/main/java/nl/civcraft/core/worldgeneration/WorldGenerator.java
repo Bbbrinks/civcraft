@@ -12,38 +12,40 @@ import nl.civcraft.core.utils.MathUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
-/**
- * Created by Bob on 25-11-2015.
- * <p>
- * This is probably not worth documenting
- */
+@Component
+@PropertySource("classpath:world-generation.properties")
 public class WorldGenerator implements Runnable {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final int heightMapWidth;
     private final int heightMapHeight;
 
-    @Autowired
-    private HeightMapGenerator hillsGenerator;
-    @Autowired
-    private ChunkBuilder chunkBuilder;
+
+    private final HeightMapGenerator hillsGenerator;
+
+    private final ChunkBuilder chunkBuilder;
+    private final WorldManager worldManager;
+    private final ApplicationEventPublisher publisher;
+    private final NpcManager civvyManager;
+    private final TreeGenerator treeGenerator;
     private HeightMap heightMap;
     private boolean generationDone;
-    @Autowired
-    private WorldManager worldManager;
-    @Autowired
-    private ApplicationEventPublisher publisher;
 
     @Autowired
-    private NpcManager civvyManager;
-    @Autowired
-    private TreeGenerator treeGenerator;
-
-    public WorldGenerator(int heightMapWidth, int heightMapHeight) {
+    public WorldGenerator(@Value("${height_map_width}") int heightMapWidth, @Value("${height_map_height}") int heightMapHeight, HeightMapGenerator hillsGenerator, ChunkBuilder chunkBuilder, WorldManager worldManager, ApplicationEventPublisher publisher, NpcManager civvyManager, TreeGenerator treeGenerator) {
         this.heightMapWidth = heightMapWidth;
         this.heightMapHeight = heightMapHeight;
+        this.hillsGenerator = hillsGenerator;
+        this.chunkBuilder = chunkBuilder;
+        this.worldManager = worldManager;
+        this.publisher = publisher;
+        this.civvyManager = civvyManager;
+        this.treeGenerator = treeGenerator;
     }
 
     @Override

@@ -9,7 +9,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Texture;
-import nl.civcraft.core.managers.BlockManager;
 import nl.civcraft.core.model.Block;
 import nl.civcraft.core.model.Face;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +22,6 @@ public class BlockConfiguration {
     @Autowired
     private AssetManager assetManager;
 
-    @Bean
-    public BlockManager voxelGeometryManager() {
-        return new BlockManager();
-    }
 
     @Bean
     public Block dirt(Material dirtMaterial) {
@@ -112,7 +107,6 @@ public class BlockConfiguration {
 
     @Bean
     public Block cobbleStone(Material cobbleMaterial) {
-
         return getQuadBlock("cobble", cobbleMaterial, cobbleMaterial, cobbleMaterial);
     }
 

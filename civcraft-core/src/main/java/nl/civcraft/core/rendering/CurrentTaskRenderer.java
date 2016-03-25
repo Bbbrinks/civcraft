@@ -10,25 +10,21 @@ import nl.civcraft.core.tasks.MoveTo;
 import nl.civcraft.core.tasks.MoveToRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Bob on 11-3-2016.
- * <p>
- * This is probably not worth documenting
- */
+@Component
 public class CurrentTaskRenderer extends AbstractAppState {
 
+    private final Spatial moveToSpatial;
     private List<Civvy> civvies;
     private Node highlightNode;
 
     @Autowired
-    private Spatial moveToSpatial;
-
-    @Autowired
-    public CurrentTaskRenderer(Node rootNode) {
+    public CurrentTaskRenderer(Node rootNode, Spatial moveToSpatial) {
+        this.moveToSpatial = moveToSpatial;
         highlightNode = new Node("taskHighlights");
         rootNode.attachChild(highlightNode);
         civvies = new ArrayList<>();

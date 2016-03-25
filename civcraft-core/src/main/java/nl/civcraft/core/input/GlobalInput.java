@@ -9,19 +9,22 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Service
+@Component
 public class GlobalInput extends AbstractAppState implements ActionListener {
     public static final String WIREFRAME = "WIREFRAME";
     private static final String EXIT = "EXIT";
+    private final List<Material> materialList;
     private Application app;
+    private boolean wireframe;
 
     @Autowired
-    private List<Material> materialList;
-    private boolean wireframe;
+    public GlobalInput(List<Material> materialList) {
+        this.materialList = materialList;
+    }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
