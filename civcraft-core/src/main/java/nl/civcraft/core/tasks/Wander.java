@@ -33,6 +33,6 @@ public class Wander extends Task {
                 civvy.setTask(task);
             }
         }
-        return Result.COMPLETED;
+        return Result.IN_PROGRESS;
     }
 }
