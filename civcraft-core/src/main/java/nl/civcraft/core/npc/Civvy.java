@@ -133,4 +133,8 @@ public class Civvy extends GameObject {
     public void changed() {
         //TODO
     }
+
+    public void kill() {
+        world.removeCivvy(this);
+    }
 }

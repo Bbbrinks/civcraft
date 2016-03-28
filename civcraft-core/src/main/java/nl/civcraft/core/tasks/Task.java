@@ -29,7 +29,6 @@ public abstract class Task {
     }
 
     public void failed(Civvy civvy) {
-        LOGGER.warn(this.getClass().getSimpleName() + " failed");
         if (!State.CONTINUAL.equals(state)) {
             setState(State.FAILED);
         }

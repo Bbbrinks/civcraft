@@ -1,4 +1,4 @@
-package nl.civcraft.core.events;
+package nl.civcraft.core.model.events;
 
 import nl.civcraft.core.npc.Civvy;
 import org.springframework.context.ApplicationEvent;

@@ -1,7 +1,7 @@
 package nl.civcraft.core.managers;
 
 import com.jme3.app.state.AbstractAppState;
-import nl.civcraft.core.events.CivvyCreated;
+import nl.civcraft.core.model.events.CivvyCreated;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.tasks.Task;
 import nl.civcraft.core.utils.MathUtil;

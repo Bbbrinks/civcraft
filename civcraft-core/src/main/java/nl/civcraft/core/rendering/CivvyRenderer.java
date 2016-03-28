@@ -2,7 +2,8 @@ package nl.civcraft.core.rendering;
 
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.scene.Node;
-import nl.civcraft.core.events.CivvyCreated;
+import nl.civcraft.core.model.events.CivvyCreated;
+import nl.civcraft.core.model.events.CivvyRemoved;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.npc.Npc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,11 @@ public class CivvyRenderer extends AbstractAppState {
     @EventListener
     public void addCivvy(CivvyCreated civvyCreated) {
         civvies.add(civvyCreated.getCivvy());
+    }
+
+    @EventListener
+    public void removeCivvy(CivvyRemoved civvyRemoved) {
+        civvies.remove(civvyRemoved.getCivvy());
     }
 
 }
