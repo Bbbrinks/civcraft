@@ -56,6 +56,11 @@
             <groupId>org.bushe</groupId>
             <artifactId>eventbus</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jme3</groupId>
+            <artifactId>jme3-effects</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
