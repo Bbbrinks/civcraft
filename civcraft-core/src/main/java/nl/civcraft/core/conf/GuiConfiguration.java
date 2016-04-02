@@ -6,6 +6,7 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
+import de.lessvoid.nifty.Nifty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +15,12 @@ public class GuiConfiguration {
 
     @Bean
     public NiftyJmeDisplay niftyJmeDisplay(AssetManager assetManager, InputManager inputManager, ViewPort guiViewPort) {
-        return new NiftyJmeDisplay(assetManager, inputManager, null, guiViewPort);
+        NiftyJmeDisplay niftyJmeDisplay = new NiftyJmeDisplay(assetManager, inputManager, null, guiViewPort);
+        Nifty nifty = niftyJmeDisplay.getNifty();
+        nifty.loadStyleFile("nifty-default-styles.xml");
+        nifty.loadControlFile("nifty-default-controls.xml");
+        guiViewPort.addProcessor(niftyJmeDisplay);
+        return niftyJmeDisplay;
     }
 
     @Bean

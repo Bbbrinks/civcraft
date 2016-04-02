@@ -28,9 +28,8 @@ public class Toolbar extends Node {
                     childLayoutCenter();
 
                     control(new ButtonBuilder("harvest", "Harvest") {{
-                        childLayoutCenter();
-                        alignCenter();
-                        valignCenter();
+                        alignLeft();
+                        valignBottom();
                         height("5%");
                         width("15%");
                     }});
