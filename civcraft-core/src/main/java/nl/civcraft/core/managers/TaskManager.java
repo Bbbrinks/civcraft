@@ -1,6 +1,6 @@
 package nl.civcraft.core.managers;
 
-import com.jme3.app.state.AbstractAppState;
+import nl.civcraft.core.event.SystemUpdate;
 import nl.civcraft.core.model.events.CivvyCreated;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.tasks.Task;
@@ -14,7 +14,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 @Component
-public class TaskManager extends AbstractAppState {
+public class TaskManager {
 
     private List<Civvy> civvies;
     private List<Task> tasks;
@@ -24,10 +24,10 @@ public class TaskManager extends AbstractAppState {
         tasks = new ArrayList<>();
     }
 
-    @Override
-    public void update(float tpf) {
+    @EventListener
+    public void update(SystemUpdate systemUpdate) {
         for (Civvy civvy : civvies) {
-            civvy.update(tpf);
+            civvy.update(systemUpdate.getTpf());
         }
     }
 

@@ -7,10 +7,13 @@ import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.system.AppSettings;
+import com.jme3.system.JmeContext;
 import com.jme3.system.JmeSystem;
+import com.jme3.system.Timer;
+import nl.civcraft.core.SystemEventHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -26,14 +29,19 @@ public class InitialConfiguration {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
+
     @Bean
-    public Node rootNode() {
-        return new Node("Root Node");
+    public JmeContext context(AppSettings settings, SystemEventHandler systemEventHandler) {
+        JmeContext jmeContext = JmeSystem.newContext(settings, JmeContext.Type.Display);
+        jmeContext.setSystemListener(systemEventHandler);
+        jmeContext.create(true);
+        systemEventHandler.setTimer(jmeContext.getTimer());
+        return jmeContext;
     }
 
     @Bean
-    public Node guiNode() {
-        return new Node("Gui Node");
+    public Timer timer(JmeContext context) {
+        return context.getTimer();
     }
 
     @Bean
@@ -75,5 +83,4 @@ public class InitialConfiguration {
     public BitmapFont guiFont(AssetManager assetManager) {
         return assetManager.loadFont("Interface/Fonts/Default.fnt");
     }
-
 }

@@ -40,6 +40,7 @@ import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -66,22 +67,24 @@ public class FlyingCamera implements AnalogListener, ActionListener {
             "FLYCAM_InvertY"
     };
     private final float moveSpeed = 10f;
-    private Camera cam;
+    private final Camera camera;
+    private final InputManager inputManager;
     private Vector3f initialUpVec;
     private boolean enabled = true;
     private boolean canRotate = false;
     private boolean invertY = false;
-    private InputManager inputManager;
 
-    /**
-     * Registers the FlyingCamera to receive input events from the provided
-     * Dispatcher.
-     *
-     * @param inputManager the inputManager
-     */
+
+    @Autowired
+    public FlyingCamera(Camera camera, InputManager inputManager) {
+        this.camera = camera;
+        initialUpVec = this.camera.getUp().clone();
+        this.inputManager = inputManager;
+    }
+
     public void registerWithInput() {
 
-        // both mouse and button - rotation of cam
+        // both mouse and button - rotation of camera
         inputManager.addMapping("FLYCAM_Left", new MouseAxisTrigger(MouseInput.AXIS_X, true),
                 new KeyTrigger(KeyInput.KEY_LEFT));
 
@@ -146,10 +149,10 @@ public class FlyingCamera implements AnalogListener, ActionListener {
                 rotateCamera(-value, initialUpVec);
                 break;
             case "FLYCAM_Up":
-                rotateCamera(-value * (invertY ? -1 : 1), cam.getLeft());
+                rotateCamera(-value * (invertY ? -1 : 1), camera.getLeft());
                 break;
             case "FLYCAM_Down":
-                rotateCamera(value * (invertY ? -1 : 1), cam.getLeft());
+                rotateCamera(value * (invertY ? -1 : 1), camera.getLeft());
                 break;
             case "FLYCAM_Forward":
                 moveCamera(value, false);
@@ -191,9 +194,9 @@ public class FlyingCamera implements AnalogListener, ActionListener {
         float rotationSpeed = 1f;
         mat.fromAngleNormalAxis(rotationSpeed * value, axis);
 
-        Vector3f up = cam.getUp();
-        Vector3f left = cam.getLeft();
-        Vector3f dir = cam.getDirection();
+        Vector3f up = camera.getUp();
+        Vector3f left = camera.getLeft();
+        Vector3f dir = camera.getDirection();
 
         mat.mult(up, up);
         mat.mult(left, left);
@@ -203,41 +206,41 @@ public class FlyingCamera implements AnalogListener, ActionListener {
         q.fromAxes(left, up, dir);
         q.normalizeLocal();
 
-        cam.setAxes(q);
+        camera.setAxes(q);
     }
 
     private void moveCamera(float value, boolean sideways) {
         Vector3f vel = new Vector3f();
-        Vector3f pos = cam.getLocation().clone();
+        Vector3f pos = camera.getLocation().clone();
 
         if (sideways) {
-            cam.getLeft(vel);
+            camera.getLeft(vel);
         } else {
-            cam.getDirection(vel);
+            camera.getDirection(vel);
         }
         vel.multLocal(value * moveSpeed);
 
         pos.addLocal(vel);
 
-        cam.setLocation(pos);
+        camera.setLocation(pos);
     }
 
     private void riseCamera(float value) {
         Vector3f vel = new Vector3f(0, value * moveSpeed, 0);
-        Vector3f pos = cam.getLocation().clone();
+        Vector3f pos = camera.getLocation().clone();
 
         pos.addLocal(vel);
 
-        cam.setLocation(pos);
+        camera.setLocation(pos);
     }
 
     private void zoomCamera(float value) {
         // derive fovY value
-        float h = cam.getFrustumTop();
-        float w = cam.getFrustumRight();
+        float h = camera.getFrustumTop();
+        float w = camera.getFrustumRight();
         float aspect = w / h;
 
-        float near = cam.getFrustumNear();
+        float near = camera.getFrustumNear();
 
         float fovY = FastMath.atan(h / near)
                 / (FastMath.DEG_TO_RAD * .5f);
@@ -251,10 +254,10 @@ public class FlyingCamera implements AnalogListener, ActionListener {
         h = FastMath.tan(fovY * FastMath.DEG_TO_RAD * .5f) * near;
         w = h * aspect;
 
-        cam.setFrustumTop(h);
-        cam.setFrustumBottom(-h);
-        cam.setFrustumLeft(-w);
-        cam.setFrustumRight(w);
+        camera.setFrustumTop(h);
+        camera.setFrustumBottom(-h);
+        camera.setFrustumLeft(-w);
+        camera.setFrustumRight(w);
     }
 
     public void onAction(String name, boolean value, float tpf) {
@@ -272,10 +275,5 @@ public class FlyingCamera implements AnalogListener, ActionListener {
         }
     }
 
-    public void init(Camera camera, InputManager inputManager) {
-        this.cam = camera;
-        initialUpVec = cam.getUp().clone();
-        this.inputManager = inputManager;
-    }
 
 }

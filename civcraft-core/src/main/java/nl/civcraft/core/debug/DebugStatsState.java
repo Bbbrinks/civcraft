@@ -1,53 +1,44 @@
 package nl.civcraft.core.debug;
 
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.font.BitmapText;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.scene.Node;
+import nl.civcraft.core.event.SystemUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-//TODO: after intellij 16 release refactor jmonkey engine to allow renderer to be injected.
 @Service
-public class DebugStatsState extends AbstractAppState implements ActionListener {
+public class DebugStatsState implements ActionListener {
 
     protected static final String TOGGLE_DEBUG_INFO = "TOGGLE_DEBUG_INFO";
     public static String LAST_MESSAGE; //NOSONAR
     private final Node guiNode;
     private final BitmapText fpsText;
     private final BitmapText logMessageText;
-    private Application app;
+    private final InputManager inputManager;
     private float secondCounter;
     private int frameCounter;
     private boolean show = false;
     private Node debugNode;
 
     @Autowired
-    public DebugStatsState(Node guiNode, BitmapText fpsText, BitmapText logMessageText) {
+    public DebugStatsState(Node guiNode, BitmapText fpsText, BitmapText logMessageText, InputManager inputManager) {
         this.guiNode = guiNode;
         this.fpsText = fpsText;
         this.logMessageText = logMessageText;
-    }
-
-    @Override
-    public void initialize(AppStateManager stateManager, Application app) {
-        super.initialize(stateManager, app);
-        this.app = app;
-
+        this.inputManager = inputManager;
         debugNode = new Node("debugNode");
         guiNode.attachChild(debugNode);
-
         loadFpsText();
         loadLogMessageText();
-        registerInputs(app.getInputManager());
-
+        registerInputs(inputManager);
     }
+
 
     /**
      * Attaches FPS statistics to debugNode and displays it on the screen.
@@ -67,8 +58,8 @@ public class DebugStatsState extends AbstractAppState implements ActionListener 
         inputManager.addListener(this, TOGGLE_DEBUG_INFO);
     }
 
-    @Override
-    public void update(float tpf) {
+    @EventListener
+    public void update(SystemUpdate systemUpdate) {
         if (!show) {
             debugNode.detachAllChildren();
         } else {
@@ -76,7 +67,7 @@ public class DebugStatsState extends AbstractAppState implements ActionListener 
             debugNode.attachChild(logMessageText);
         }
 
-        secondCounter += app.getTimer().getTimePerFrame();
+        secondCounter += systemUpdate.getTpf();
         frameCounter++;
         if (secondCounter >= 1.0f) {
             int fps = (int) (frameCounter / secondCounter);
@@ -88,9 +79,7 @@ public class DebugStatsState extends AbstractAppState implements ActionListener 
 
     }
 
-    @Override
     public void cleanup() {
-        super.cleanup();
         debugNode.detachChild(fpsText);
         debugNode.detachChild(logMessageText);
     }

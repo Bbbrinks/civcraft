@@ -1,7 +1,7 @@
 package nl.civcraft.core.rendering;
 
-import com.jme3.app.state.AbstractAppState;
 import com.jme3.scene.Node;
+import nl.civcraft.core.event.SystemUpdate;
 import nl.civcraft.core.model.events.CivvyCreated;
 import nl.civcraft.core.model.events.CivvyRemoved;
 import nl.civcraft.core.npc.Civvy;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
-public class CivvyRenderer extends AbstractAppState {
+public class CivvyRenderer {
 
     private final Node civvyNode;
     private List<Civvy> civvies;
@@ -26,8 +26,8 @@ public class CivvyRenderer extends AbstractAppState {
         civvies = new CopyOnWriteArrayList<>();
     }
 
-    @Override
-    public void update(float tpf) {
+    @EventListener
+    public void update(SystemUpdate systemUpdate) {
         civvyNode.detachAllChildren();
         for (Civvy civvy : civvies) {
             Npc npc = civvy.cloneNpc();

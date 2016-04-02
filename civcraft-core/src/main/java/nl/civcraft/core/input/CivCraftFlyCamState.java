@@ -1,8 +1,5 @@
 package nl.civcraft.core.input;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -17,25 +14,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CivCraftFlyCamState extends AbstractAppState {
+public class CivCraftFlyCamState {
 
     private final FlyingCamera flyCam;
     private final Spatial rootNode;
     private final AssetManager assetManager;
+    private final ViewPort mainViewPort;
 
     @Autowired
-    public CivCraftFlyCamState(FlyingCamera camera, Spatial rootNode, AssetManager assetManager) {
+    public CivCraftFlyCamState(FlyingCamera camera, Spatial rootNode, AssetManager assetManager, ViewPort mainViewPort) {
         this.flyCam = camera;
         this.rootNode = rootNode;
         this.assetManager = assetManager;
+        this.mainViewPort = mainViewPort;
+        initialize();
     }
 
-    @Override
-    public void initialize(AppStateManager stateManager, Application app) {
-        super.initialize(stateManager, app);
-        flyCam.init(app.getCamera(), app.getInputManager());
+    public void initialize() {
         flyCam.registerWithInput();
 
+        //TODO: move this light/shadow stuff somewhere else
         DirectionalLight sun = new DirectionalLight();
         sun.setColor(ColorRGBA.White);
         sun.setDirection(new Vector3f(-.5f, -.5f, -.5f).normalizeLocal());
@@ -48,26 +46,18 @@ public class CivCraftFlyCamState extends AbstractAppState {
         final int SHADOWMAP_SIZE = 1024;
         DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 2);
         dlsr.setLight(sun);
-        ViewPort viewPort = app.getViewPort();
-        viewPort.addProcessor(dlsr);
+        mainViewPort.addProcessor(dlsr);
 
         DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, SHADOWMAP_SIZE, 2);
         dlsf.setLight(sun);
         dlsf.setEnabled(true);
         FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
         fpp.addFilter(dlsf);
-        viewPort.addProcessor(fpp);
+        mainViewPort.addProcessor(fpp);
     }
 
-    @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-        flyCam.setEnabled(enabled);
-    }
 
-    @Override
     public void cleanup() {
-        super.cleanup();
         flyCam.unregisterInput();
     }
 }

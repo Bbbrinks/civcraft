@@ -1,8 +1,8 @@
 package nl.civcraft.core.rendering;
 
-import com.jme3.app.state.AbstractAppState;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import nl.civcraft.core.event.SystemUpdate;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.events.CivvyCreated;
 import nl.civcraft.core.model.events.CivvyRemoved;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class CurrentTaskRenderer extends AbstractAppState {
+public class CurrentTaskRenderer {
 
     private final Spatial moveToSpatial;
     private List<Civvy> civvies;
@@ -41,8 +41,8 @@ public class CurrentTaskRenderer extends AbstractAppState {
         civvies.remove(civvyRemoved.getCivvy());
     }
 
-    @Override
-    public void update(float tpf) {
+    @EventListener
+    public void update(SystemUpdate systemUpdate) {
         highlightNode.detachAllChildren();
         for (Civvy civvy : civvies) {
             if (civvy.getTask() instanceof MoveTo) {

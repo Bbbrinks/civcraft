@@ -1,8 +1,5 @@
 package nl.civcraft.core.input;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -25,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VoxelSelectionInput extends AbstractAppState implements AnalogListener,ActionListener {
+public class VoxelSelectionInput implements AnalogListener, ActionListener {
 
     private static final String MOUSE_MOTION = "MOUSE_MOTION";
     private static final String DELETE_VOXEL = "DELETE_VOXEL";
@@ -40,28 +37,24 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
     private final Spatial hoverSpatial;
     private final TaskManager taskManger;
     private final AStarPathFinder pathFinder;
-    private Camera cam;
-    private InputManager inputManager;
+    private final Camera camera;
+    private final InputManager inputManager;
     private Node selectionBoxes;
     private Node hoverBoxes;
     private Voxel currentVoxel;
 
     @Autowired
-    public VoxelSelectionInput(Node rootNode, WorldManager worldManager, Spatial selectionSpatial, Spatial hoverSpatial, TaskManager taskManger, AStarPathFinder pathFinder) {
+    public VoxelSelectionInput(Node rootNode, WorldManager worldManager, Spatial selectionSpatial, Spatial hoverSpatial, TaskManager taskManger, AStarPathFinder pathFinder, Camera camera, InputManager inputManager) {
         this.rootNode = rootNode;
         this.worldManager = worldManager;
         this.selectionSpatial = selectionSpatial;
         this.hoverSpatial = hoverSpatial;
         this.taskManger = taskManger;
         this.pathFinder = pathFinder;
-    }
+        this.camera = camera;
+        this.inputManager = inputManager;
 
-    @Override
-    public void initialize(AppStateManager stateManager, Application app) {
-        super.initialize(stateManager, app);
-        registerInput(app.getInputManager());
-        this.cam = app.getCamera();
-        this.inputManager = app.getInputManager();
+        registerInput(inputManager);
         selectionBoxes = new Node("selectionBoxes");
         hoverBoxes = new Node("hoverBoxes");
         rootNode.attachChild(selectionBoxes);
@@ -125,9 +118,9 @@ public class VoxelSelectionInput extends AbstractAppState implements AnalogListe
     private Voxel getVoxelAt() {
         CollisionResults results = new CollisionResults();
         Vector2f click2d = inputManager.getCursorPosition();
-        Vector3f click3d = cam.getWorldCoordinates(
+        Vector3f click3d = camera.getWorldCoordinates(
                 new Vector2f(click2d.x, click2d.y), 0f).clone();
-        Vector3f dir = cam.getWorldCoordinates(
+        Vector3f dir = camera.getWorldCoordinates(
                 new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
         Ray ray = new Ray(click3d, dir);
 

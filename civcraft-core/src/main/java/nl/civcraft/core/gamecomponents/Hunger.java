@@ -24,9 +24,9 @@ public class Hunger implements GameComponent {
 
     public void handleTick(Tick tick) {
         if (calories > 10) {
-            calories -= 10;
+            calories -= 1;
         } else {
-            starvation += 10;
+            starvation += 1;
         }
         if (calories > 200 && starvation > 0) {
             starvation -= 10;
@@ -34,6 +34,8 @@ public class Hunger implements GameComponent {
         if (starvation > 200) {
             civvy.kill();
         }
-        LOGGER.warn("Hunger states " + calories + " " + starvation);
+        if (calories < 1000) {
+
+        }
     }
 }

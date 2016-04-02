@@ -63,6 +63,22 @@
             </dependency>
             <dependency>
                 <groupId>com.jme3</groupId>
+                <artifactId>jme3-lwjgl</artifactId>
+                <version>${jmonkey-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jme3</groupId>
+                <artifactId>jme3-niftygui</artifactId>
+                <version>${jmonkey-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bushe</groupId>
+                <artifactId>eventbus</artifactId>
+                <version>1.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.jme3</groupId>
                 <artifactId>jme3-terrain</artifactId>
                 <version>${jmonkey-version}</version>
             </dependency>
@@ -90,7 +106,6 @@
                 <version>1.3</version>
                 <scope>test</scope>
             </dependency>
-
 
 
         </dependencies>

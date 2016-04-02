@@ -1,8 +1,5 @@
 package nl.civcraft.core.worldgeneration;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -17,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class WorldGeneratorState extends AbstractAppState implements ActionListener {
+public class WorldGeneratorState implements ActionListener {
 
     private static final String GENERATE_WORLD = "GENERATE_WORLD";
     private static final String OPTIMIZE_CHUNKS = "OPTIMIZE_CHUNKS";
@@ -32,17 +29,11 @@ public class WorldGeneratorState extends AbstractAppState implements ActionListe
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public WorldGeneratorState(WorldGenerator worldGenerator, WorldManager worldManager, ApplicationEventPublisher applicationEventPublisher) {
+    public WorldGeneratorState(WorldGenerator worldGenerator, WorldManager worldManager, ApplicationEventPublisher applicationEventPublisher, InputManager inputManager) {
         this.worldGenerator = worldGenerator;
         this.worldManager = worldManager;
         this.applicationEventPublisher = applicationEventPublisher;
-    }
-
-    @Override
-    public void initialize(AppStateManager stateManager, Application app) {
-        super.initialize(stateManager, app);
-
-        registerInput(app.getInputManager());
+        registerInput(inputManager);
     }
 
     private void registerInput(InputManager inputManager) {
