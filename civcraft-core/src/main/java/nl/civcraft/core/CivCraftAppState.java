@@ -69,6 +69,6 @@ public class CivCraftAppState implements AppState {
 
     @Override
     public void cleanup() {
-
+        System.exit(0);
     }
 }

@@ -1,23 +1,12 @@
 package nl.civcraft.core.input;
 
-import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.*;
-import com.jme3.math.Ray;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import nl.civcraft.core.managers.TaskManager;
-import nl.civcraft.core.managers.WorldManager;
-import nl.civcraft.core.model.Face;
-import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.pathfinding.AStarPathFinder;
-import nl.civcraft.core.tasks.Harvest;
-import nl.civcraft.core.tasks.MoveTo;
+import nl.civcraft.core.interaction.MouseTool;
+import nl.civcraft.core.interaction.selectors.SingleVoxelSelector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,35 +19,17 @@ public class VoxelSelectionInput implements AnalogListener, ActionListener {
     private static final String MOVE_TO = "MOVE_TO";
     private static final String HARVEST = "HARVEST";
 
-    private final Node rootNode;
 
-    private final WorldManager worldManager;
-    private final Spatial selectionSpatial;
-    private final Spatial hoverSpatial;
-    private final TaskManager taskManger;
-    private final AStarPathFinder pathFinder;
-    private final Camera camera;
-    private final InputManager inputManager;
     private Node selectionBoxes;
-    private Node hoverBoxes;
-    private Voxel currentVoxel;
+    private MouseTool currentTool;
 
     @Autowired
-    public VoxelSelectionInput(Node rootNode, WorldManager worldManager, Spatial selectionSpatial, Spatial hoverSpatial, TaskManager taskManger, AStarPathFinder pathFinder, Camera camera, InputManager inputManager) {
-        this.rootNode = rootNode;
-        this.worldManager = worldManager;
-        this.selectionSpatial = selectionSpatial;
-        this.hoverSpatial = hoverSpatial;
-        this.taskManger = taskManger;
-        this.pathFinder = pathFinder;
-        this.camera = camera;
-        this.inputManager = inputManager;
+    public VoxelSelectionInput(Node rootNode, Node selectionBoxes, SingleVoxelSelector singleVoxelSelector, InputManager inputManager) {
 
         registerInput(inputManager);
-        selectionBoxes = new Node("selectionBoxes");
-        hoverBoxes = new Node("hoverBoxes");
-        rootNode.attachChild(selectionBoxes);
-        rootNode.attachChild(hoverBoxes);
+        this.selectionBoxes = selectionBoxes;
+        currentTool = singleVoxelSelector;
+
     }
 
     private void registerInput(InputManager inputManager) {
@@ -73,10 +44,16 @@ public class VoxelSelectionInput implements AnalogListener, ActionListener {
 
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
+        if (currentTool != null) {
+            if (name.equals(SELECT_VOXEL)) {
+                currentTool.handleLeftClick(isPressed);
+            }
+        }
 
-        if (isPressed) {
+       /* if (isPressed) {
             if (currentVoxel != null) {
                 if(name.equals(SELECT_VOXEL)) {
+                    currentTool.handleLeftClick(isPressed);
                     currentVoxel.isVisible();
                     currentVoxel.getNeighbour(Face.TOP);
                     selectionBoxes.detachAllChildren();
@@ -96,45 +73,23 @@ public class VoxelSelectionInput implements AnalogListener, ActionListener {
                     taskManger.addTask(new Harvest(currentVoxel, pathFinder));
                 }
             }
-        }
+        }*/
 
 
     }
 
     @Override
     public void onAnalog(String name, float value, float tpf) {
-        if (name.equals(MOUSE_MOTION)) {
-            Voxel voxelAt = getVoxelAt();
-            if (voxelAt != null) {
-                currentVoxel = voxelAt;
-                hoverBoxes.detachAllChildren();
-                Spatial clone = hoverSpatial.clone();
-                clone.setLocalTranslation(clone.getLocalTranslation().x + currentVoxel.getX(), clone.getLocalTranslation().y + currentVoxel.getY(), clone.getLocalTranslation().z + currentVoxel.getZ());
-                hoverBoxes.attachChild(clone);
-            }
+        if (currentTool != null) {
+            currentTool.handleMouseMotion();
         }
     }
 
-    private Voxel getVoxelAt() {
-        CollisionResults results = new CollisionResults();
-        Vector2f click2d = inputManager.getCursorPosition();
-        Vector3f click3d = camera.getWorldCoordinates(
-                new Vector2f(click2d.x, click2d.y), 0f).clone();
-        Vector3f dir = camera.getWorldCoordinates(
-                new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-        Ray ray = new Ray(click3d, dir);
+    public MouseTool getCurrentTool() {
+        return currentTool;
+    }
 
-        rootNode.collideWith(ray, results);
-        Voxel voxelAt = null;
-        if (results.size() > 0) {
-            Vector3f contactPoint = results.getCollision(0).getContactPoint();
-            int x = Math.round(contactPoint.x);
-            int y = Math.round(contactPoint.y);
-            int z = Math.round(contactPoint.z);
-
-
-            voxelAt = worldManager.getWorld().getVoxelAt(x, y, z);
-        }
-        return voxelAt;
+    public void setCurrentTool(MouseTool currentTool) {
+        this.currentTool = currentTool;
     }
 }
