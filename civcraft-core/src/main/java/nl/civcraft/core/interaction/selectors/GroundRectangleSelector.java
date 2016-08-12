@@ -51,11 +51,16 @@ public class GroundRectangleSelector implements MouseTool {
         } else {
             currentVoxelHighlighter.clear();
             currentVoxel = currentVoxelHighlighter.getCurrentVoxel();
+            selectionBoxes.detachAllChildren();
             loopThroughSelection(this::addHighlight);
         }
     }
 
     private void loopThroughSelection(SelectionLooper selectionLooper) {
+        if (startingVoxel.equals(currentVoxel)) {
+            selectionLooper.handleElement(startingVoxel.getX(), startingVoxel.getZ());
+            return;
+        }
         int startX = startingVoxel.getX();
         int startZ = startingVoxel.getZ();
         int endX = currentVoxel.getX();
@@ -72,9 +77,8 @@ public class GroundRectangleSelector implements MouseTool {
             startZ = endZ;
             endZ = tmp;
         }
-        selectionBoxes.detachAllChildren();
-        for (int x = startX; x < endX; x++) {
-            for (int z = startZ; z < endZ; z++) {
+        for (int x = startX; x <= endX; x++) {
+            for (int z = startZ; z <= endZ; z++) {
                 selectionLooper.handleElement(x, z);
             }
         }

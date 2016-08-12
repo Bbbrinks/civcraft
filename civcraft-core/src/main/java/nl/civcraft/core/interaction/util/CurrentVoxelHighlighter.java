@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CurrentVoxelHighlighter {
 
+    public static final float EPSILON = 0.0001f;
     private final Camera camera;
     private final InputManager inputManager;
     private final Node rootNode;
@@ -58,13 +59,22 @@ public class CurrentVoxelHighlighter {
 
         rootNode.collideWith(ray, results);
         if (results.size() > 0) {
-            Vector3f contactPoint = results.getCollision(0).getContactPoint();
-            int x = Math.round(contactPoint.x);
-            int y = Math.round(contactPoint.y);
-            int z = Math.round(contactPoint.z);
-            Voxel newVoxel = worldManager.getWorld().getVoxelAt(x, y, z);
-            if (newVoxel != null) {
-                this.voxelAt = newVoxel;
+            for (int i = 0; i < 2 && i < results.size(); i++) {
+
+                Vector3f contactPoint = results.getCollision(i).getContactPoint();
+                int y = (int) contactPoint.y;
+                if (Math.abs(contactPoint.y - y - 0.5f) < EPSILON) {
+                    y = Math.round(contactPoint.y - 0.1f);
+                } else {
+                    y = Math.round(contactPoint.y);
+                }
+                int x = Math.round(contactPoint.x);
+                int z = Math.round(contactPoint.z);
+                Voxel newVoxel = worldManager.getWorld().getVoxelAt(x, y, z);
+                if (newVoxel != null) {
+                    this.voxelAt = newVoxel;
+                    break;
+                }
             }
         }
         return voxelAt;
