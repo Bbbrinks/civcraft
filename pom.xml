@@ -10,13 +10,13 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>civcraft-core</module>
-        <module>civcraft-desktop</module>
     </modules>
 
     <properties>
         <!-- dependency versions -->
         <spring-version>4.2.1.RELEASE</spring-version>
-        <jmonkey-version>3.0.10</jmonkey-version>
+        <jmonkey-version>3.1.0-beta1</jmonkey-version>
+        <myproject.root>${basedir}</myproject.root>
     </properties>
 
     <dependencies>
@@ -47,32 +47,28 @@
                 <version>${spring-version}</version>
             </dependency>
             <dependency>
-                <groupId>com.jme3</groupId>
+                <groupId>org.jmonkeyengine</groupId>
                 <artifactId>jme3-core</artifactId>
                 <version>${jmonkey-version}</version>
             </dependency>
             <dependency>
-                <groupId>com.jme3</groupId>
+                <groupId>org.jmonkeyengine</groupId>
                 <artifactId>jme3-desktop</artifactId>
                 <version>${jmonkey-version}</version>
             </dependency>
             <dependency>
-                <groupId>com.jme3</groupId>
+                <groupId>org.jmonkeyengine</groupId>
                 <artifactId>jme3-lwjgl</artifactId>
                 <version>${jmonkey-version}</version>
             </dependency>
             <dependency>
-                <groupId>com.jme3</groupId>
+                <groupId>org.jmonkeyengine</groupId>
                 <artifactId>jme3-lwjgl</artifactId>
                 <version>${jmonkey-version}</version>
             </dependency>
+
             <dependency>
-                <groupId>com.jme3</groupId>
-                <artifactId>jme3-niftygui</artifactId>
-                <version>${jmonkey-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.jme3</groupId>
+                <groupId>org.jmonkeyengine</groupId>
                 <artifactId>jme3-effects</artifactId>
                 <version>${jmonkey-version}</version>
             </dependency>
@@ -84,10 +80,11 @@
             </dependency>
 
             <dependency>
-                <groupId>com.jme3</groupId>
+                <groupId>org.jmonkeyengine</groupId>
                 <artifactId>jme3-terrain</artifactId>
                 <version>${jmonkey-version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
@@ -114,17 +111,54 @@
             </dependency>
 
 
+            <dependency>
+                <groupId>jmonkey.csg</groupId>
+                <artifactId>jmonkey-hax</artifactId>
+                <version>1.0</version>
+                <scope>system</scope>
+                <systemPath>${myproject.root}/lib/jMonkey3-b31102015-j17-minimal.jar</systemPath>
+            </dependency>
+            <dependency>
+                <groupId>jmonkey.csg</groupId>
+                <artifactId>csg</artifactId>
+                <version>1.0</version>
+                <scope>system</scope>
+                <systemPath>${myproject.root}/lib/WCOmoCSG-b05022016-j17.jar</systemPath>
+            </dependency>
+            <dependency>
+                <groupId>com.simsilica</groupId>
+                <artifactId>lemur</artifactId>
+                <version>1.8.1</version>
+                <scope>system</scope>
+                <systemPath>${myproject.root}/lib/lemur-1.8.1.jar</systemPath>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.21</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>19.0</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all -->
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>2.4.7</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <repositories>
         <repository>
-            <id>jmonkey</id>
-            <name>jmonkey repository</name>
-            <url>http://updates.jmonkeyengine.org/maven/</url>
+            <id>jcenter</id>
+            <url>http://jcenter.bintray.com</url>
         </repository>
     </repositories>
-
     <build>
         <plugins>
             <plugin>

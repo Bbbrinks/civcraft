@@ -1,6 +1,6 @@
 package nl.civcraft.core.event;
 
-import nl.civcraft.core.SystemEventHandler;
+import nl.civcraft.core.CivCraftAppState;
 import org.springframework.context.ApplicationEvent;
 
 /**
@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationEvent;
 public class SystemUpdate extends ApplicationEvent {
     private final float tpf;
 
-    public SystemUpdate(float tpf, SystemEventHandler systemEventHandler) {
+    public SystemUpdate(float tpf, CivCraftAppState systemEventHandler) {
         super(systemEventHandler);
         this.tpf = tpf;
     }

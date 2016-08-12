@@ -1,32 +1,36 @@
 package nl.civcraft.core.conf;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.input.InputManager;
-import com.jme3.niftygui.NiftyJmeDisplay;
-import com.jme3.renderer.ViewPort;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
-import de.lessvoid.nifty.Nifty;
+import com.simsilica.lemur.Container;
+import com.simsilica.lemur.GuiGlobals;
+import com.simsilica.lemur.style.BaseStyles;
+import nl.civcraft.core.Civcraft;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 
 @Configuration
 public class GuiConfiguration {
 
     @Bean
-    public NiftyJmeDisplay niftyJmeDisplay(AssetManager assetManager, InputManager inputManager, ViewPort guiViewPort) {
-        NiftyJmeDisplay niftyJmeDisplay = new NiftyJmeDisplay(assetManager, inputManager, null, guiViewPort);
-        Nifty nifty = niftyJmeDisplay.getNifty();
-        nifty.loadStyleFile("nifty-default-styles.xml");
-        nifty.loadControlFile("nifty-default-controls.xml");
-        guiViewPort.addProcessor(niftyJmeDisplay);
-        return niftyJmeDisplay;
+    public Container hudContainer(Civcraft civcraft) {
+        GuiGlobals.initialize(civcraft);
+
+        // Load the 'glass' style
+        BaseStyles.loadGlassStyle();
+
+        // Set 'glass' as the default style when not specified
+        GuiGlobals.getInstance().getStyles().setDefaultStyle("glass");
+
+        // Create a simple container for our elements
+        Container myWindow = new Container();
+        civcraft.getGuiNode().attachChild(myWindow);
+
+        return myWindow;
     }
 
     @Bean
-    public Node guiNode() {
-        Node node = new Node("Gui Node");
-        node.setQueueBucket(RenderQueue.Bucket.Gui);
-        return node;
+    public Node guiNode(Civcraft civcraft) {
+        return civcraft.getGuiNode();
     }
 }

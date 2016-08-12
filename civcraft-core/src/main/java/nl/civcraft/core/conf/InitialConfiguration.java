@@ -9,11 +9,9 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
-import com.jme3.system.AppSettings;
 import com.jme3.system.JmeContext;
-import com.jme3.system.JmeSystem;
 import com.jme3.system.Timer;
-import nl.civcraft.core.SystemEventHandler;
+import nl.civcraft.core.Civcraft;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -31,12 +29,8 @@ public class InitialConfiguration {
 
 
     @Bean
-    public JmeContext context(AppSettings settings, SystemEventHandler systemEventHandler) {
-        JmeContext jmeContext = JmeSystem.newContext(settings, JmeContext.Type.Display);
-        jmeContext.setSystemListener(systemEventHandler);
-        jmeContext.create(true);
-        systemEventHandler.setTimer(jmeContext.getTimer());
-        return jmeContext;
+    public JmeContext context(Civcraft civcraft) {
+        return civcraft.getContext();
     }
 
     @Bean
@@ -46,10 +40,8 @@ public class InitialConfiguration {
 
     @Bean
     @Scope("singleton")
-    public AssetManager assetManager() {
-        return JmeSystem.newAssetManager(
-                Thread.currentThread().getContextClassLoader()
-                        .getResource("com/jme3/asset/Desktop.cfg"));
+    public AssetManager assetManager(Civcraft civcraft) {
+        return civcraft.getAssetManager();
     }
 
     @Bean

@@ -6,9 +6,8 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.Renderer;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import com.jme3.system.AppSettings;
 import com.jme3.system.JmeContext;
-import com.jme3.system.Timer;
+import nl.civcraft.core.Civcraft;
 import nl.civcraft.core.rendering.ChunkRendererControl;
 import nl.civcraft.core.rendering.RenderedVoxelFilter;
 import nl.civcraft.core.rendering.VoxelRendererControl;
@@ -43,8 +42,8 @@ public class RenderingConfiguration {
     }
 
     @Bean
-    public Node rootNode() {
-        return new Node("Root Node");
+    public Node rootNode(Civcraft civcraft) {
+        return civcraft.getRootNode();
     }
 
     @Bean
@@ -53,38 +52,29 @@ public class RenderingConfiguration {
     }
 
     @Bean
-    public RenderManager renderManager(Renderer renderer, Timer timer) {
-        RenderManager renderManager = new RenderManager(renderer);
-        renderManager.setTimer(timer);
-        return renderManager;
+    public RenderManager renderManager(Civcraft civcraft) {
+        return civcraft.getRenderManager();
     }
 
     @Bean
-    public Camera camera(AppSettings settings) {
-        Camera cam = new Camera(settings.getWidth(), settings.getHeight());
+    public Camera camera(Civcraft civcraft) {
+
+        Camera cam = civcraft.getCamera();
 
         cam.setFrustumPerspective(45f, (float) cam.getWidth() / cam.getHeight(), 1f, 1000f);
         cam.setLocation(new Vector3f(0f, 0f, 10f));
         cam.lookAt(new Vector3f(0f, 0f, 0f), Vector3f.UNIT_Y);
         return cam;
+
     }
 
     @Bean
-    Camera guiCamera(AppSettings settings) {
-        return new Camera(settings.getWidth(), settings.getHeight());
+    public ViewPort mainViewPort(Civcraft civcraft) {
+        return civcraft.getViewPort();
     }
 
     @Bean
-    public ViewPort mainViewPort(RenderManager renderManager, Camera camera) {
-        ViewPort viewPort = renderManager.createMainView("Default", camera);
-        viewPort.setClearFlags(true, true, true);
-        return viewPort;
-    }
-
-    @Bean
-    public ViewPort guiViewPort(RenderManager renderManager, Camera guiCamera) {
-        ViewPort guiViewPort = renderManager.createPostView("Gui Default", guiCamera);
-        guiViewPort.setClearFlags(false, false, false);
-        return guiViewPort;
+    public ViewPort guiViewPort(Civcraft civcraft) {
+        return civcraft.getGuiViewPort();
     }
 }

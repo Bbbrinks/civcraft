@@ -11,9 +11,12 @@
 
     <artifactId>civcraft-core</artifactId>
 
+    <properties>
+        <myproject.root>${basedir}/..</myproject.root>
+    </properties>
     <dependencies>
         <dependency>
-            <groupId>com.jme3</groupId>
+            <groupId>org.jmonkeyengine</groupId>
             <artifactId>jme3-core</artifactId>
         </dependency>
         <dependency>
@@ -25,7 +28,7 @@
             <artifactId>spring-context</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.jme3</groupId>
+            <groupId>org.jmonkeyengine</groupId>
             <artifactId>jme3-terrain</artifactId>
         </dependency>
         <dependency>
@@ -37,30 +40,46 @@
         <dependency>
             <groupId>jmonkey.csg</groupId>
             <artifactId>jmonkey-hax</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/jMonkey3-b31102015-j17-minimal.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>jmonkey.csg</groupId>
             <artifactId>csg</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/WCOmoCSG-b05022016-j17.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.jme3</groupId>
-            <artifactId>jme3-niftygui</artifactId>
         </dependency>
         <dependency>
             <groupId>org.bushe</groupId>
             <artifactId>eventbus</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.jme3</groupId>
+            <groupId>org.jmonkeyengine</groupId>
             <artifactId>jme3-effects</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.simsilica</groupId>
+            <artifactId>lemur</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jmonkeyengine</groupId>
+            <artifactId>jme3-desktop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jmonkeyengine</groupId>
+            <artifactId>jme3-lwjgl</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

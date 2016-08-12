@@ -2,6 +2,7 @@ package nl.civcraft.core.conf;
 
 import com.jme3.input.*;
 import com.jme3.system.JmeContext;
+import nl.civcraft.core.Civcraft;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 public class InputConfiguration {
 
     @Bean
-    public InputManager inputManager(MouseInput mouse, KeyInput keys, JoyInput joystick, TouchInput touch) {
-        return new InputManager(mouse, keys, joystick, touch);
+    public InputManager inputManager(Civcraft civcraft) {
+        return civcraft.getInputManager();
     }
 
     @Bean
