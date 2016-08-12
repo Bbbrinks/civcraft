@@ -81,7 +81,6 @@ public class Chunk {
         voxel.remove();
         int arrayIndex = getArrayIndex(voxel.getLocalX(), voxel.getLocalY(), voxel.getLocalZ());
         voxels[arrayIndex] = null;
-        publisher.publishEvent(new ChunkModifiedEvent(this, this));
         publisher.publishEvent(new VoxelRemovedEvent(voxel, this));
     }
 

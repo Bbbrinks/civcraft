@@ -85,21 +85,25 @@ public class VoxelRendererControl extends AbstractControl {
     public void handleVoxelChanged(VoxelChangedEvent voxelChangedEvent) {
         Chunk chunk = voxelChangedEvent.getVoxel().getChunk();
         modifiedChunks.add(chunk);
-        renderVoxels(Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).collect(Collectors.toList()));
+        // renderVoxels(Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).collect(Collectors.toList()));
     }
 
     @EventListener
     public void handleVoxelRemovedEvent(VoxelRemovedEvent voxelRemovedEvent) {
         Chunk chunk = voxelRemovedEvent.getVoxel().getChunk();
-        modifiedChunks.add(chunk);
-        renderVoxels(Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).collect(Collectors.toList()));
+        if (!modifiedChunks.contains(chunk)) {
+            modifiedChunks.add(chunk);
+        }
+
     }
 
     @Override
     protected void controlUpdate(float tpf) {
         while (modifiedChunks.peek() != null) {
-            Node voxelChunkNode = (Node) chunks.getChild(modifiedChunks.poll().getName());
+            Chunk chunk = modifiedChunks.poll();
+            Node voxelChunkNode = (Node) chunks.getChild(chunk.getName());
             voxelChunkNode.detachAllChildren();
+            renderVoxels(Arrays.stream(chunk.getVoxels()).filter(v -> v != null).collect(Collectors.toList()));
         }
 
         List<Pair<Chunk, Spatial>> failedVoxels = new ArrayList<>();
