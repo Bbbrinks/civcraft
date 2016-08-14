@@ -2,15 +2,14 @@ package nl.civcraft.core.model;
 
 
 import com.jme3.math.Vector3f;
-import nl.civcraft.core.model.events.ChunkAddedEvent;
-import nl.civcraft.core.model.events.CivvyCreated;
-import nl.civcraft.core.model.events.CivvyRemoved;
-import nl.civcraft.core.model.events.VoxelsAddedEvent;
+import nl.civcraft.core.model.events.*;
 import nl.civcraft.core.npc.Civvy;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class World {
@@ -19,11 +18,13 @@ public class World {
     private final List<Chunk> chunks;
     private final List<Civvy> civvies;
     private final ApplicationEventPublisher publisher;
+    private final Set<Stockpile> stockpiles;
 
     public World(ApplicationEventPublisher publisher) {
         this.publisher = publisher;
         chunks = new ArrayList<>();
         civvies = new ArrayList<>();
+        stockpiles = new HashSet<>();
     }
 
     public void clearChunks() {
@@ -130,5 +131,10 @@ public class World {
         publisher.publishEvent(new CivvyRemoved(civvy, this));
         this.civvies.remove(civvy);
 
+    }
+
+    public void addStockpile(Stockpile createdStockpile) {
+        this.stockpiles.add(createdStockpile);
+        publisher.publishEvent(new StockpileCreated(createdStockpile, this));
     }
 }

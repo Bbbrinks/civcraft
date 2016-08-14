@@ -2,11 +2,14 @@ package nl.civcraft.core.conf;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Texture;
 import nl.civcraft.core.model.Block;
@@ -175,5 +178,19 @@ public class BlockConfiguration {
         treeTrunkSideMaterial.setTexture("ColorMap", treeTrunkSideTex);
 
         return getQuadBlock("treeTrunk", treeTrunkTopMaterial, treeTrunkSideMaterial, treeTrunkTopMaterial);
+    }
+
+    @Bean
+    public Spatial stockpileSpatial(AssetManager assetManager) {
+        Node stockpile = new Node();
+        Geometry topGeometry = getBlockQuadGeometry(Face.TOP);
+        topGeometry.setLocalTranslation(topGeometry.getLocalTranslation().add(new Vector3f(0, 0.001f, 0)));
+        Material mat = new Material(assetManager,  // Create new material and...
+                "Common/MatDefs/Misc/Unshaded.j3md");  // ... specify .j3md file to use (unshaded).
+        mat.setColor("Color", new ColorRGBA(0.3f, 0.9f, 0.9f, 0.5f));
+        mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        topGeometry.setMaterial(mat);
+        stockpile.attachChild(topGeometry);
+        return stockpile;
     }
 }

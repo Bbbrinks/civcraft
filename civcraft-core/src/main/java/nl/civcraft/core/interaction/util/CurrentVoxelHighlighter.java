@@ -49,6 +49,10 @@ public class CurrentVoxelHighlighter {
     }
 
     public Voxel getCurrentVoxel() {
+        Spatial voxelNode = rootNode.getChild("chunks");
+        if (voxelNode == null) {
+            return null;
+        }
         CollisionResults results = new CollisionResults();
         Vector2f click2d = inputManager.getCursorPosition();
         Vector3f click3d = camera.getWorldCoordinates(
@@ -57,7 +61,7 @@ public class CurrentVoxelHighlighter {
                 new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
         Ray ray = new Ray(click3d, dir);
 
-        rootNode.collideWith(ray, results);
+        voxelNode.collideWith(ray, results);
         if (results.size() > 0) {
             for (int i = 0; i < 2 && i < results.size(); i++) {
 

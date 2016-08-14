@@ -27,6 +27,10 @@ public class Civcraft extends SimpleApplication {
 
     }
 
+    public boolean isPaused() {
+        return paused;
+    }
+
     public AppSettings getSettings() {
         return settings;
 

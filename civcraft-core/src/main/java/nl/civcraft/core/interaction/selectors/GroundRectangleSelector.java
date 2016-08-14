@@ -6,24 +6,20 @@ import nl.civcraft.core.interaction.MouseTool;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Voxel;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by Bob on 12-8-2016.
  * <p>
  * This is probably not worth documenting
  */
-@Component
-public class GroundRectangleSelector implements MouseTool {
+public abstract class GroundRectangleSelector implements MouseTool {
+    protected final WorldManager worldManager;
     private final CurrentVoxelHighlighter currentVoxelHighlighter;
     private final Node selectionBoxes;
     private final Spatial hoverSpatial;
-    private final WorldManager worldManager;
     private Voxel currentVoxel;
     private Voxel startingVoxel;
 
-    @Autowired
     public GroundRectangleSelector(CurrentVoxelHighlighter currentVoxelHighlighter, Node selectionBoxes, Spatial hoverSpatial, WorldManager worldManager) {
         this.currentVoxelHighlighter = currentVoxelHighlighter;
         this.selectionBoxes = selectionBoxes;
@@ -37,28 +33,20 @@ public class GroundRectangleSelector implements MouseTool {
             if (startingVoxel == null) {
                 startingVoxel = currentVoxelHighlighter.getCurrentVoxel();
             } else {
-                loopThroughSelection(this::deleteBlock);
+                startSelection();
+                loopThroughSelection((x, y, z) -> handleSelection(x, startingVoxel.getY(), z));
+                endSelection();
                 selectionBoxes.detachAllChildren();
                 startingVoxel = null;
             }
         }
     }
 
-    @Override
-    public void handleMouseMotion() {
-        if (startingVoxel == null) {
-            currentVoxel = currentVoxelHighlighter.highLight();
-        } else {
-            currentVoxelHighlighter.clear();
-            currentVoxel = currentVoxelHighlighter.getCurrentVoxel();
-            selectionBoxes.detachAllChildren();
-            loopThroughSelection(this::addHighlight);
-        }
-    }
+    protected abstract void startSelection();
 
     private void loopThroughSelection(SelectionLooper selectionLooper) {
         if (startingVoxel.equals(currentVoxel)) {
-            selectionLooper.handleElement(startingVoxel.getX(), startingVoxel.getZ());
+            selectionLooper.handleElement(startingVoxel.getX(), startingVoxel.getY(), startingVoxel.getZ());
             return;
         }
         int startX = startingVoxel.getX();
@@ -79,15 +67,24 @@ public class GroundRectangleSelector implements MouseTool {
         }
         for (int x = startX; x <= endX; x++) {
             for (int z = startZ; z <= endZ; z++) {
-                selectionLooper.handleElement(x, z);
+                selectionLooper.handleElement(x, startingVoxel.getY(), z);
             }
         }
     }
 
-    private void deleteBlock(int x, int z) {
-        Voxel voxelAt = worldManager.getWorld().getVoxelAt(x, startingVoxel.getY(), z);
-        if (voxelAt != null) {
-            voxelAt.breakBlock();
+    protected abstract void handleSelection(int x, int y, int z);
+
+    protected abstract void endSelection();
+
+    @Override
+    public void handleMouseMotion() {
+        if (startingVoxel == null) {
+            currentVoxel = currentVoxelHighlighter.highLight();
+        } else {
+            currentVoxelHighlighter.clear();
+            currentVoxel = currentVoxelHighlighter.getCurrentVoxel();
+            selectionBoxes.detachAllChildren();
+            loopThroughSelection((x, y, z) -> addHighlight(x, z));
         }
     }
 
@@ -97,8 +94,15 @@ public class GroundRectangleSelector implements MouseTool {
         selectionBoxes.attachChild(clone);
     }
 
+    private void deleteBlock(int x, int z) {
+        Voxel voxelAt = worldManager.getWorld().getVoxelAt(x, startingVoxel.getY(), z);
+        if (voxelAt != null) {
+            voxelAt.breakBlock();
+        }
+    }
+
     @FunctionalInterface
     private interface SelectionLooper {
-        void handleElement(int x, int z);
+        void handleElement(int x, int y, int z);
     }
 }
