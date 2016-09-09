@@ -151,4 +151,8 @@ public class World {
         }
         return Optional.empty();
     }
+
+    public Optional<Stockpile> getStockPile() {
+        return stockpiles.stream().findAny();
+    }
 }

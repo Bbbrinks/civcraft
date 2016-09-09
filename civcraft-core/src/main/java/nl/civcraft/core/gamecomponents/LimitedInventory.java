@@ -24,6 +24,11 @@ public class LimitedInventory implements Inventory, GameComponent {
     }
 
     @Override
+    public void destroyed(GameObject gameObject) {
+
+    }
+
+    @Override
     public Optional<Item> getFirstItem() {
         Item firstItem = items[0];
         items[0] = items[1];
@@ -56,5 +61,10 @@ public class LimitedInventory implements Inventory, GameComponent {
             }
         }
         return true;
+    }
+
+    @Override
+    public void remove(Item item) {
+        //TODO remove item
     }
 }

@@ -22,6 +22,11 @@ public class Hunger implements GameComponent {
         calories = 3000;
     }
 
+    @Override
+    public void destroyed(GameObject gameObject) {
+
+    }
+
     public void handleTick(Tick tick) {
         if (calories > 10) {
             calories -= 1;

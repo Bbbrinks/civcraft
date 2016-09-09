@@ -30,4 +30,10 @@ public class GameObject {
 
     public void changed() {//no op}
     }
+
+    public void destroy() {
+        for (GameComponent component : components) {
+            component.destroyed(this);
+        }
+    }
 }

@@ -15,4 +15,6 @@ public interface Inventory {
     boolean addItem(Item item);
 
     boolean isEmpty();
+
+    void remove(Item item);
 }

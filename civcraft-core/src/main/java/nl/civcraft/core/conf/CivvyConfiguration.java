@@ -7,6 +7,7 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import nl.civcraft.core.managers.TaskManager;
+import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.npc.Npc;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.tasks.Wander;
@@ -42,8 +43,8 @@ public class CivvyConfiguration {
     }
 
     @Bean
-    public TaskManager taskManager() {
-        TaskManager taskManager = new TaskManager();
+    public TaskManager taskManager(WorldManager worldManager) {
+        TaskManager taskManager = new TaskManager(worldManager, pathFinder);
         taskManager.addTask(new Wander(pathFinder));
         return taskManager;
     }

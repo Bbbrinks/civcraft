@@ -1,6 +1,7 @@
 package nl.civcraft.core.gamecomponents;
 
 import com.jme3.scene.Node;
+import nl.civcraft.core.model.GameObject;
 
 /**
  * Created by Bob on 25-3-2016.
@@ -23,5 +24,10 @@ public class AppleLeafVoxelRenderer extends VoxelRenderer {
         } else {
             return (Node) appleTreeLeafBlock.clone();
         }
+    }
+
+    @Override
+    public void destroyed(GameObject gameObject) {
+
     }
 }

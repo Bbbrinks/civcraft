@@ -9,4 +9,6 @@ import nl.civcraft.core.model.GameObject;
  */
 public interface GameComponent {
     void addTo(GameObject gameObject);
+
+    void destroyed(GameObject gameObject);
 }

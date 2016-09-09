@@ -29,4 +29,9 @@ public class HarvestFromInventory implements Harvestable, GameComponent {
         }
         this.gameObject = gameObject;
     }
+
+    @Override
+    public void destroyed(GameObject gameObject) {
+
+    }
 }

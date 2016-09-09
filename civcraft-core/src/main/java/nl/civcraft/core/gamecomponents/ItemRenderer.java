@@ -9,9 +9,12 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
 import nl.civcraft.core.managers.Physical;
 import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.model.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -25,12 +28,14 @@ public class ItemRenderer implements GameComponent {
 
     private final Node entityNode;
     private final AssetManager assetManager;
+    private final Map<Item, Geometry> renderedItems;
 
     @Autowired
     public ItemRenderer(Node rootNode, AssetManager assetManager) {
         this.assetManager = assetManager;
         entityNode = new Node("entityNode");
         rootNode.attachChild(entityNode);
+        renderedItems = new HashMap<>();
     }
 
     @Override
@@ -53,5 +58,12 @@ public class ItemRenderer implements GameComponent {
         }
         item.setLocalTransform(physical.get().getTransform());
         entityNode.attachChild(item);
+        renderedItems.put(itemComponent.get().getItem(), item);
+    }
+
+    @Override
+    public void destroyed(GameObject gameObject) {
+        Item item = gameObject.getComponent(ItemComponent.class).get().getItem();
+        entityNode.detachChild(renderedItems.remove(item));
     }
 }

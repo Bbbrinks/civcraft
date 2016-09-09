@@ -33,6 +33,9 @@ public class MoveTo extends Task {
         }
         this.civvy = civvy;
         if (path == null) {
+            if (civvy.getCurrentVoxel().equals(target)) {
+                return Result.COMPLETED;
+            }
             path = pathFinder.findPath(civvy, civvy.getCurrentVoxel(), new MoveToVoxelTarget(target));
             if (path == null) {
                 return Result.FAILED;

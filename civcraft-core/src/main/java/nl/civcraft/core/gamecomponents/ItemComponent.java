@@ -19,4 +19,13 @@ public class ItemComponent implements GameComponent {
     public void addTo(GameObject gameObject) {
 
     }
+
+    @Override
+    public void destroyed(GameObject gameObject) {
+
+    }
+
+    public Item getItem() {
+        return item;
+    }
 }
