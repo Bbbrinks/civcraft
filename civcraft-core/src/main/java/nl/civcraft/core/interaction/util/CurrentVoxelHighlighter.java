@@ -13,6 +13,8 @@ import nl.civcraft.core.model.Voxel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class CurrentVoxelHighlighter {
 
@@ -74,9 +76,9 @@ public class CurrentVoxelHighlighter {
                 }
                 int x = Math.round(contactPoint.x);
                 int z = Math.round(contactPoint.z);
-                Voxel newVoxel = worldManager.getWorld().getVoxelAt(x, y, z);
-                if (newVoxel != null) {
-                    this.voxelAt = newVoxel;
+                Optional<Voxel> newVoxel = worldManager.getWorld().getVoxelAt(x, y, z);
+                if (newVoxel.isPresent()) {
+                    this.voxelAt = newVoxel.get();
                     break;
                 }
             }

@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -64,12 +65,12 @@ public class Chunk {
         return arrayIndex;
     }
 
-    public Voxel getVoxelAt(int x, int y, int z) {
+    public Optional<Voxel> getVoxelAt(int x, int y, int z) {
         int arrayIndex = getArrayIndex(x - chunkX * World.CHUNK_SIZE, y - chunkY * World.CHUNK_SIZE, z - chunkZ * World.CHUNK_SIZE);
         if (arrayIndex == -1) {
-            return null;
+            return Optional.empty();
         }
-        return voxels[arrayIndex];
+        return Optional.ofNullable(voxels[arrayIndex]);
     }
 
     public Voxel[] getVoxels() {

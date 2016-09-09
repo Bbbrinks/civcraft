@@ -7,6 +7,8 @@ import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Voxel;
 
+import java.util.Optional;
+
 /**
  * Created by Bob on 12-8-2016.
  * <p>
@@ -67,6 +69,7 @@ public abstract class GroundRectangleSelector implements MouseTool {
         }
         for (int x = startX; x <= endX; x++) {
             for (int z = startZ; z <= endZ; z++) {
+                Optional<Voxel> voxelAt = worldManager.getWorld().getVoxelAt(x, startingVoxel.getY(), z);
                 selectionLooper.handleElement(x, startingVoxel.getY(), z);
             }
         }
@@ -95,9 +98,9 @@ public abstract class GroundRectangleSelector implements MouseTool {
     }
 
     private void deleteBlock(int x, int z) {
-        Voxel voxelAt = worldManager.getWorld().getVoxelAt(x, startingVoxel.getY(), z);
-        if (voxelAt != null) {
-            voxelAt.breakBlock();
+        Optional<Voxel> voxelAt = worldManager.getWorld().getVoxelAt(x, startingVoxel.getY(), z);
+        if (voxelAt.isPresent()) {
+            voxelAt.get().breakBlock();
         }
     }
 

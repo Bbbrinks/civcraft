@@ -17,6 +17,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @PropertySource("classpath:world-generation.properties")
 public class WorldGenerator implements Runnable {
@@ -78,10 +80,13 @@ public class WorldGenerator implements Runnable {
             float civX = MathUtil.rnd(0f, 120f);
             float civZ = MathUtil.rnd(0f, 120f);
             float civY = heightMap.getHeight((int) civX, (int) civZ);
-            Voxel voxelAt = worldManager.getWorld().getVoxelAt(civX, civY, civZ);
+            Optional<Voxel> voxelAt = worldManager.getWorld().getVoxelAt(civX, civY, civZ);
+            if (!voxelAt.isPresent()) {
+                throw new IllegalStateException("Voxel not present");
+            }
             Npc npc = civvyManager.getNpc("civvy");
             Civvy civvy = new Civvy(civX, civY + 1, civZ, "civvy", npc);
-            civvy.setCurrentVoxel(voxelAt);
+            civvy.setCurrentVoxel(voxelAt.get());
             civvy.addComponent(new LimitedInventory(2));
             worldManager.getWorld().addCivvy(civvy);
 

@@ -6,10 +6,7 @@ import nl.civcraft.core.model.events.*;
 import nl.civcraft.core.npc.Civvy;
 import org.springframework.context.ApplicationEventPublisher;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class World {
@@ -39,11 +36,7 @@ public class World {
                 int x = voxel.getX();
                 int y = voxel.getY();
                 int z = voxel.getZ();
-                Chunk chunkAt = getChunkAt(x, y, z);
-                if (chunkAt == null) {
-                    chunkAt = addChunkAt(x, y, z);
-                }
-
+                Chunk chunkAt = getChunkAt(x, y, z).map(chunk -> chunk).orElse(addChunkAt(x, y, z));
                 voxel.addNeighbours(getVoxelNeighbours(voxel));
 
                 chunkAt.addVoxel(voxel);
@@ -54,20 +47,18 @@ public class World {
         publisher.publishEvent(new VoxelsAddedEvent(addedVoxels, this));
     }
 
-    public Voxel getVoxelAt(float x, float y, float z) {
-        Chunk chunkAt = getChunkAt((int) x, (int) y, (int) z);
-        if (chunkAt == null) {
-            return null;
-        }
-        return chunkAt.getVoxelAt((int) x, (int) y, (int) z);
+    public Optional<Voxel> getVoxelAt(float x, float y, float z) {
+        return getChunkAt((int) x, (int) y, (int) z).
+                map(chunk -> chunk.getVoxelAt((int) x, (int) y, (int) z)).
+                orElse(Optional.empty());
     }
 
-    private Chunk getChunkAt(int x, int y, int z) {
+    private Optional<Chunk> getChunkAt(int x, int y, int z) {
         List<Chunk> found = chunks.stream().filter(c -> c.containsCoors(x, y, z)).limit(1).collect(Collectors.toList());
         if (!found.isEmpty()) {
-            return found.get(0);
+            return Optional.of(found.get(0));
         }
-        return null;
+        return Optional.empty();
     }
 
     private Chunk addChunkAt(int x, int y, int z) {
@@ -77,12 +68,12 @@ public class World {
         Chunk chunk = new Chunk((int) Math.floor(dx / CHUNK_SIZE), (int) Math.floor(dy / CHUNK_SIZE), (int) Math.floor(dz / CHUNK_SIZE), publisher);
         chunks.add(chunk);
         List<Chunk> neighbours = new ArrayList<>();
-        addIfNotNull(neighbours, getChunkAt(x - CHUNK_SIZE, y, z));
-        addIfNotNull(neighbours, getChunkAt(x + CHUNK_SIZE, y, z));
-        addIfNotNull(neighbours, getChunkAt(x, y, z + CHUNK_SIZE));
-        addIfNotNull(neighbours, getChunkAt(x, y, z - CHUNK_SIZE));
-        addIfNotNull(neighbours, getChunkAt(x, y + CHUNK_SIZE, z));
-        addIfNotNull(neighbours, getChunkAt(x, y - CHUNK_SIZE, z));
+        addIfPresent(neighbours, getChunkAt(x - CHUNK_SIZE, y, z));
+        addIfPresent(neighbours, getChunkAt(x + CHUNK_SIZE, y, z));
+        addIfPresent(neighbours, getChunkAt(x, y, z + CHUNK_SIZE));
+        addIfPresent(neighbours, getChunkAt(x, y, z - CHUNK_SIZE));
+        addIfPresent(neighbours, getChunkAt(x, y + CHUNK_SIZE, z));
+        addIfPresent(neighbours, getChunkAt(x, y - CHUNK_SIZE, z));
         chunk.addNeighbours(neighbours);
         publisher.publishEvent(new ChunkAddedEvent(chunk, this));
         return chunk;
@@ -93,18 +84,18 @@ public class World {
         int x = voxel.getX();
         int y = voxel.getY();
         int z = voxel.getZ();
-        addIfNotNull(neighbours, getVoxelAt(x - 1, y, z));
-        addIfNotNull(neighbours, getVoxelAt(x, y - 1, z));
-        addIfNotNull(neighbours, getVoxelAt(x, y, z - 1));
-        addIfNotNull(neighbours, getVoxelAt(x + 1, y, z));
-        addIfNotNull(neighbours, getVoxelAt(x, y + 1, z));
-        addIfNotNull(neighbours, getVoxelAt(x, y, z + 1));
+        addIfPresent(neighbours, getVoxelAt(x - 1, y, z));
+        addIfPresent(neighbours, getVoxelAt(x, y - 1, z));
+        addIfPresent(neighbours, getVoxelAt(x, y, z - 1));
+        addIfPresent(neighbours, getVoxelAt(x + 1, y, z));
+        addIfPresent(neighbours, getVoxelAt(x, y + 1, z));
+        addIfPresent(neighbours, getVoxelAt(x, y, z + 1));
         return neighbours;
     }
 
-    private <T> void addIfNotNull(List<T> neighbours, T voxelAt) {
-        if (voxelAt != null) {
-            neighbours.add(voxelAt);
+    private <T> void addIfPresent(List<T> neighbours, Optional<T> voxelAt) {
+        if (voxelAt.isPresent()) {
+            neighbours.add(voxelAt.get());
         }
     }
 
@@ -122,7 +113,7 @@ public class World {
         return civvies;
     }
 
-    public Voxel getVoxelAt(Vector3f target) {
+    public Optional<Voxel> getVoxelAt(Vector3f target) {
         return getVoxelAt(target.x, target.y, target.z);
     }
 
