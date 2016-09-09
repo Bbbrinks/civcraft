@@ -2,6 +2,8 @@ package nl.civcraft.core.tasks;
 
 
 import nl.civcraft.core.gamecomponents.Harvestable;
+import nl.civcraft.core.managers.EntityManager;
+import nl.civcraft.core.model.Item;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
@@ -13,8 +15,11 @@ import static nl.civcraft.core.tasks.Task.Result.FAILED;
 
 public class Harvest extends MoveToRange {
 
-    public Harvest(Voxel target, AStarPathFinder pathFinder) {
+    private final EntityManager entityManager;
+
+    public Harvest(EntityManager entityManager, Voxel target, AStarPathFinder pathFinder) {
         super(target, 3.0f, pathFinder);
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -26,7 +31,13 @@ public class Harvest extends MoveToRange {
                 return FAILED;
             }
             Harvestable harvestable = component.get();
-            return harvestable.harvest(civvy);
+            Optional<Item> harvest = harvestable.harvest(civvy);
+            if (harvest.isPresent()) {
+                entityManager.addEntity(harvest.get(), civvy.getWorld().getGroundAt((int) civvy.getX(), (int) civvy.getY(), (int) civvy.getZ(), 10).get());
+                return COMPLETED;
+            } else {
+                return FAILED;
+            }
         }
         return inRange;
     }

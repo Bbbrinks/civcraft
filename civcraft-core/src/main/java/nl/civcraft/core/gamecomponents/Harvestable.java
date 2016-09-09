@@ -1,7 +1,9 @@
 package nl.civcraft.core.gamecomponents;
 
+import nl.civcraft.core.model.Item;
 import nl.civcraft.core.npc.Civvy;
-import nl.civcraft.core.tasks.Task;
+
+import java.util.Optional;
 
 /**
  * Created by Bob on 25-3-2016.
@@ -9,5 +11,5 @@ import nl.civcraft.core.tasks.Task;
  * This is probably not worth documenting
  */
 public interface Harvestable {
-    Task.Result harvest(Civvy civvy);
+    Optional<Item> harvest(Civvy civvy);
 }

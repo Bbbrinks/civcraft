@@ -3,7 +3,6 @@ package nl.civcraft.core.gamecomponents;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Item;
 import nl.civcraft.core.npc.Civvy;
-import nl.civcraft.core.tasks.Task;
 
 import java.util.Optional;
 
@@ -16,14 +15,10 @@ public class HarvestFromInventory implements Harvestable, GameComponent {
     private GameObject gameObject;
 
     @Override
-    public Task.Result harvest(Civvy civvy) {
+    public Optional<Item> harvest(Civvy civvy) {
         Optional<Inventory> component = gameObject.getComponent(Inventory.class);
-        Item item = component.get().getFirstItem();
-        if (item != null) {
-            boolean addedItem = civvy.getComponent(Inventory.class).get().addItem(item);
-            return addedItem ? Task.Result.COMPLETED : Task.Result.FAILED;
-        }
-        return Task.Result.FAILED;
+        return component.get().getFirstItem();
+
     }
 
     @Override

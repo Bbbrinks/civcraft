@@ -3,6 +3,8 @@ package nl.civcraft.core.gamecomponents;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Item;
 
+import java.util.Optional;
+
 /**
  * Created by Bob on 25-3-2016.
  * <p>
@@ -22,13 +24,13 @@ public class LimitedInventory implements Inventory, GameComponent {
     }
 
     @Override
-    public Item getFirstItem() {
+    public Optional<Item> getFirstItem() {
         Item firstItem = items[0];
         items[0] = items[1];
         if (gameObject != null) {
             gameObject.changed();
         }
-        return firstItem;
+        return Optional.ofNullable(firstItem);
     }
 
     @Override

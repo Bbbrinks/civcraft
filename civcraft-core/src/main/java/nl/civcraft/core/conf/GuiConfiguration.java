@@ -28,7 +28,7 @@ public class GuiConfiguration {
         civcraft.getGuiNode().attachChild(myWindow);
         AppSettings settings = civcraft.getSettings();
 
-        myWindow.setLocalTranslation(0, 20, 0);
+        myWindow.setLocalTranslation(0, 40, 0);
         return myWindow;
     }
 

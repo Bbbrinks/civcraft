@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class SingleVoxelSelector implements MouseTool {
 
     private final CurrentVoxelHighlighter currentVoxelHighlighter;
-    private Voxel currentVoxel;
+    protected Voxel currentVoxel;
 
     @Autowired
     public SingleVoxelSelector(CurrentVoxelHighlighter currentVoxelHighlighter) {
