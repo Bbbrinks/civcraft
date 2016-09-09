@@ -15,6 +15,7 @@ import java.util.Optional;
  * This is probably not worth documenting
  */
 public abstract class GroundRectangleSelector implements MouseTool {
+    private static final int MAX_HEIGHT_DIFFERENCE = 10;
     protected final WorldManager worldManager;
     private final CurrentVoxelHighlighter currentVoxelHighlighter;
     private final Node selectionBoxes;
@@ -36,7 +37,7 @@ public abstract class GroundRectangleSelector implements MouseTool {
                 startingVoxel = currentVoxelHighlighter.getCurrentVoxel();
             } else {
                 startSelection();
-                loopThroughSelection((x, y, z) -> handleSelection(x, startingVoxel.getY(), z));
+                loopThroughSelection((voxel) -> handleSelection(voxel));
                 endSelection();
                 selectionBoxes.detachAllChildren();
                 startingVoxel = null;
@@ -48,7 +49,7 @@ public abstract class GroundRectangleSelector implements MouseTool {
 
     private void loopThroughSelection(SelectionLooper selectionLooper) {
         if (startingVoxel.equals(currentVoxel)) {
-            selectionLooper.handleElement(startingVoxel.getX(), startingVoxel.getY(), startingVoxel.getZ());
+            selectionLooper.handleElement(startingVoxel);
             return;
         }
         int startX = startingVoxel.getX();
@@ -69,13 +70,15 @@ public abstract class GroundRectangleSelector implements MouseTool {
         }
         for (int x = startX; x <= endX; x++) {
             for (int z = startZ; z <= endZ; z++) {
-                Optional<Voxel> voxelAt = worldManager.getWorld().getVoxelAt(x, startingVoxel.getY(), z);
-                selectionLooper.handleElement(x, startingVoxel.getY(), z);
+                Optional<Voxel> voxelOptional = worldManager.getWorld().getGroundAt(x, startingVoxel.getY(), z, MAX_HEIGHT_DIFFERENCE);
+                if (voxelOptional.isPresent()) {
+                    selectionLooper.handleElement(voxelOptional.get());
+                }
             }
         }
     }
 
-    protected abstract void handleSelection(int x, int y, int z);
+    protected abstract void handleSelection(Voxel voxel);
 
     protected abstract void endSelection();
 
@@ -87,13 +90,13 @@ public abstract class GroundRectangleSelector implements MouseTool {
             currentVoxelHighlighter.clear();
             currentVoxel = currentVoxelHighlighter.getCurrentVoxel();
             selectionBoxes.detachAllChildren();
-            loopThroughSelection((x, y, z) -> addHighlight(x, z));
+            loopThroughSelection(this::addHighlight);
         }
     }
 
-    private void addHighlight(int x, int z) {
+    private void addHighlight(Voxel voxel) {
         Spatial clone = hoverSpatial.clone();
-        clone.setLocalTranslation(clone.getLocalTranslation().x + x, clone.getLocalTranslation().y + startingVoxel.getY(), clone.getLocalTranslation().z + z);
+        clone.setLocalTranslation(clone.getLocalTranslation().x + voxel.getX(), clone.getLocalTranslation().y + voxel.getY(), clone.getLocalTranslation().z + voxel.getZ());
         selectionBoxes.attachChild(clone);
     }
 
@@ -106,6 +109,6 @@ public abstract class GroundRectangleSelector implements MouseTool {
 
     @FunctionalInterface
     private interface SelectionLooper {
-        void handleElement(int x, int y, int z);
+        void handleElement(Voxel voxel);
     }
 }

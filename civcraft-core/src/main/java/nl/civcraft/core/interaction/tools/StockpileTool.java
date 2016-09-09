@@ -10,8 +10,6 @@ import nl.civcraft.core.model.Voxel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 /**
  * Created by Bob on 14-8-2016.
  * <p>
@@ -28,16 +26,13 @@ public class StockpileTool extends GroundRectangleSelector {
     }
 
     @Override
-    protected void startSelection() {
-        createdStockpile = new Stockpile();
+    protected void handleSelection(Voxel voxel) {
+        createdStockpile.addVoxel(voxel);
     }
 
     @Override
-    protected void handleSelection(int x, int y, int z) {
-        Optional<Voxel> voxelAt = worldManager.getWorld().getVoxelAt(x, y, z);
-        if (voxelAt.isPresent()) {
-            createdStockpile.addVoxel(voxelAt.get());
-        }
+    protected void startSelection() {
+        createdStockpile = new Stockpile();
     }
 
     @Override

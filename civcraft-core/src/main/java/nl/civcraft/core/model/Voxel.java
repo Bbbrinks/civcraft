@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -131,20 +132,20 @@ public class Voxel extends GameObject {
 
     //TODO move this out of Voxel class
     public List<Voxel> getEnterableNeighbours() {
-        List<Voxel> enterableNeighbours = neighbours.stream().filter(v -> v.getNeighbour(Face.TOP) == null).collect(Collectors.toList());
+        List<Voxel> enterableNeighbours = neighbours.stream().filter(v -> !v.getNeighbour(Face.TOP).isPresent()).collect(Collectors.toList());
         List<Voxel> verticalDiagonals = new ArrayList<>();
         for (Voxel enterableNeighbour : getNeighbours(Face.BACK, Face.FRONT, Face.LEFT, Face.RIGHT)) {
             if (enterableNeighbour != null) {
-                Voxel neighbour = enterableNeighbour.getNeighbour(Face.TOP);
-                if (neighbour != null && neighbour.getNeighbour(Face.TOP) == null) {
-                    verticalDiagonals.add(neighbour);
+                Optional<Voxel> neighbour = enterableNeighbour.getNeighbour(Face.TOP);
+                if (neighbour.isPresent() && !neighbour.get().getNeighbour(Face.TOP).isPresent()) {
+                    verticalDiagonals.add(neighbour.get());
                 }
             }
         }
-        Voxel bottom = getNeighbour(Face.BOTTOM);
-        if (bottom != null) {
-            for (Voxel neighbour : bottom.getNeighbours(Face.BACK, Face.FRONT, Face.LEFT, Face.RIGHT)) {
-                if (neighbour != null && neighbour.getNeighbour(Face.TOP) == null) {
+        Optional<Voxel> bottom = getNeighbour(Face.BOTTOM);
+        if (bottom.isPresent()) {
+            for (Voxel neighbour : bottom.get().getNeighbours(Face.BACK, Face.FRONT, Face.LEFT, Face.RIGHT)) {
+                if (neighbour != null && !neighbour.getNeighbour(Face.TOP).isPresent()) {
                     verticalDiagonals.add(neighbour);
                 }
             }
@@ -154,18 +155,17 @@ public class Voxel extends GameObject {
         return enterableNeighbours;
     }
 
-    public Voxel getNeighbour(Face face) {
-        List<Voxel> collect = neighbours.stream().filter(v -> v.getLocation().equals(face.getTranslation().add(getLocation()))).limit(1).collect(Collectors.toList());
-        if (!collect.isEmpty()) {
-            return collect.get(0);
-        }
-        return null;
+    public Optional<Voxel> getNeighbour(Face face) {
+        return neighbours.stream().filter(v -> v.getLocation().equals(face.getTranslation().add(getLocation()))).limit(1).findFirst();
     }
 
     private List<Voxel> getNeighbours(Face... faces) {
         List<Voxel> neighbours = new ArrayList<>();
         for (Face face : faces) {
-            neighbours.add(getNeighbour(face));
+            Optional<Voxel> neighbour = getNeighbour(face);
+            if (neighbour.isPresent()) {
+                neighbours.add(neighbour.get());
+            }
         }
         return neighbours;
     }

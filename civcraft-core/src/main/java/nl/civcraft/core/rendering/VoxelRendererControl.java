@@ -59,8 +59,9 @@ public class VoxelRendererControl extends AbstractControl {
         }
         List<VoxelRenderer> voxelRenderers = voxels.stream().map(v -> v.getComponent(VoxelRenderer.class).get()).collect(Collectors.toList());
         Node optimize = optimize(voxelRenderers);
-
-        newSpatials.add(new Pair<>(voxelRenderers.get(0).getVoxel().getChunk(), optimize));
+        if (!voxelRenderers.isEmpty()) {
+            newSpatials.add(new Pair<>(voxelRenderers.get(0).getVoxel().getChunk(), optimize));
+        }
     }
 
     private Node optimize(List<VoxelRenderer> voxelRenders) {

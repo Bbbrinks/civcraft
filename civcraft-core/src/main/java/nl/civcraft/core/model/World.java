@@ -7,7 +7,6 @@ import nl.civcraft.core.npc.Civvy;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class World {
 
@@ -31,12 +30,18 @@ public class World {
     public void addVoxels(List<Voxel> voxels) {
         List<Voxel> addedVoxels = new ArrayList<>();
         for (Voxel voxel : voxels) {
-            if (getVoxelAt(voxel.getX(), voxel.getY(), voxel.getZ()) == null) {
+            if (!getVoxelAt(voxel.getX(), voxel.getY(), voxel.getZ()).isPresent()) {
 
                 int x = voxel.getX();
                 int y = voxel.getY();
                 int z = voxel.getZ();
-                Chunk chunkAt = getChunkAt(x, y, z).map(chunk -> chunk).orElse(addChunkAt(x, y, z));
+                Optional<Chunk> chunkOptional = getChunkAt(x, y, z);
+                Chunk chunkAt;
+                if (chunkOptional.isPresent()) {
+                    chunkAt = chunkOptional.get();
+                } else {
+                    chunkAt = addChunkAt(x, y, z);
+                }
                 voxel.addNeighbours(getVoxelNeighbours(voxel));
 
                 chunkAt.addVoxel(voxel);
@@ -54,11 +59,7 @@ public class World {
     }
 
     private Optional<Chunk> getChunkAt(int x, int y, int z) {
-        List<Chunk> found = chunks.stream().filter(c -> c.containsCoors(x, y, z)).limit(1).collect(Collectors.toList());
-        if (!found.isEmpty()) {
-            return Optional.of(found.get(0));
-        }
-        return Optional.empty();
+        return chunks.stream().filter(c -> c.containsCoors(x, y, z)).findFirst();
     }
 
     private Chunk addChunkAt(int x, int y, int z) {
@@ -127,5 +128,27 @@ public class World {
     public void addStockpile(Stockpile createdStockpile) {
         this.stockpiles.add(createdStockpile);
         publisher.publishEvent(new StockpileCreated(createdStockpile, this));
+    }
+
+    public Optional<Voxel> getGroundAt(int x, int y, int z, int maxHeightDifference) {
+        Optional<Voxel> voxelAt = getVoxelAt(x, y, z);
+        if (voxelAt.isPresent()) {
+            Voxel voxel = voxelAt.get();
+            for (int i = 0; i < maxHeightDifference; i++) {
+                Optional<Voxel> neighbour = voxel.getNeighbour(Face.TOP);
+                if (!neighbour.isPresent()) {
+                    return Optional.of(voxel);
+                }
+                voxel = neighbour.get();
+            }
+        } else {
+            for (int i = 1; i < maxHeightDifference; i++) {
+                Optional<Voxel> voxelAt1 = getVoxelAt(x, y - i, z);
+                if (voxelAt1.isPresent()) {
+                    return voxelAt1;
+                }
+            }
+        }
+        return Optional.empty();
     }
 }
