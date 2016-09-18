@@ -10,21 +10,30 @@ import com.jme3.system.AppSettings;
  */
 public class Civcraft extends SimpleApplication {
 
-    public static Civcraft instance;
+    private static Civcraft instance;
 
-    public Civcraft() {
+    private Civcraft() {
         super(new CivCraftAppState());
         this.showSettings = false;
     }
 
+    /**
+     * Starts civcraft
+     *
+     * @param args ignored
+     */
     public static void main(String[] args) {
         instance = new Civcraft();
         instance.start();
     }
 
+    public static Civcraft getInstance() {
+        return instance;
+    }
+
     @Override
     public void simpleInitApp() {
-
+        //NoOp
     }
 
     public boolean isPaused() {

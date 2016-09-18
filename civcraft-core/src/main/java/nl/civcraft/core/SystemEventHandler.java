@@ -15,6 +15,9 @@ public class SystemEventHandler {
 
     private final ApplicationEventPublisher publisher;
 
+    /**
+     * @param publisher the global Event publisher
+     */
     @Autowired
     public SystemEventHandler(ApplicationEventPublisher publisher) {
         this.publisher = publisher;

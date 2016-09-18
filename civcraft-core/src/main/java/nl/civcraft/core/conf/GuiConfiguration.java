@@ -1,7 +1,6 @@
 package nl.civcraft.core.conf;
 
 import com.jme3.scene.Node;
-import com.jme3.system.AppSettings;
 import com.simsilica.lemur.Container;
 import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.style.BaseStyles;
@@ -26,7 +25,6 @@ public class GuiConfiguration {
         // Create a simple container for our elements
         Container myWindow = new Container();
         civcraft.getGuiNode().attachChild(myWindow);
-        AppSettings settings = civcraft.getSettings();
 
         myWindow.setLocalTranslation(0, 80, 0);
         return myWindow;

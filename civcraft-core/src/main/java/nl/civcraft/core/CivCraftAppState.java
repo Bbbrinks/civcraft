@@ -15,13 +15,14 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * This is probably not worth documenting
  */
 public class CivCraftAppState implements AppState {
-    public ApplicationEventPublisher applicationEventPublisher;
+    private ApplicationEventPublisher applicationEventPublisher;
     private boolean initialized;
     private boolean enabled;
+    private AnnotationConfigApplicationContext appContext;
 
     @Override
     public void initialize(AppStateManager appStateManager, Application application) {
-        AnnotationConfigApplicationContext appContext = new AnnotationConfigApplicationContext(InitialConfiguration.class);
+        appContext = new AnnotationConfigApplicationContext(InitialConfiguration.class);
         applicationEventPublisher = appContext.getBean(SystemEventHandler.class).getPublisher();
         initialized = true;
         enabled = true;
@@ -44,12 +45,12 @@ public class CivCraftAppState implements AppState {
 
     @Override
     public void stateAttached(AppStateManager appStateManager) {
-
+        //NoOp
     }
 
     @Override
     public void stateDetached(AppStateManager appStateManager) {
-
+        //NoOp
     }
 
     @Override
@@ -59,16 +60,16 @@ public class CivCraftAppState implements AppState {
 
     @Override
     public void render(RenderManager renderManager) {
-
+        //NoOp
     }
 
     @Override
     public void postRender() {
-
+        //NoOp
     }
 
     @Override
     public void cleanup() {
-        System.exit(0);
+        appContext.close();
     }
 }

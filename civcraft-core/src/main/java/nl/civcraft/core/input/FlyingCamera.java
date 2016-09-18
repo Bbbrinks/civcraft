@@ -46,33 +46,42 @@ import org.springframework.stereotype.Component;
 @Component
 public class FlyingCamera implements AnalogListener, ActionListener {
 
+    protected static final String FLYCAM_LEFT = "FLYCAM_Left";
+    protected static final String FLYCAM_RIGHT = "FLYCAM_Right";
+    protected static final String FLYCAM_UP = "FLYCAM_Up";
+    protected static final String FLYCAM_DOWN = "FLYCAM_Down";
+    protected static final String FLYCAM_STRAFE_LEFT = "FLYCAM_StrafeLeft";
+    protected static final String FLYCAM_STRAFE_RIGHT = "FLYCAM_StrafeRight";
+    protected static final String FLYCAM_FORWARD = "FLYCAM_Forward";
+    protected static final String FLYCAM_BACKWARD = "FLYCAM_Backward";
+    protected static final String FLYCAM_ZOOM_IN = "FLYCAM_ZoomIn";
+    protected static final String FLYCAM_ZOOM_OUT = "FLYCAM_ZoomOut";
+    protected static final String FLYCAM_ROTATE_DRAG = "FLYCAM_RotateDrag";
+    protected static final String FLYCAM_RISE = "FLYCAM_Rise";
+    protected static final String FLYCAM_LOWER = "FLYCAM_Lower";
     protected static final String[] MAPPINGS = new String[]{
-            "FLYCAM_Left",
-            "FLYCAM_Right",
-            "FLYCAM_Up",
-            "FLYCAM_Down",
+            FLYCAM_LEFT,
+            FLYCAM_RIGHT,
+            FLYCAM_UP,
+            FLYCAM_DOWN,
 
-            "FLYCAM_StrafeLeft",
-            "FLYCAM_StrafeRight",
-            "FLYCAM_Forward",
-            "FLYCAM_Backward",
+            FLYCAM_STRAFE_LEFT,
+            FLYCAM_STRAFE_RIGHT,
+            FLYCAM_FORWARD,
+            FLYCAM_BACKWARD,
 
-            "FLYCAM_ZoomIn",
-            "FLYCAM_ZoomOut",
-            "FLYCAM_RotateDrag",
+            FLYCAM_ZOOM_IN,
+            FLYCAM_ZOOM_OUT,
+            FLYCAM_ROTATE_DRAG,
 
-            "FLYCAM_Rise",
-            "FLYCAM_Lower",
-
-            "FLYCAM_InvertY"
+            FLYCAM_RISE,
+            FLYCAM_LOWER
     };
-    private final float moveSpeed = 10f;
+    private static final float MOVE_SPEED = 10f;
     private final Camera camera;
     private final InputManager inputManager;
     private Vector3f initialUpVec;
-    private boolean enabled = true;
     private boolean canRotate = false;
-    private boolean invertY = false;
 
 
     @Autowired
@@ -85,41 +94,32 @@ public class FlyingCamera implements AnalogListener, ActionListener {
     public void registerWithInput() {
 
         // both mouse and button - rotation of camera
-        inputManager.addMapping("FLYCAM_Left", new MouseAxisTrigger(MouseInput.AXIS_X, true),
+        inputManager.addMapping(FLYCAM_LEFT, new MouseAxisTrigger(MouseInput.AXIS_X, true),
                 new KeyTrigger(KeyInput.KEY_LEFT));
 
-        inputManager.addMapping("FLYCAM_Right", new MouseAxisTrigger(MouseInput.AXIS_X, false),
+        inputManager.addMapping(FLYCAM_RIGHT, new MouseAxisTrigger(MouseInput.AXIS_X, false),
                 new KeyTrigger(KeyInput.KEY_RIGHT));
 
-        inputManager.addMapping("FLYCAM_Up", new MouseAxisTrigger(MouseInput.AXIS_Y, false),
+        inputManager.addMapping(FLYCAM_UP, new MouseAxisTrigger(MouseInput.AXIS_Y, false),
                 new KeyTrigger(KeyInput.KEY_UP));
 
-        inputManager.addMapping("FLYCAM_Down", new MouseAxisTrigger(MouseInput.AXIS_Y, true),
+        inputManager.addMapping(FLYCAM_DOWN, new MouseAxisTrigger(MouseInput.AXIS_Y, true),
                 new KeyTrigger(KeyInput.KEY_DOWN));
 
         // mouse only - zoom in/out with wheel, and rotate drag
-        inputManager.addMapping("FLYCAM_ZoomIn", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
-        inputManager.addMapping("FLYCAM_ZoomOut", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
-        inputManager.addMapping("FLYCAM_RotateDrag", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+        inputManager.addMapping(FLYCAM_ZOOM_IN, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
+        inputManager.addMapping(FLYCAM_ZOOM_OUT, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
+        inputManager.addMapping(FLYCAM_ROTATE_DRAG, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 
         // keyboard only WASD for movement and WZ for rise/lower height
-        inputManager.addMapping("FLYCAM_StrafeLeft", new KeyTrigger(KeyInput.KEY_A));
-        inputManager.addMapping("FLYCAM_StrafeRight", new KeyTrigger(KeyInput.KEY_D));
-        inputManager.addMapping("FLYCAM_Forward", new KeyTrigger(KeyInput.KEY_W));
-        inputManager.addMapping("FLYCAM_Backward", new KeyTrigger(KeyInput.KEY_S));
-        inputManager.addMapping("FLYCAM_Rise", new KeyTrigger(KeyInput.KEY_Q));
-        inputManager.addMapping("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Z));
+        inputManager.addMapping(FLYCAM_STRAFE_LEFT, new KeyTrigger(KeyInput.KEY_A));
+        inputManager.addMapping(FLYCAM_STRAFE_RIGHT, new KeyTrigger(KeyInput.KEY_D));
+        inputManager.addMapping(FLYCAM_FORWARD, new KeyTrigger(KeyInput.KEY_W));
+        inputManager.addMapping(FLYCAM_BACKWARD, new KeyTrigger(KeyInput.KEY_S));
+        inputManager.addMapping(FLYCAM_RISE, new KeyTrigger(KeyInput.KEY_Q));
+        inputManager.addMapping(FLYCAM_LOWER, new KeyTrigger(KeyInput.KEY_Z));
 
         inputManager.addListener(this, MAPPINGS);
-    }
-
-    /**
-     * @param enable If false, the camera will ignore input.
-     */
-    public void setEnabled(boolean enable) {
-        if (!enable) {
-            inputManager.setCursorVisible(true);
-        }
     }
 
     /**
@@ -137,45 +137,43 @@ public class FlyingCamera implements AnalogListener, ActionListener {
 
     }
 
+    @Override
     public void onAnalog(String name, float value, float tpf) {
-        if (!enabled)
-            return;
-
         switch (name) {
-            case "FLYCAM_Left":
+            case FLYCAM_LEFT:
                 rotateCamera(value, initialUpVec);
                 break;
-            case "FLYCAM_Right":
+            case FLYCAM_RIGHT:
                 rotateCamera(-value, initialUpVec);
                 break;
-            case "FLYCAM_Up":
-                rotateCamera(-value * (invertY ? -1 : 1), camera.getLeft());
+            case FLYCAM_UP:
+                rotateCamera(-value, camera.getLeft());
                 break;
-            case "FLYCAM_Down":
-                rotateCamera(value * (invertY ? -1 : 1), camera.getLeft());
+            case FLYCAM_DOWN:
+                rotateCamera(value, camera.getLeft());
                 break;
-            case "FLYCAM_Forward":
+            case FLYCAM_FORWARD:
                 moveCamera(value, false);
                 break;
-            case "FLYCAM_Backward":
+            case FLYCAM_BACKWARD:
                 moveCamera(-value, false);
                 break;
-            case "FLYCAM_StrafeLeft":
+            case FLYCAM_STRAFE_LEFT:
                 moveCamera(value, true);
                 break;
-            case "FLYCAM_StrafeRight":
+            case FLYCAM_STRAFE_RIGHT:
                 moveCamera(-value, true);
                 break;
-            case "FLYCAM_Rise":
+            case FLYCAM_RISE:
                 riseCamera(value);
                 break;
-            case "FLYCAM_Lower":
+            case FLYCAM_LOWER:
                 riseCamera(-value);
                 break;
-            case "FLYCAM_ZoomIn":
+            case FLYCAM_ZOOM_IN:
                 zoomCamera(value);
                 break;
-            case "FLYCAM_ZoomOut":
+            case FLYCAM_ZOOM_OUT:
                 zoomCamera(-value);
                 break;
             default:
@@ -218,7 +216,7 @@ public class FlyingCamera implements AnalogListener, ActionListener {
         } else {
             camera.getDirection(vel);
         }
-        vel.multLocal(value * moveSpeed);
+        vel.multLocal(value * MOVE_SPEED);
 
         pos.addLocal(vel);
 
@@ -226,7 +224,7 @@ public class FlyingCamera implements AnalogListener, ActionListener {
     }
 
     private void riseCamera(float value) {
-        Vector3f vel = new Vector3f(0, value * moveSpeed, 0);
+        Vector3f vel = new Vector3f(0, value * MOVE_SPEED, 0);
         Vector3f pos = camera.getLocation().clone();
 
         pos.addLocal(vel);
@@ -260,18 +258,11 @@ public class FlyingCamera implements AnalogListener, ActionListener {
         camera.setFrustumRight(w);
     }
 
+    @Override
     public void onAction(String name, boolean value, float tpf) {
-        if (!enabled)
-            return;
-
-        if (name.equals("FLYCAM_RotateDrag")) {
+        if (FLYCAM_ROTATE_DRAG.equals(name)) {
             canRotate = value;
             inputManager.setCursorVisible(!value);
-        } else if (name.equals("FLYCAM_InvertY")) {
-            // Toggle on the up.
-            if (!value) {
-                invertY = !invertY;
-            }
         }
     }
 

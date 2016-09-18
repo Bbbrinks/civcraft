@@ -16,33 +16,21 @@ public class InputConfiguration {
 
     @Bean
     public MouseInput mouse(JmeContext context) {
-        MouseInput mouseInput = context.getMouseInput();
-        if (mouseInput != null) {
-            mouseInput.initialize();
-        }
-        return mouseInput;
+        return context.getMouseInput();
     }
 
     @Bean
     public KeyInput keys(JmeContext context) {
-        KeyInput keyInput = context.getKeyInput();
-        if (keyInput != null) {
-            keyInput.initialize();
-        }
-        return keyInput;
+        return context.getKeyInput();
     }
 
     @Bean
     public JoyInput joystick(JmeContext context) {
-        return null;
+        return context.getJoyInput();
     }
 
     @Bean
     public TouchInput touch(JmeContext context) {
-        TouchInput touchInput = context.getTouchInput();
-        if (touchInput != null) {
-            touchInput.initialize();
-        }
-        return touchInput;
+        return context.getTouchInput();
     }
 }

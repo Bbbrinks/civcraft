@@ -4,16 +4,14 @@ import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Texture;
 import nl.civcraft.core.model.Block;
 import nl.civcraft.core.model.Face;
+import nl.civcraft.core.utils.BlockUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,96 +19,20 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BlockConfiguration {
 
-    private static final float BLOCK_SIZE = 0.5f;
+    public static final String UNSHADED_MAT_DEF = "Common/MatDefs/Misc/Unshaded.j3md";
+    public static final String COLOR_MAP = "ColorMap";
     @Autowired
     private AssetManager assetManager;
 
 
     @Bean
     public Block dirt(Material dirtMaterial) {
-        return getQuadBlock("dirt", dirtMaterial, dirtMaterial, dirtMaterial);
-    }
-
-    private Block getQuadBlock(String name, Material grassTopMaterial, Material grassSideMaterial, Material grassBottomMaterial) {
-        Block block = new Block(name);
-
-        Geometry topGeometry = getBlockQuadGeometry(Face.TOP);
-        topGeometry.setMaterial(grassTopMaterial);
-        block.attachChild(topGeometry);
-
-        Geometry bottomGeometry = getBlockQuadGeometry(Face.BOTTOM);
-        bottomGeometry.setMaterial(grassBottomMaterial);
-        block.attachChild(bottomGeometry);
-
-        Geometry leftGeometry = getBlockQuadGeometry(Face.LEFT);
-        leftGeometry.setMaterial(grassSideMaterial);
-        block.attachChild(leftGeometry);
-
-        Geometry rightGeometry = getBlockQuadGeometry(Face.RIGHT);
-        rightGeometry.setMaterial(grassSideMaterial);
-        block.attachChild(rightGeometry);
-
-        Geometry frontGeometry = getBlockQuadGeometry(Face.FRONT);
-        frontGeometry.setMaterial(grassSideMaterial);
-        block.attachChild(frontGeometry);
-
-        Geometry backGeometry = getBlockQuadGeometry(Face.BACK);
-        backGeometry.setMaterial(grassSideMaterial);
-        block.attachChild(backGeometry);
-
-        return block;
-    }
-
-    private Geometry getBlockQuadGeometry(Face face) {
-        Quad quad = new Quad(BLOCK_SIZE * 2, BLOCK_SIZE * 2);
-        String name = null;
-        Vector3f translation = null;
-        float[] rotation = null;
-        switch (face) {
-            case TOP:
-                name = "top";
-                translation = new Vector3f(-0.5f, 0.5f, 0.5f);
-                rotation = new float[]{-90F * FastMath.DEG_TO_RAD, 0F, 0F};
-                break;
-            case BOTTOM:
-                name = "bottom";
-                translation = new Vector3f(-0.5f, -0.5f, -0.5f);
-                rotation = new float[]{90F * FastMath.DEG_TO_RAD, 0F, 0F};
-                break;
-            case LEFT:
-                name = "left";
-                translation = new Vector3f(0.5f, -0.5F, -0.5f);
-                rotation = new float[]{0F, 180F * FastMath.DEG_TO_RAD, 0F};
-                break;
-            case RIGHT:
-                name = "right";
-                translation = new Vector3f(-0.5f, -0.5F, 0.5f);
-                rotation = new float[]{0F, 0F, 0F};
-                break;
-            case FRONT:
-                name = "front";
-                translation = new Vector3f(-0.5f, -0.5F, -0.5f);
-                rotation = new float[]{0F, 270F * FastMath.DEG_TO_RAD, 0F};
-                break;
-            case BACK:
-                name = "back";
-                translation = new Vector3f(0.5f, -0.5F, 0.5f);
-                rotation = new float[]{0F, 90F * FastMath.DEG_TO_RAD, 0F};
-                break;
-            default:
-                break;
-        }
-        Geometry geometry = new Geometry(name, quad);
-        Quaternion quaternion = new Quaternion(rotation);
-        geometry.setLocalRotation(quaternion);
-        geometry.setLocalTranslation(translation);
-
-        return geometry;
+        return BlockUtil.getQuadBlock("dirt", dirtMaterial, dirtMaterial, dirtMaterial);
     }
 
     @Bean
     public Block cobbleStone(Material cobbleMaterial) {
-        return getQuadBlock("cobble", cobbleMaterial, cobbleMaterial, cobbleMaterial);
+        return BlockUtil.getQuadBlock("cobble", cobbleMaterial, cobbleMaterial, cobbleMaterial);
     }
 
     @Bean
@@ -126,16 +48,16 @@ public class BlockConfiguration {
         Texture grassSideTex = assetManager.loadTexture(
                 "textures/bdc_grass_side01.png");
         Material grassSideMaterial = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        grassSideMaterial.setTexture("ColorMap", grassSideTex);
+                UNSHADED_MAT_DEF);
+        grassSideMaterial.setTexture(COLOR_MAP, grassSideTex);
 
         Texture grassBottomTex = assetManager.loadTexture(
                 "textures/bdc_dirt03.png");
         Material grassBottomMaterial = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        grassBottomMaterial.setTexture("ColorMap", grassBottomTex);
+                UNSHADED_MAT_DEF);
+        grassBottomMaterial.setTexture(COLOR_MAP, grassBottomTex);
 
-        return getQuadBlock("grass", grassTopMaterial, grassSideMaterial, grassBottomMaterial);
+        return BlockUtil.getQuadBlock("grass", grassTopMaterial, grassSideMaterial, grassBottomMaterial);
     }
 
     @Bean
@@ -144,10 +66,10 @@ public class BlockConfiguration {
                 "textures/leaves_oak.png");
 
         Material grassBottomMaterial = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        grassBottomMaterial.setTexture("ColorMap", grassTopTex);
+                UNSHADED_MAT_DEF);
+        grassBottomMaterial.setTexture(COLOR_MAP, grassTopTex);
 
-        return getQuadBlock("treeLeaf", grassBottomMaterial, grassBottomMaterial, grassBottomMaterial);
+        return BlockUtil.getQuadBlock("treeLeaf", grassBottomMaterial, grassBottomMaterial, grassBottomMaterial);
     }
 
     @Bean
@@ -156,10 +78,10 @@ public class BlockConfiguration {
                 "textures/leaves_apple.png");
 
         Material grassBottomMaterial = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        grassBottomMaterial.setTexture("ColorMap", grassTopTex);
+                UNSHADED_MAT_DEF);
+        grassBottomMaterial.setTexture(COLOR_MAP, grassTopTex);
 
-        return getQuadBlock("appleLeaf", grassBottomMaterial, grassBottomMaterial, grassBottomMaterial);
+        return BlockUtil.getQuadBlock("appleLeaf", grassBottomMaterial, grassBottomMaterial, grassBottomMaterial);
     }
 
     @Bean
@@ -174,19 +96,19 @@ public class BlockConfiguration {
         Texture treeTrunkSideTex = assetManager.loadTexture(
                 "textures/log_oak.png");
         Material treeTrunkSideMaterial = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        treeTrunkSideMaterial.setTexture("ColorMap", treeTrunkSideTex);
+                UNSHADED_MAT_DEF);
+        treeTrunkSideMaterial.setTexture(COLOR_MAP, treeTrunkSideTex);
 
-        return getQuadBlock("treeTrunk", treeTrunkTopMaterial, treeTrunkSideMaterial, treeTrunkTopMaterial);
+        return BlockUtil.getQuadBlock("treeTrunk", treeTrunkTopMaterial, treeTrunkSideMaterial, treeTrunkTopMaterial);
     }
 
     @Bean
     public Spatial stockpileSpatial(AssetManager assetManager) {
         Node stockpile = new Node();
-        Geometry topGeometry = getBlockQuadGeometry(Face.TOP);
+        Geometry topGeometry = BlockUtil.getBlockQuadGeometry(Face.TOP);
         topGeometry.setLocalTranslation(topGeometry.getLocalTranslation().add(new Vector3f(0, 0.001f, 0)));
         Material mat = new Material(assetManager,  // Create new material and...
-                "Common/MatDefs/Misc/Unshaded.j3md");  // ... specify .j3md file to use (unshaded).
+                UNSHADED_MAT_DEF);  // ... specify .j3md file to use (unshaded).
         mat.setColor("Color", new ColorRGBA(0.3f, 0.9f, 0.9f, 0.5f));
         mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         topGeometry.setMaterial(mat);
