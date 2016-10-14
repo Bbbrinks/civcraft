@@ -17,10 +17,9 @@ public class DebugStatsState implements ActionListener {
 
     protected static final String TOGGLE_DEBUG_INFO = "TOGGLE_DEBUG_INFO";
     public static String LAST_MESSAGE; //NOSONAR
-    private final Node guiNode;
+
     private final BitmapText fpsText;
     private final BitmapText logMessageText;
-    private final InputManager inputManager;
     private float secondCounter;
     private int frameCounter;
     private boolean show = false;
@@ -28,10 +27,8 @@ public class DebugStatsState implements ActionListener {
 
     @Autowired
     public DebugStatsState(Node guiNode, BitmapText fpsText, BitmapText logMessageText, InputManager inputManager) {
-        this.guiNode = guiNode;
         this.fpsText = fpsText;
         this.logMessageText = logMessageText;
-        this.inputManager = inputManager;
         debugNode = new Node("debugNode");
         guiNode.attachChild(debugNode);
         loadFpsText();

@@ -28,7 +28,8 @@ public class GameObject {
         components.add(component);
     }
 
-    public void changed() {//no op}
+    public void changed() {
+        //no op}
     }
 
     public void destroy() {

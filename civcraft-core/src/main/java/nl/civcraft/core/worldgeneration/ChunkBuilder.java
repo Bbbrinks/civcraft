@@ -1,7 +1,10 @@
 package nl.civcraft.core.worldgeneration;
 
+import nl.civcraft.core.blocks.CobbleStone;
+import nl.civcraft.core.blocks.Dirt;
+import nl.civcraft.core.blocks.Grass;
+import nl.civcraft.core.managers.BlockManager;
 import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.model.VoxelProducer;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.utils.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +16,11 @@ import java.util.List;
 @Component
 public class ChunkBuilder {
 
-    private final VoxelProducer dirtVoxelProducer;
-    private final VoxelProducer cobbleVoxelProducer;
-    private final VoxelProducer grassVoxelProducer;
+    private final BlockManager blockManager;
 
     @Autowired
-    public ChunkBuilder(VoxelProducer dirtVoxelProducer, VoxelProducer cobbleVoxelProducer, VoxelProducer grassVoxelProducer) {
-        this.dirtVoxelProducer = dirtVoxelProducer;
-        this.cobbleVoxelProducer = cobbleVoxelProducer;
-        this.grassVoxelProducer = grassVoxelProducer;
+    public ChunkBuilder(BlockManager blockManager) {
+        this.blockManager = blockManager;
     }
 
     public void buildChunk(int chunkX, int chunkZ, HeightMap heightMap, World world) {
@@ -42,12 +41,12 @@ public class ChunkBuilder {
                     long rnd = MathUtil.rnd(8) - 1;
                     Voxel voxel;
                     if (voxelY - y - rnd > 0) {
-                        voxel = cobbleVoxelProducer.produce(x, y, z);
+                        voxel = blockManager.createVoxel(CobbleStone.BLOCK_NAME, x, y, z);
                     } else {
                         if (voxelY == y) {
-                            voxel = grassVoxelProducer.produce(x, y, z);
+                            voxel = blockManager.createVoxel(Grass.BLOCK_NAME, x, y, z);
                         } else {
-                            voxel = dirtVoxelProducer.produce(x, y, z);
+                            voxel = blockManager.createVoxel(Dirt.BLOCK_NAME, x, y, z);
                         }
                     }
                     voxels.add(voxel);

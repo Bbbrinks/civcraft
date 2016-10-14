@@ -28,6 +28,6 @@ public class AppleLeafVoxelRenderer extends VoxelRenderer {
 
     @Override
     public void destroyed(GameObject gameObject) {
-
+        //No op
     }
 }

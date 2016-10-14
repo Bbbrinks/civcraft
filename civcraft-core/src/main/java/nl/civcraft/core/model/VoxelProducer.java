@@ -7,4 +7,6 @@ package nl.civcraft.core.model;
  */
 public interface VoxelProducer {
     Voxel produce(int x, int y, int z);
+
+    String blockName();
 }
