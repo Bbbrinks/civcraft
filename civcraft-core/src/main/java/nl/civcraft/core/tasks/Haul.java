@@ -18,43 +18,41 @@ import java.util.Optional;
  * This is probably not worth documenting
  */
 public class Haul extends Task {
-    private final MoveTo moveToObject;
-    private final MoveTo moveToStockPile;
     private final GameObject itemToHaul;
     private final Stockpile target;
+    private final AStarPathFinder pathFinder;
+    private MoveTo moveToObject;
+    private MoveTo moveToStockPile;
     private boolean itemPickedUp = false;
     private Item item;
 
     public Haul(Stockpile target, GameObject itemToHaul, AStarPathFinder pathFinder) {
         super(State.TODO);
         this.itemToHaul = itemToHaul;
-        moveToObject = new MoveTo(itemToHaul.getComponent(Physical.class).get().getCurrentVoxel(), pathFinder);
-        Optional<Voxel> targetVoxel = target.getAvailableSpot(itemToHaul.getComponent(ItemComponent.class).get().getItem());
+        this.pathFinder = pathFinder;
         this.target = target;
-        if (!targetVoxel.isPresent()) {
-            setState(State.FAILED);
-            moveToStockPile = null;
-            return;
-        }
-        moveToStockPile = new MoveTo(targetVoxel.get(), pathFinder);
-
     }
 
     @Override
     public Result affect(Civvy civvy, float tpf) {
+        if (moveToObject == null) {
+            moveToObject = new MoveTo(itemToHaul.getComponent(Physical.class).get().getCurrentVoxel(), pathFinder);
+        }
         if (!moveToObject.getState().equals(State.DONE)) {
-            Result affect = moveToObject.affect(civvy, tpf);
-            if (affect.equals(Result.FAILED)) {
-                return Result.FAILED;
-            } else if (affect.equals(Result.COMPLETED)) {
-                moveToObject.setState(State.DONE);
-            }
-            return Result.IN_PROGRESS;
+            return moveToObject(civvy, tpf);
         } else if (!itemPickedUp) {
             item = itemToHaul.getComponent(ItemComponent.class).get().getItem();
             civvy.getComponent(Inventory.class).get().addItem(item);
             itemToHaul.destroy();
             itemPickedUp = true;
+
+            Optional<Voxel> targetVoxel = target.getAvailableSpot(itemToHaul.getComponent(ItemComponent.class).get().getItem());
+            if (!targetVoxel.isPresent()) {
+                setState(State.FAILED);
+                moveToStockPile = null;
+                return Result.FAILED;
+            }
+            moveToStockPile = new MoveTo(targetVoxel.get(), pathFinder);
             return Result.IN_PROGRESS;
         } else if (!moveToStockPile.getState().equals(State.DONE)) {
             Result affect = moveToStockPile.affect(civvy, tpf);
@@ -69,5 +67,15 @@ public class Haul extends Task {
             target.addItem(item);
             return Result.COMPLETED;
         }
+    }
+
+    private Result moveToObject(Civvy civvy, float tpf) {
+        Result affect = moveToObject.affect(civvy, tpf);
+        if (affect.equals(Result.FAILED)) {
+            return Result.FAILED;
+        } else if (affect.equals(Result.COMPLETED)) {
+            moveToObject.setState(State.DONE);
+        }
+        return Result.IN_PROGRESS;
     }
 }

@@ -3,6 +3,8 @@ package nl.civcraft.core.gamecomponents;
 import com.jme3.scene.Node;
 import nl.civcraft.core.model.GameObject;
 
+import java.util.Optional;
+
 /**
  * Created by Bob on 25-3-2016.
  * <p>
@@ -19,7 +21,11 @@ public class AppleLeafVoxelRenderer extends VoxelRenderer {
 
     @Override
     public Node getNode() {
-        if (voxel.getComponent(Inventory.class).get().isEmpty()) {
+        Optional<Inventory> component = voxel.getComponent(Inventory.class);
+        if (!component.isPresent()) {
+            throw new IllegalStateException("No inventory in game object");
+        }
+        if (component.get().isEmpty()) {
             return (Node) treeLeafBlock.clone();
         } else {
             return (Node) appleTreeLeafBlock.clone();

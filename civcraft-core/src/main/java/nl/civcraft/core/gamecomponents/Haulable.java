@@ -29,7 +29,7 @@ public class Haulable implements GameComponent {
 
     @Override
     public void destroyed(GameObject gameObject) {
-
+        //No op
     }
 
     public Task getTask(Stockpile target, AStarPathFinder pathFinder) {

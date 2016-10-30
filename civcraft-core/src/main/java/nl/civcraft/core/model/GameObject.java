@@ -37,4 +37,8 @@ public class GameObject {
             component.destroyed(this);
         }
     }
+
+    public void removeComponent(GameComponent gameComponent) {
+        components.remove(gameComponent);
+    }
 }

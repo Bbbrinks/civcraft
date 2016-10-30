@@ -1,14 +1,11 @@
 package nl.civcraft.core.gamecomponents;
 
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.events.Tick;
 import nl.civcraft.core.npc.Civvy;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import nl.civcraft.core.worldgeneration.Apple;
 
 
 public class Hunger implements GameComponent {
-    private static final Logger LOGGER = LogManager.getLogger();
     private Civvy civvy;
     private int calories;
     private int starvation;
@@ -16,7 +13,7 @@ public class Hunger implements GameComponent {
     @Override
     public void addTo(GameObject gameObject) {
         if (!(gameObject instanceof Civvy)) {
-            throw new RuntimeException("Hunger can only be added to Civvies");
+            throw new IllegalStateException("Hunger can only be added to Civvies");
         }
         this.civvy = (Civvy) gameObject;
         calories = 3000;
@@ -24,11 +21,11 @@ public class Hunger implements GameComponent {
 
     @Override
     public void destroyed(GameObject gameObject) {
-
+        //No op
     }
 
-    public void handleTick(Tick tick) {
-        if (calories > 10) {
+    public void handleTick() {
+        if (calories > 1) {
             calories -= 1;
         } else {
             starvation += 1;
@@ -39,8 +36,9 @@ public class Hunger implements GameComponent {
         if (starvation > 200) {
             civvy.kill();
         }
-        if (calories < 1000) {
+    }
 
-        }
+    public void eat(Apple apple) {
+        calories += apple.getCalories();
     }
 }

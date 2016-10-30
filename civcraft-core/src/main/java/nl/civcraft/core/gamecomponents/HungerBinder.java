@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class HungerBinder {
@@ -29,7 +30,10 @@ public class HungerBinder {
 
     @EventListener
     public void handleCivvyRemoved(CivvyRemoved civvyRemoved) {
-        removedHungers.add(civvyRemoved.getCivvy().getComponent(Hunger.class).get());
+        Optional<Hunger> component = civvyRemoved.getCivvy().getComponent(Hunger.class);
+        if (component.isPresent()) {
+            removedHungers.add(component.get());
+        }
     }
 
     @EventListener
@@ -37,7 +41,7 @@ public class HungerBinder {
         hungers.removeAll(removedHungers);
         removedHungers.clear();
         for (Hunger hunger : hungers) {
-            hunger.handleTick(tick);
+            hunger.handleTick();
         }
 
 

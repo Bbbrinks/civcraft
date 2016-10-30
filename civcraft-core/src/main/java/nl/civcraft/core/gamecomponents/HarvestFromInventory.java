@@ -17,6 +17,9 @@ public class HarvestFromInventory implements Harvestable, GameComponent {
     @Override
     public Optional<Item> harvest(Civvy civvy) {
         Optional<Inventory> component = gameObject.getComponent(Inventory.class);
+        if (!component.isPresent()) {
+            throw new IllegalStateException("HarvestFromInventory can only be added to GameObjects with an Inventory component");
+        }
         return component.get().getFirstItem();
 
     }
@@ -25,13 +28,13 @@ public class HarvestFromInventory implements Harvestable, GameComponent {
     public void addTo(GameObject gameObject) {
         Optional<Inventory> component = gameObject.getComponent(Inventory.class);
         if (!component.isPresent()) {
-            throw new RuntimeException("HarvestFromInventory can only be added to GameObjects with an Inventory component");
+            throw new IllegalStateException("HarvestFromInventory can only be added to GameObjects with an Inventory component");
         }
         this.gameObject = gameObject;
     }
 
     @Override
     public void destroyed(GameObject gameObject) {
-
+        //No op
     }
 }

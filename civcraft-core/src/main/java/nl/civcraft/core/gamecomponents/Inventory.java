@@ -9,7 +9,7 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-public interface Inventory {
+public interface Inventory extends GameComponent {
     Optional<Item> getFirstItem();
 
     boolean addItem(Item item);
