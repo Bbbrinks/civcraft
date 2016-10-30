@@ -2,8 +2,7 @@ package nl.civcraft.core.managers;
 
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import nl.civcraft.core.gamecomponents.GameComponent;
-import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.gamecomponents.AbstractGameComponent;
 import nl.civcraft.core.model.Voxel;
 
 /**
@@ -11,7 +10,7 @@ import nl.civcraft.core.model.Voxel;
  * <p>
  * This is probably not worth documenting
  */
-public class Physical implements GameComponent {
+public class Physical extends AbstractGameComponent {
     private final Voxel currentVoxel;
     private Transform transform;
 
@@ -22,16 +21,6 @@ public class Physical implements GameComponent {
 
     public Voxel getCurrentVoxel() {
         return currentVoxel;
-    }
-
-    @Override
-    public void addTo(GameObject gameObject) {
-
-    }
-
-    @Override
-    public void destroyed(GameObject gameObject) {
-
     }
 
     public Transform getTransform() {

@@ -57,7 +57,7 @@ public class VoxelRendererControl extends AbstractControl {
         for (RenderedVoxelFilter voxelFilter : voxelFilters) {
             voxels = voxelFilter.filter(voxels);
         }
-        List<VoxelRenderer> voxelRenderers = voxels.stream().map(v -> v.getComponent(VoxelRenderer.class).get()).collect(Collectors.toList());
+        List<VoxelRenderer> voxelRenderers = voxels.stream().map(v -> v.getGameObject().getComponent(VoxelRenderer.class).get()).collect(Collectors.toList());
         Node optimize = optimize(voxelRenderers);
         if (!voxelRenderers.isEmpty()) {
             newSpatials.add(new Pair<>(voxelRenderers.get(0).getVoxel().getChunk(), optimize));

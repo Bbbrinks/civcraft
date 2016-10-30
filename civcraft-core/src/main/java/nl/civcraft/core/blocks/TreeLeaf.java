@@ -6,6 +6,7 @@ import nl.civcraft.core.gamecomponents.AppleLeafVoxelRenderer;
 import nl.civcraft.core.gamecomponents.HarvestFromInventory;
 import nl.civcraft.core.gamecomponents.LimitedInventory;
 import nl.civcraft.core.model.Block;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.VoxelProducer;
 import nl.civcraft.core.utils.BlockUtil;
@@ -49,15 +50,17 @@ public class TreeLeaf implements VoxelProducer {
     @Override
     public Voxel produce(int x, int y, int z) {
         AppleLeafVoxelRenderer staticVoxelRenderer = new AppleLeafVoxelRenderer(emptyBlock, filledBlock);
+        GameObject gameObject = new GameObject();
         Voxel voxel = new Voxel(x, y, z, BLOCK_NAME, publisher);
-        voxel.addComponent(staticVoxelRenderer);
+        gameObject.addComponent(voxel);
+        gameObject.addComponent(staticVoxelRenderer);
         LimitedInventory limitedInventory = new LimitedInventory(4);
         int nextInt = RandomUtil.getNextInt(4);
         for (int i = 0; i < nextInt; i++) {
             limitedInventory.addItem(new Apple());
         }
-        voxel.addComponent(limitedInventory);
-        voxel.addComponent(new HarvestFromInventory());
+        gameObject.addComponent(limitedInventory);
+        gameObject.addComponent(new HarvestFromInventory());
         return voxel;
     }
 

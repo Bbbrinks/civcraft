@@ -1,7 +1,7 @@
 package nl.civcraft.core.gamecomponents;
 
 import com.jme3.scene.Node;
-import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.model.GameObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +27,7 @@ public class AppleLeafVoxelRendererTest {
     private Node filledBlock;
     @Mock
     private Node emptyBlock;
-    private Voxel testGameObject;
+    private GameObject testGameObject;
     @Mock
     private Inventory inventory;
     @Mock
@@ -38,7 +38,7 @@ public class AppleLeafVoxelRendererTest {
         when(filledBlock.clone()).thenReturn(filledBlock);
         when(emptyBlock.clone()).thenReturn(emptyBlock);
 
-        testGameObject = new Voxel(0, 0, 0, "test", publisher);
+        testGameObject = new GameObject();
         testGameObject.addComponent(inventory);
         underTest = new AppleLeafVoxelRenderer(emptyBlock, filledBlock);
         underTest.addTo(testGameObject);

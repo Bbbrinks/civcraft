@@ -1,6 +1,5 @@
 package nl.civcraft.core.gamecomponents;
 
-import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Item;
 
 import java.util.Optional;
@@ -10,23 +9,13 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-public class LimitedInventory implements Inventory, GameComponent {
+public class LimitedInventory extends AbstractGameComponent implements Inventory, GameComponent {
     private final Item[] items;
-    private GameObject gameObject;
 
     public LimitedInventory(int size) {
         items = new Item[size];
     }
 
-    @Override
-    public void addTo(GameObject gameObject) {
-        this.gameObject = gameObject;
-    }
-
-    @Override
-    public void destroyed(GameObject gameObject) {
-
-    }
 
     @Override
     public Optional<Item> getFirstItem() {

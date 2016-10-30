@@ -14,7 +14,7 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-public class Haulable implements GameComponent {
+public class Haulable extends AbstractGameComponent {
     private GameObject gameObject;
 
     @Override
@@ -25,11 +25,6 @@ public class Haulable implements GameComponent {
             throw new IllegalStateException("Can only be applied to ItemComponent and Physical");
         }
         this.gameObject = gameObject;
-    }
-
-    @Override
-    public void destroyed(GameObject gameObject) {
-        //No op
     }
 
     public Task getTask(Stockpile target, AStarPathFinder pathFinder) {

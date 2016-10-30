@@ -24,7 +24,7 @@ import java.util.Optional;
  */
 
 @Component
-public class ItemRenderer implements GameComponent {
+public class ItemRenderer extends AbstractGameComponent {
 
     private final Node entityNode;
     private final AssetManager assetManager;
@@ -59,11 +59,13 @@ public class ItemRenderer implements GameComponent {
         item.setLocalTransform(physical.get().getTransform());
         entityNode.attachChild(item);
         renderedItems.put(itemComponent.get().getItem(), item);
+        super.addTo(gameObject);
     }
 
     @Override
     public void destroyed(GameObject gameObject) {
         Item item = gameObject.getComponent(ItemComponent.class).get().getItem();
         entityNode.detachChild(renderedItems.remove(item));
+        super.destroyed(gameObject);
     }
 }

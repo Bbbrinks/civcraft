@@ -20,6 +20,11 @@ public class Hunger implements GameComponent {
     }
 
     @Override
+    public GameObject getGameObject() {
+        return civvy;
+    }
+
+    @Override
     public void destroyed(GameObject gameObject) {
         //No op
     }

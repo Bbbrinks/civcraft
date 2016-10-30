@@ -2,6 +2,7 @@ package nl.civcraft.core.blocks;
 
 import nl.civcraft.core.gamecomponents.StaticVoxelRenderer;
 import nl.civcraft.core.model.Block;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.VoxelProducer;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,8 +22,10 @@ public abstract class SimpleBlock implements VoxelProducer {
     @Override
     public Voxel produce(int x, int y, int z) {
         StaticVoxelRenderer staticVoxelRenderer = new StaticVoxelRenderer(block());
+        GameObject gameObject = new GameObject();
         Voxel voxel = new Voxel(x, y, z, blockName(), publisher);
-        voxel.addComponent(staticVoxelRenderer);
+        gameObject.addComponent(voxel);
+        gameObject.addComponent(staticVoxelRenderer);
         return voxel;
     }
 

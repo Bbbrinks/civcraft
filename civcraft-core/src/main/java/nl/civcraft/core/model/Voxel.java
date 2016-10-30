@@ -1,6 +1,7 @@
 package nl.civcraft.core.model;
 
 import com.jme3.math.Vector3f;
+import nl.civcraft.core.gamecomponents.AbstractGameComponent;
 import nl.civcraft.core.model.events.VoxelChangedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  * <p>
  * This is probably not worth documenting
  */
-public class Voxel extends GameObject {
+public class Voxel extends AbstractGameComponent {
 
     private final String type;
     private final int x;
@@ -186,7 +187,6 @@ public class Voxel extends GameObject {
         return stringBuilder.toString();
     }
 
-    @Override
     public void changed() {
         publisher.publishEvent(new VoxelChangedEvent(this, this));
     }

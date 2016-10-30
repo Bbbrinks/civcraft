@@ -11,7 +11,7 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-public class HarvestFromInventory implements Harvestable, GameComponent {
+public class HarvestFromInventory extends AbstractGameComponent implements Harvestable, GameComponent {
     private GameObject gameObject;
 
     @Override
@@ -30,11 +30,7 @@ public class HarvestFromInventory implements Harvestable, GameComponent {
         if (!component.isPresent()) {
             throw new IllegalStateException("HarvestFromInventory can only be added to GameObjects with an Inventory component");
         }
-        this.gameObject = gameObject;
+        super.addTo(gameObject);
     }
 
-    @Override
-    public void destroyed(GameObject gameObject) {
-        //No op
-    }
 }

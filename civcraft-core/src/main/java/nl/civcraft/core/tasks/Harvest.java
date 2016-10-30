@@ -26,7 +26,7 @@ public class Harvest extends MoveToRange {
     public Result affect(Civvy civvy, float tpf) {
         Result inRange = super.affect(civvy, tpf);
         if (inRange.equals(COMPLETED)) {
-            Optional<Harvestable> component = target.getComponent(Harvestable.class);
+            Optional<Harvestable> component = target.getGameObject().getComponent(Harvestable.class);
             if (!component.isPresent()) {
                 return FAILED;
             }
