@@ -8,13 +8,11 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.system.JmeContext;
 import nl.civcraft.core.Civcraft;
+import nl.civcraft.core.rendering.ChunkOptimizer;
 import nl.civcraft.core.rendering.ChunkRendererControl;
-import nl.civcraft.core.rendering.RenderedVoxelFilter;
 import nl.civcraft.core.rendering.VoxelRendererControl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
 
 @Configuration
 public class RenderingConfiguration {
@@ -35,8 +33,8 @@ public class RenderingConfiguration {
     }
 
     @Bean
-    public VoxelRendererControl voxelRendererControl(List<RenderedVoxelFilter> voxelFilters, Node chunks) {
-        VoxelRendererControl voxelRendererControl = new VoxelRendererControl(voxelFilters, chunks);
+    public VoxelRendererControl voxelRendererControl(Node chunks, ChunkOptimizer chunkOptimizer) {
+        VoxelRendererControl voxelRendererControl = new VoxelRendererControl(chunks, chunkOptimizer);
         chunks.addControl(voxelRendererControl);
         return voxelRendererControl;
     }

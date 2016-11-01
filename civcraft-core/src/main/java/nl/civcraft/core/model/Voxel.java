@@ -2,6 +2,7 @@ package nl.civcraft.core.model;
 
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.gamecomponents.AbstractGameComponent;
+import nl.civcraft.core.gamecomponents.VoxelRenderer;
 import nl.civcraft.core.model.events.VoxelChangedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -74,13 +75,33 @@ public class Voxel extends AbstractGameComponent {
         if (!neighbours.contains(voxel)) {
             neighbours.add(voxel);
             voxel.addNeighbour(this);
+            Face neighbourFace = getNeighbourFace(voxel);
+            VoxelFace voxelFace = getGameObject().getComponent(VoxelRenderer.class).get().getFaces().get(neighbourFace);
+            if (voxelFace != null) {
+                voxelFace.setVisible(false);
+            }
         }
+    }
+
+    private Face getNeighbourFace(Voxel voxel) {
+        for (Face face : Face.values()) {
+            Optional<Voxel> neighbour = getNeighbour(face);
+            if (neighbour.isPresent() && neighbour.get().equals(voxel)) {
+                return face;
+            }
+        }
+        return null;
     }
 
     private void removeNeighbour(Voxel voxel) {
         if (neighbours.contains(voxel)) {
             voxel.removeNeighbour(voxel);
             neighbours.remove(voxel);
+            Face neighbourFace = getNeighbourFace(voxel);
+            VoxelFace voxelFace = getGameObject().getComponent(VoxelRenderer.class).get().getFaces().get(neighbourFace);
+            if (voxelFace != null) {
+                voxelFace.setVisible(true);
+            }
         }
     }
 

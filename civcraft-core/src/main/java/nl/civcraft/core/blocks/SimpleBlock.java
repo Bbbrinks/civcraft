@@ -1,11 +1,10 @@
 package nl.civcraft.core.blocks;
 
 import nl.civcraft.core.gamecomponents.StaticVoxelRenderer;
-import nl.civcraft.core.model.Block;
-import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.model.VoxelProducer;
+import nl.civcraft.core.model.*;
 import org.springframework.context.ApplicationEventPublisher;
+
+import java.util.Map;
 
 /**
  * Created by Bob on 14-10-2016.
@@ -20,15 +19,15 @@ public abstract class SimpleBlock implements VoxelProducer {
     }
 
     @Override
-    public Voxel produce(int x, int y, int z) {
+    public GameObject produce(int x, int y, int z) {
         StaticVoxelRenderer staticVoxelRenderer = new StaticVoxelRenderer(block());
         GameObject gameObject = new GameObject();
         Voxel voxel = new Voxel(x, y, z, blockName(), publisher);
         gameObject.addComponent(voxel);
         gameObject.addComponent(staticVoxelRenderer);
-        return voxel;
+        return gameObject;
     }
 
-    protected abstract Block block();
+    protected abstract Map<Face, VoxelFace> block();
 
 }

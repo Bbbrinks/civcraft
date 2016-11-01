@@ -1,7 +1,9 @@
 package nl.civcraft.core.gamecomponents;
 
-import com.jme3.scene.Node;
+import nl.civcraft.core.model.Face;
+import nl.civcraft.core.model.VoxelFace;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -10,24 +12,24 @@ import java.util.Optional;
  * This is probably not worth documenting
  */
 public class AppleLeafVoxelRenderer extends VoxelRenderer {
-    private final Node treeLeafBlock;
-    private final Node appleTreeLeafBlock;
+    private final Map<Face, VoxelFace> treeLeafBlock;
+    private final Map<Face, VoxelFace> appleTreeLeafBlock;
 
-    public AppleLeafVoxelRenderer(Node treeLeafBlock, Node appleTreeLeafBlock) {
+    public AppleLeafVoxelRenderer(Map<Face, VoxelFace> treeLeafBlock, Map<Face, VoxelFace> appleTreeLeafBlock) {
         this.treeLeafBlock = treeLeafBlock;
         this.appleTreeLeafBlock = appleTreeLeafBlock;
     }
 
     @Override
-    public Node getNode() {
+    public Map<Face, VoxelFace> getFaces() {
         Optional<Inventory> component = voxel.getGameObject().getComponent(Inventory.class);
         if (!component.isPresent()) {
             throw new IllegalStateException("No inventory in game object");
         }
         if (component.get().isEmpty()) {
-            return (Node) treeLeafBlock.clone();
+            return treeLeafBlock;
         } else {
-            return (Node) appleTreeLeafBlock.clone();
+            return appleTreeLeafBlock;
         }
     }
 }

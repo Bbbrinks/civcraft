@@ -5,10 +5,7 @@ import com.jme3.material.Material;
 import nl.civcraft.core.gamecomponents.AppleLeafVoxelRenderer;
 import nl.civcraft.core.gamecomponents.HarvestFromInventory;
 import nl.civcraft.core.gamecomponents.LimitedInventory;
-import nl.civcraft.core.model.Block;
-import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.model.VoxelProducer;
+import nl.civcraft.core.model.*;
 import nl.civcraft.core.utils.BlockUtil;
 import nl.civcraft.core.utils.MaterialUtil;
 import nl.civcraft.core.utils.RandomUtil;
@@ -16,6 +13,8 @@ import nl.civcraft.core.worldgeneration.Apple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 
 /**
@@ -26,29 +25,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class TreeLeaf implements VoxelProducer {
     public static final String BLOCK_NAME = "treeLeaf";
-    private final Block emptyBlock;
-    private final Block filledBlock;
     private final ApplicationEventPublisher publisher;
+    private final Material oakMaterial;
+    private final Material appleMaterial;
 
     @Autowired
     public TreeLeaf(AssetManager assetManager, ApplicationEventPublisher publisher) {
-        emptyBlock = treeLeaf(assetManager);
-        filledBlock = appleTreeLeaf(assetManager);
+        oakMaterial = MaterialUtil.getUnshadedMaterial(assetManager, "textures/leaves_oak.png");
+        appleMaterial = MaterialUtil.getUnshadedMaterial(assetManager, "textures/leaves_apple.png");
         this.publisher = publisher;
     }
 
-    private Block treeLeaf(AssetManager assetManager) {
-        Material material = MaterialUtil.getUnshadedMaterial(assetManager, "textures/leaves_oak.png");
-        return BlockUtil.getQuadBlock("treeLeaf", material, material, material);
-    }
-
-    private Block appleTreeLeaf(AssetManager assetManager) {
-        Material material = MaterialUtil.getUnshadedMaterial(assetManager, "textures/leaves_apple.png");
-        return BlockUtil.getQuadBlock("appleLeaf", material, material, material);
-    }
 
     @Override
-    public Voxel produce(int x, int y, int z) {
+    public GameObject produce(int x, int y, int z) {
+        Map<Face, VoxelFace> emptyBlock = BlockUtil.getQuadBlock(oakMaterial, oakMaterial, oakMaterial);
+        Map<Face, VoxelFace> filledBlock = BlockUtil.getQuadBlock(appleMaterial, appleMaterial, appleMaterial);
         AppleLeafVoxelRenderer staticVoxelRenderer = new AppleLeafVoxelRenderer(emptyBlock, filledBlock);
         GameObject gameObject = new GameObject();
         Voxel voxel = new Voxel(x, y, z, BLOCK_NAME, publisher);
@@ -61,7 +53,7 @@ public class TreeLeaf implements VoxelProducer {
         }
         gameObject.addComponent(limitedInventory);
         gameObject.addComponent(new HarvestFromInventory());
-        return voxel;
+        return gameObject;
     }
 
     @Override

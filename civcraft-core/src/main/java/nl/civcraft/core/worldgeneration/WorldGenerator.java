@@ -13,7 +13,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
@@ -32,20 +31,18 @@ public class WorldGenerator implements Runnable {
 
     private final ChunkBuilder chunkBuilder;
     private final WorldManager worldManager;
-    private final ApplicationEventPublisher publisher;
     private final NpcManager civvyManager;
     private final TreeGenerator treeGenerator;
     private HeightMap heightMap;
     private boolean generationDone;
 
     @Autowired
-    public WorldGenerator(@Value("${height_map_width}") int heightMapWidth, @Value("${height_map_height}") int heightMapHeight, HeightMapGenerator hillsGenerator, ChunkBuilder chunkBuilder, WorldManager worldManager, ApplicationEventPublisher publisher, NpcManager civvyManager, TreeGenerator treeGenerator) {
+    public WorldGenerator(@Value("${height_map_width}") int heightMapWidth, @Value("${height_map_height}") int heightMapHeight, HeightMapGenerator hillsGenerator, ChunkBuilder chunkBuilder, WorldManager worldManager, NpcManager civvyManager, TreeGenerator treeGenerator) {
         this.heightMapWidth = heightMapWidth;
         this.heightMapHeight = heightMapHeight;
         this.hillsGenerator = hillsGenerator;
         this.chunkBuilder = chunkBuilder;
         this.worldManager = worldManager;
-        this.publisher = publisher;
         this.civvyManager = civvyManager;
         this.treeGenerator = treeGenerator;
     }
@@ -60,8 +57,8 @@ public class WorldGenerator implements Runnable {
         LOGGER.trace(DebugStatsState.LAST_MESSAGE);
         worldManager.getWorld().clearChunks();
         int chunkCount = 0;
-        for (int x = 0; x < 2; x++) {
-            for (int z = 0; z < 2; z++) {
+        for (int x = 0; x < 4; x++) {
+            for (int z = 0; z < 4; z++) {
                 generateChunk(x, z);
                 DebugStatsState.LAST_MESSAGE = "Generating chunk: " + chunkCount + "/36";
                 LOGGER.trace(DebugStatsState.LAST_MESSAGE);
@@ -72,7 +69,7 @@ public class WorldGenerator implements Runnable {
             float treeX = MathUtil.rnd(0f, 120f);
             float treeZ = MathUtil.rnd(0f, 120f);
             float treeY = heightMap.getHeight((int) treeX, (int) treeZ);
-            treeGenerator.addTree((int) treeX, (int) treeY, (int) treeZ, worldManager.getWorld());
+            treeGenerator.addTree((int) treeX, (int) treeY, (int) treeZ);
 
         }
 
@@ -89,9 +86,7 @@ public class WorldGenerator implements Runnable {
             civvy.setCurrentVoxel(voxelAt.get());
             civvy.addComponent(new LimitedInventory(2));
             worldManager.getWorld().addCivvy(civvy);
-
         }
-
         setGenerationDone(true);
     }
 
@@ -100,7 +95,7 @@ public class WorldGenerator implements Runnable {
     }
 
     private void generateChunk(int chunkX, int chunkZ) {
-        chunkBuilder.buildChunk(chunkX, chunkZ, heightMap, worldManager.getWorld());
+        chunkBuilder.buildChunk(chunkX, chunkZ, heightMap);
     }
 
     public boolean isGenerationDone() {

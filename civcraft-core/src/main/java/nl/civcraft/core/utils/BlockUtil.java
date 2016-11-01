@@ -6,8 +6,11 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
-import nl.civcraft.core.model.Block;
 import nl.civcraft.core.model.Face;
+import nl.civcraft.core.model.VoxelFace;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * Created by Bob on 18-9-2016.
@@ -15,34 +18,28 @@ import nl.civcraft.core.model.Face;
  * This is probably not worth documenting
  */
 public class BlockUtil {
-    private static final float BLOCK_SIZE = 0.5f;
+    public static final float BLOCK_SIZE = 0.5f;
+    private static final Geometry TOP = getBlockQuadGeometry(Face.TOP);
+    private static final Geometry BOTTOM = getBlockQuadGeometry(Face.BOTTOM);
+    private static final Geometry LEFT = getBlockQuadGeometry(Face.LEFT);
+    private static final Geometry RIGHT = getBlockQuadGeometry(Face.RIGHT);
+    private static final Geometry FRONT = getBlockQuadGeometry(Face.FRONT);
+    private static final Geometry BACK = getBlockQuadGeometry(Face.BACK);
 
-    public static Block getQuadBlock(String name, Material topMaterial, Material sideMaterial, Material bottomMaterial) {
-        Block block = new Block(name);
+    public static Map<Face, VoxelFace> getQuadBlock(Material topMaterial, Material sideMaterial, Material bottomMaterial) {
+        Map<Face, VoxelFace> block = new EnumMap<>(Face.class);
 
-        Geometry topGeometry = getBlockQuadGeometry(Face.TOP);
-        topGeometry.setMaterial(topMaterial);
-        block.attachChild(topGeometry);
+        block.put(Face.TOP, new VoxelFace(topMaterial, TOP.clone()));
 
-        Geometry bottomGeometry = getBlockQuadGeometry(Face.BOTTOM);
-        bottomGeometry.setMaterial(bottomMaterial);
-        block.attachChild(bottomGeometry);
+        block.put(Face.BOTTOM, new VoxelFace(bottomMaterial, BOTTOM.clone()));
 
-        Geometry leftGeometry = getBlockQuadGeometry(Face.LEFT);
-        leftGeometry.setMaterial(sideMaterial);
-        block.attachChild(leftGeometry);
+        block.put(Face.LEFT, new VoxelFace(sideMaterial, LEFT.clone()));
 
-        Geometry rightGeometry = getBlockQuadGeometry(Face.RIGHT);
-        rightGeometry.setMaterial(sideMaterial);
-        block.attachChild(rightGeometry);
+        block.put(Face.RIGHT, new VoxelFace(sideMaterial, RIGHT.clone()));
 
-        Geometry frontGeometry = getBlockQuadGeometry(Face.FRONT);
-        frontGeometry.setMaterial(sideMaterial);
-        block.attachChild(frontGeometry);
+        block.put(Face.FRONT, new VoxelFace(sideMaterial, FRONT.clone()));
 
-        Geometry backGeometry = getBlockQuadGeometry(Face.BACK);
-        backGeometry.setMaterial(sideMaterial);
-        block.attachChild(backGeometry);
+        block.put(Face.BACK, new VoxelFace(sideMaterial, BACK.clone()));
 
         return block;
     }

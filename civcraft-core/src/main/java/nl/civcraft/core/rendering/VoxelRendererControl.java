@@ -5,123 +5,87 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import javafx.util.Pair;
-import jme3tools.optimize.GeometryBatchFactory;
 import nl.civcraft.core.gamecomponents.VoxelRenderer;
 import nl.civcraft.core.model.Chunk;
-import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.model.World;
-import nl.civcraft.core.model.events.VoxelChangedEvent;
-import nl.civcraft.core.model.events.VoxelRemovedEvent;
-import nl.civcraft.core.model.events.VoxelsAddedEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import nl.civcraft.core.model.events.GameObjectCreatedEvent;
+import nl.civcraft.core.utils.BlockUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.concurrent.*;
 
 @Component
 public class VoxelRendererControl extends AbstractControl {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-    private final List<RenderedVoxelFilter> voxelFilters;
+    private static final int MAX_CHUNKS_PER_CYCLE = 2;
     private final Node chunks;
-    private Queue<Pair<Chunk, Spatial>> newSpatials;
-    private Queue<Chunk> modifiedChunks;
+    private final ChunkOptimizer chunkOptimizer;
+    private final ExecutorService executorService;
+    private final Queue<Future<ChunkOptimizer.ChunkOptimizerThread>> newOptimizedChunks;
+    private final Map<Chunk, Future<ChunkOptimizer.ChunkOptimizerThread>> optimizerThreadMap;
 
     @Autowired
-    public VoxelRendererControl(List<RenderedVoxelFilter> voxelFilters, Node chunks) {
-        this.voxelFilters = voxelFilters;
+    public VoxelRendererControl(Node chunks, ChunkOptimizer chunkOptimizer) {
+        optimizerThreadMap = new HashMap<>();
+        newOptimizedChunks = new LinkedBlockingQueue<>();
+        this.chunkOptimizer = chunkOptimizer;
         this.chunks = chunks;
-        newSpatials = new ConcurrentLinkedQueue<>();
-        modifiedChunks = new ConcurrentLinkedQueue<>();
+        executorService = Executors.newFixedThreadPool(4);
     }
 
 
     @EventListener
-    public void handleVoxelsAdded(VoxelsAddedEvent voxelsAddedEvent) {
-        List<Voxel> voxels = voxelsAddedEvent.getVoxels();
-        renderVoxels(voxels);
-    }
-
-    private void renderVoxels(List<Voxel> voxels) {
-        for (RenderedVoxelFilter voxelFilter : voxelFilters) {
-            voxels = voxelFilter.filter(voxels);
+    public void handleVoxelAdded(GameObjectCreatedEvent gameObjectCreatedEvent) {
+        Optional<VoxelRenderer> component = gameObjectCreatedEvent.getGameObject().getComponent(VoxelRenderer.class);
+        if (!component.isPresent()) {
+            return;
         }
-        List<VoxelRenderer> voxelRenderers = voxels.stream().map(v -> v.getGameObject().getComponent(VoxelRenderer.class).get()).collect(Collectors.toList());
-        Node optimize = optimize(voxelRenderers);
-        if (!voxelRenderers.isEmpty()) {
-            newSpatials.add(new Pair<>(voxelRenderers.get(0).getVoxel().getChunk(), optimize));
+        Chunk chunk = component.get().getVoxel().getChunk();
+        if (optimizerThreadMap.containsKey(chunk)) {
+            optimizerThreadMap.get(chunk).cancel(true);
+            newOptimizedChunks.remove(optimizerThreadMap.get(chunk));
         }
-    }
-
-    private Node optimize(List<VoxelRenderer> voxelRenders) {
-        List<Geometry> allGeometries = new ArrayList<>();
-        for (VoxelRenderer voxelRenderer : voxelRenders) {
-            List<Geometry> geometries = voxelRenderer.getNode().descendantMatches(Geometry.class);
-            for (Geometry geometry : geometries) {
-                geometry.setLocalTranslation(geometry.getLocalTranslation().add(voxelRenderer.getVoxel().getX(), voxelRenderer.getVoxel().getY(), voxelRenderer.getVoxel().getZ()));
-                allGeometries.add(geometry);
-            }
-        }
-        List<Geometry> batches = GeometryBatchFactory.makeBatches(allGeometries);
-        Node optimizedVoxels = new Node();
-        for (Geometry batch : batches) {
-            batch.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-            optimizedVoxels.attachChild(batch);
-        }
-        return optimizedVoxels;
-    }
-
-    @EventListener
-    public void handleVoxelChanged(VoxelChangedEvent voxelChangedEvent) {
-        Chunk chunk = voxelChangedEvent.getVoxel().getChunk();
-        modifiedChunks.add(chunk);
-        // renderVoxels(Arrays.asList(chunk.getVoxels()).stream().filter(v -> v != null).collect(Collectors.toList()));
-    }
-
-    @EventListener
-    public void handleVoxelRemovedEvent(VoxelRemovedEvent voxelRemovedEvent) {
-        Chunk chunk = voxelRemovedEvent.getVoxel().getChunk();
-        if (!modifiedChunks.contains(chunk)) {
-            modifiedChunks.add(chunk);
-        }
-
+        Future<ChunkOptimizer.ChunkOptimizerThread> submit = executorService.submit(chunkOptimizer.optimizeChunk(chunk));
+        newOptimizedChunks.add(submit);
+        optimizerThreadMap.put(chunk, submit);
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-        while (modifiedChunks.peek() != null) {
-            Chunk chunk = modifiedChunks.poll();
-            Node voxelChunkNode = (Node) chunks.getChild(chunk.getName());
-            voxelChunkNode.detachAllChildren();
-            renderVoxels(Arrays.stream(chunk.getVoxels()).filter(v -> v != null).collect(Collectors.toList()));
-        }
-
-        List<Pair<Chunk, Spatial>> failedVoxels = new ArrayList<>();
-
-        int voxelsAdded = 0;
-        while (newSpatials.peek() != null && voxelsAdded < Math.pow(World.CHUNK_SIZE, 3)) {
-            Pair<Chunk, Spatial> poll = newSpatials.poll();
-
-            Node voxelChunkNode = (Node) chunks.getChild(poll.getKey().getName());
-            if (voxelChunkNode == null) {
-                failedVoxels.add(poll);
-            } else {
-                voxelChunkNode.attachChild(poll.getValue());
+        List<Future<ChunkOptimizer.ChunkOptimizerThread>> failed = new ArrayList<>();
+        int chunksHandled = 0;
+        while (!newOptimizedChunks.isEmpty() && chunksHandled < MAX_CHUNKS_PER_CYCLE) {
+            chunksHandled++;
+            Future<ChunkOptimizer.ChunkOptimizerThread> next = newOptimizedChunks.poll();
+            if (next == null || next.isCancelled()) {
+                continue;
             }
-            voxelsAdded++;
+            if (!next.isDone()) {
+                failed.add(next);
+                continue;
+            }
+            ChunkOptimizer.ChunkOptimizerThread chunkOptimizerThread;
+            try {
+                chunkOptimizerThread = next.get();
+            } catch (InterruptedException | ExecutionException | CancellationException e) {
+                failed.add(next);
+                continue;
+            }
+            List<Geometry> geometries = chunkOptimizerThread.getGeometries();
+            Chunk chunk = chunkOptimizerThread.getChunk();
+            Node chunkNode = (Node) chunks.getChild(chunk.getName());
+            chunkNode.setShadowMode(RenderQueue.ShadowMode.Off);
+            chunkNode.detachAllChildren();
+            for (Geometry geometry : geometries) {
+                geometry.setLocalTranslation(chunk.getX() - BlockUtil.BLOCK_SIZE, chunk.getY() - BlockUtil.BLOCK_SIZE, chunk.getZ() - BlockUtil.BLOCK_SIZE);
+                chunkNode.attachChild(geometry);
+            }
+            chunkNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         }
-        newSpatials.addAll(failedVoxels);
+        newOptimizedChunks.addAll(failed);
     }
 
     @Override

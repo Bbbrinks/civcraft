@@ -2,7 +2,10 @@ package nl.civcraft.core.model;
 
 
 import com.jme3.math.Vector3f;
-import nl.civcraft.core.model.events.*;
+import nl.civcraft.core.model.events.ChunkAddedEvent;
+import nl.civcraft.core.model.events.CivvyCreated;
+import nl.civcraft.core.model.events.CivvyRemoved;
+import nl.civcraft.core.model.events.StockpileCreated;
 import nl.civcraft.core.npc.Civvy;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -10,7 +13,7 @@ import java.util.*;
 
 public class World {
 
-    public static final int CHUNK_SIZE = 60;
+    public static final int CHUNK_SIZE = 30;
     private final List<Chunk> chunks;
     private final List<Civvy> civvies;
     private final ApplicationEventPublisher publisher;
@@ -27,29 +30,25 @@ public class World {
         this.chunks.clear();
     }
 
-    public void addVoxels(List<Voxel> voxels) {
-        List<Voxel> addedVoxels = new ArrayList<>();
-        for (Voxel voxel : voxels) {
-            if (!getVoxelAt(voxel.getX(), voxel.getY(), voxel.getZ()).isPresent()) {
+    public void addVoxel(Voxel voxel) {
 
-                int x = voxel.getX();
-                int y = voxel.getY();
-                int z = voxel.getZ();
-                Optional<Chunk> chunkOptional = getChunkAt(x, y, z);
-                Chunk chunkAt;
-                if (chunkOptional.isPresent()) {
-                    chunkAt = chunkOptional.get();
-                } else {
-                    chunkAt = addChunkAt(x, y, z);
-                }
-                voxel.addNeighbours(getVoxelNeighbours(voxel));
+        if (!getVoxelAt(voxel.getX(), voxel.getY(), voxel.getZ()).isPresent()) {
 
-                chunkAt.addVoxel(voxel);
-                addedVoxels.add(voxel);
+            int x = voxel.getX();
+            int y = voxel.getY();
+            int z = voxel.getZ();
+            Optional<Chunk> chunkOptional = getChunkAt(x, y, z);
+            Chunk chunkAt;
+            if (chunkOptional.isPresent()) {
+                chunkAt = chunkOptional.get();
+            } else {
+                chunkAt = addChunkAt(x, y, z);
             }
+            voxel.addNeighbours(getVoxelNeighbours(voxel));
+
+            chunkAt.addVoxel(voxel);
         }
 
-        publisher.publishEvent(new VoxelsAddedEvent(addedVoxels, this));
     }
 
     public Optional<Voxel> getVoxelAt(float x, float y, float z) {

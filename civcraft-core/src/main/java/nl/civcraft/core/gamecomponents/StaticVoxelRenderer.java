@@ -1,8 +1,10 @@
 package nl.civcraft.core.gamecomponents;
 
 
-import com.jme3.scene.Node;
-import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.model.Face;
+import nl.civcraft.core.model.VoxelFace;
+
+import java.util.Map;
 
 /**
  * Created by Bob on 25-3-2016.
@@ -11,20 +13,16 @@ import nl.civcraft.core.model.GameObject;
  */
 public class StaticVoxelRenderer extends VoxelRenderer {
 
-    private final Node block;
+    private final Map<Face, VoxelFace> block;
 
-    public StaticVoxelRenderer(Node block) {
+    public StaticVoxelRenderer(Map<Face, VoxelFace> block) {
         this.block = block;
 
     }
 
     @Override
-    public Node getNode() {
-        return (Node) block.clone();
+    public Map<Face, VoxelFace> getFaces() {
+        return block;
     }
 
-    @Override
-    public void destroyed(GameObject gameObject) {
-
-    }
 }

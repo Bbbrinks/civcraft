@@ -3,14 +3,9 @@ package nl.civcraft.core.worldgeneration;
 import nl.civcraft.core.blocks.TreeLeaf;
 import nl.civcraft.core.blocks.TreeTrunk;
 import nl.civcraft.core.managers.BlockManager;
-import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.model.World;
 import nl.civcraft.core.utils.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class TreeGenerator {
@@ -23,11 +18,10 @@ public class TreeGenerator {
     }
 
 
-    public void addTree(int treeX, int treeY, int treeZ, World world) {
+    public void addTree(int treeX, int treeY, int treeZ) {
         long rnd = MathUtil.rnd(2, 5);
-        List<Voxel> voxels = new ArrayList<>();
         for (int i = 1; i <= rnd; i++) {
-            voxels.add(blockManager.createVoxel(TreeTrunk.BLOCK_NAME, treeX, treeY + i, treeZ));
+            blockManager.createVoxel(TreeTrunk.BLOCK_NAME, treeX, treeY + i, treeZ);
         }
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 5; j++) {
@@ -35,9 +29,7 @@ public class TreeGenerator {
                     int leafX = treeX - 2 + j;
                     int leafZ = treeZ - 2 + k;
                     int leafY = (int) (treeY + rnd + i);
-                    if (!voxels.stream().filter(v -> v.getX() == leafX && v.getY() == leafY && v.getZ() == leafZ).findFirst().isPresent()) {
-                        voxels.add(blockManager.createVoxel(TreeLeaf.BLOCK_NAME, leafX, leafY, leafZ));
-                    }
+                    blockManager.createVoxel(TreeLeaf.BLOCK_NAME, leafX, leafY, leafZ);
                 }
             }
         }
@@ -47,13 +39,10 @@ public class TreeGenerator {
                 int leafX = treeX - 1 + j;
                 int leafZ = treeZ - 1 + k;
                 int leafY = (int) (treeY + rnd + 2);
-                if (!voxels.stream().filter(v -> v.getX() == leafX && v.getY() == leafY && v.getZ() == leafZ).findFirst().isPresent()) {
-                    voxels.add(blockManager.createVoxel(TreeLeaf.BLOCK_NAME, leafX, leafY, leafZ));
-                }
+
+                blockManager.createVoxel(TreeLeaf.BLOCK_NAME, leafX, leafY, leafZ);
             }
         }
-
-        world.addVoxels(voxels);
     }
 
 }
