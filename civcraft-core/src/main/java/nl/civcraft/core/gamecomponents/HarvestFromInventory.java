@@ -12,7 +12,7 @@ import java.util.Optional;
  * This is probably not worth documenting
  */
 public class HarvestFromInventory extends AbstractGameComponent implements Harvestable, GameComponent {
-    private GameObject gameObject;
+
 
     @Override
     public Optional<Item> harvest(Civvy civvy) {
