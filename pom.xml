@@ -10,12 +10,12 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>civcraft-core</module>
+        <module>jme3-renderer</module>
     </modules>
 
     <properties>
         <!-- dependency versions -->
         <spring-version>4.2.1.RELEASE</spring-version>
-        <jmonkey-version>3.1.0-beta1</jmonkey-version>
         <myproject.root>${basedir}</myproject.root>
         <!-- Sonar -->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -37,6 +37,14 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -51,38 +59,11 @@
                 <artifactId>spring-context</artifactId>
                 <version>${spring-version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.jmonkeyengine</groupId>
-                <artifactId>jme3-core</artifactId>
-                <version>${jmonkey-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jmonkeyengine</groupId>
-                <artifactId>jme3-desktop</artifactId>
-                <version>${jmonkey-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jmonkeyengine</groupId>
-                <artifactId>jme3-lwjgl</artifactId>
-                <version>${jmonkey-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jmonkeyengine</groupId>
-                <artifactId>jme3-effects</artifactId>
-                <version>${jmonkey-version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.bushe</groupId>
                 <artifactId>eventbus</artifactId>
                 <version>1.4</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jmonkeyengine</groupId>
-                <artifactId>jme3-terrain</artifactId>
-                <version>${jmonkey-version}</version>
             </dependency>
 
             <dependency>
@@ -111,27 +92,21 @@
             </dependency>
 
 
-            <dependency>
-                <groupId>jmonkey.csg</groupId>
-                <artifactId>jmonkey-hax</artifactId>
-                <version>1.0</version>
-                <scope>system</scope>
-                <systemPath>${myproject.root}/lib/jMonkey3-b31102015-j17-minimal.jar</systemPath>
-            </dependency>
-            <dependency>
-                <groupId>jmonkey.csg</groupId>
-                <artifactId>csg</artifactId>
-                <version>1.0</version>
-                <scope>system</scope>
-                <systemPath>${myproject.root}/lib/WCOmoCSG-b05022016-j17.jar</systemPath>
-            </dependency>
-            <dependency>
-                <groupId>com.simsilica</groupId>
-                <artifactId>lemur</artifactId>
-                <version>1.8.1</version>
-                <scope>system</scope>
-                <systemPath>${myproject.root}/lib/lemur-1.8.1.jar</systemPath>
-            </dependency>
+            <!--  <dependency>
+                  <groupId>jmonkey.csg</groupId>
+                  <artifactId>jmonkey-hax</artifactId>
+                  <version>1.0</version>
+                  <scope>system</scope>
+                  <systemPath>${myproject.root}/lib/jMonkey3-b31102015-j17-minimal.jar</systemPath>
+              </dependency>
+              <dependency>
+                  <groupId>jmonkey.csg</groupId>
+                  <artifactId>csg</artifactId>
+                  <version>1.0</version>
+                  <scope>system</scope>
+                  <systemPath>${myproject.root}/lib/WCOmoCSG-b05022016-j17.jar</systemPath>
+              </dependency>-->
+
 
             <dependency>
                 <groupId>org.slf4j</groupId>

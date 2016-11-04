@@ -16,22 +16,6 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.jmonkeyengine</groupId>
-            <artifactId>jme3-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jmonkeyengine</groupId>
-            <artifactId>jme3-terrain</artifactId>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
@@ -50,20 +34,8 @@
             <artifactId>eventbus</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jmonkeyengine</groupId>
-            <artifactId>jme3-effects</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.simsilica</groupId>
             <artifactId>lemur</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jmonkeyengine</groupId>
-            <artifactId>jme3-desktop</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jmonkeyengine</groupId>
-            <artifactId>jme3-lwjgl</artifactId>
         </dependency>
 
         <dependency>

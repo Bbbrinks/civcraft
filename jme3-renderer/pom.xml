@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>civcraft</artifactId>
+        <groupId>nl.civcraft</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>jme3-renderer</artifactId>
+    <properties>
+        <jmonkey-version>3.1.0-beta1</jmonkey-version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jmonkeyengine</groupId>
+                <artifactId>jme3-core</artifactId>
+                <version>${jmonkey-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jmonkeyengine</groupId>
+                <artifactId>jme3-desktop</artifactId>
+                <version>${jmonkey-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jmonkeyengine</groupId>
+                <artifactId>jme3-lwjgl</artifactId>
+                <version>${jmonkey-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jmonkeyengine</groupId>
+                <artifactId>jme3-effects</artifactId>
+                <version>${jmonkey-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jmonkeyengine</groupId>
+                <artifactId>jme3-terrain</artifactId>
+                <version>${jmonkey-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.simsilica</groupId>
+                <artifactId>lemur</artifactId>
+                <version>1.8.1</version>
+                <scope>system</scope>
+                <systemPath>${myproject.root}/lib/lemur-1.8.1.jar</systemPath>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>nl.civcraft</groupId>
+            <artifactId>civcraft-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jmonkeyengine</groupId>
+            <artifactId>jme3-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jmonkeyengine</groupId>
+            <artifactId>jme3-desktop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jmonkeyengine</groupId>
+            <artifactId>jme3-lwjgl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jmonkeyengine</groupId>
+            <artifactId>jme3-effects</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jmonkeyengine</groupId>
+            <artifactId>jme3-terrain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.simsilica</groupId>
+            <artifactId>lemur</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
