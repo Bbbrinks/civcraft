@@ -42,7 +42,7 @@ public class Haul extends Task {
             return moveToObject(civvy, tpf);
         } else if (!itemPickedUp) {
             item = itemToHaul.getComponent(ItemComponent.class).get().getItem();
-            civvy.getComponent(Inventory.class).get().addItem(item);
+            civvy.getGameObject().getComponent(Inventory.class).get().addItem(item);
             itemToHaul.destroy();
             itemPickedUp = true;
 
@@ -63,7 +63,7 @@ public class Haul extends Task {
             }
             return Result.IN_PROGRESS;
         } else {
-            civvy.getComponent(Inventory.class).get().remove(item);
+            civvy.getGameObject().getComponent(Inventory.class).get().remove(item);
             target.addItem(item);
             return Result.COMPLETED;
         }

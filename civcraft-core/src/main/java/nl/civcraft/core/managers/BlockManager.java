@@ -37,6 +37,6 @@ public class BlockManager {
         GameObject gameObject = voxelProducerOptional.get().produce(x, y, z);
         //TODO: Move voxel management out of World
         worldManager.getWorld().addVoxel(gameObject.getComponent(Voxel.class).get());
-        eventPublisher.publishEvent(new GameObjectCreatedEvent(gameObject));
+        eventPublisher.publishEvent(new GameObjectCreatedEvent(gameObject, this));
     }
 }

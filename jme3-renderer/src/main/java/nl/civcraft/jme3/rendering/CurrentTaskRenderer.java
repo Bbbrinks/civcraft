@@ -4,8 +4,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import nl.civcraft.core.event.SystemUpdate;
 import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.model.events.CivvyCreated;
 import nl.civcraft.core.model.events.CivvyRemoved;
+import nl.civcraft.core.model.events.GameObjectCreatedEvent;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.tasks.MoveTo;
 import nl.civcraft.core.tasks.MoveToRange;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class CurrentTaskRenderer {
@@ -32,8 +33,12 @@ public class CurrentTaskRenderer {
     }
 
     @EventListener
-    public void addCivvy(CivvyCreated civvyCreated) {
-        civvies.add(civvyCreated.getCivvy());
+    public void addCivvy(GameObjectCreatedEvent civvyCreated) {
+        Optional<Civvy> component = civvyCreated.getGameObject().getComponent(Civvy.class);
+        if (!component.isPresent()) {
+            return;
+        }
+        civvies.add(component.get());
     }
 
     @EventListener

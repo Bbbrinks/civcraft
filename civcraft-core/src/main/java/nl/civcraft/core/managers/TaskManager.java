@@ -5,8 +5,8 @@ import nl.civcraft.core.gamecomponents.Haulable;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Stockpile;
 import nl.civcraft.core.model.World;
-import nl.civcraft.core.model.events.CivvyCreated;
 import nl.civcraft.core.model.events.EntityCreatedEvent;
+import nl.civcraft.core.model.events.GameObjectCreatedEvent;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.tasks.Task;
@@ -45,8 +45,12 @@ public class TaskManager {
     }
 
     @EventListener
-    public void addCivvy(CivvyCreated civvyCreated) {
-        civvyCreated.getCivvy().subscribe(this);
+    public void addCivvy(GameObjectCreatedEvent civvyCreated) {
+        Optional<Civvy> component = civvyCreated.getGameObject().getComponent(Civvy.class);
+        if (!component.isPresent()) {
+            return;
+        }
+        component.get().subscribe(this);
     }
 
     @EventListener

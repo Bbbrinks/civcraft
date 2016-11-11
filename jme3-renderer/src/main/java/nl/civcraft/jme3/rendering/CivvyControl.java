@@ -5,14 +5,15 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import nl.civcraft.core.model.events.CivvyCreated;
 import nl.civcraft.core.model.events.CivvyRemoved;
+import nl.civcraft.core.model.events.GameObjectCreatedEvent;
 import nl.civcraft.core.npc.Civvy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
@@ -31,8 +32,12 @@ public class CivvyControl extends AbstractControl {
     }
 
     @EventListener
-    public void addCivvy(CivvyCreated civvyCreated) {
-        civvies.add(civvyCreated.getCivvy());
+    public void addCivvy(GameObjectCreatedEvent civvyCreated) {
+        Optional<Civvy> component = civvyCreated.getGameObject().getComponent(Civvy.class);
+        if (!component.isPresent()) {
+            return;
+        }
+        civvies.add(component.get());
     }
 
     @EventListener

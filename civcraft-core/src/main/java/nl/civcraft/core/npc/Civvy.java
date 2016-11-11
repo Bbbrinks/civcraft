@@ -1,8 +1,8 @@
 package nl.civcraft.core.npc;
 
 import com.jme3.math.Vector3f;
+import nl.civcraft.core.gamecomponents.AbstractGameComponent;
 import nl.civcraft.core.managers.TaskManager;
-import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.tasks.Task;
@@ -12,7 +12,7 @@ import nl.civcraft.core.tasks.Task;
  * <p>
  * This is probably not worth documenting
  */
-public class Civvy extends GameObject {
+public class Civvy extends AbstractGameComponent {
     private final float speed;
     private Vector3f location;
     private World world;
@@ -115,12 +115,6 @@ public class Civvy extends GameObject {
 
     public Vector3f getLocationAtVoxel(Voxel voxel) {
         return voxel.getLocation().add(new Vector3f(0, 1, 0));
-    }
-
-
-    @Override
-    public void changed() {
-        //TODO
     }
 
     public void kill() {

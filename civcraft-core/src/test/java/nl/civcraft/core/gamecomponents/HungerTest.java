@@ -23,12 +23,14 @@ public class HungerTest {
     private Hunger underTest;
     @Mock
     private Civvy testCivvy;
+    private GameObject gameObject;
 
     @Before
     public void setUp() throws Exception {
-
+        gameObject = new GameObject();
+        gameObject.addComponent(testCivvy);
         underTest = new Hunger();
-        underTest.addTo(testCivvy);
+        underTest.addTo(gameObject);
     }
 
     @Test

@@ -2,6 +2,7 @@ package nl.civcraft.core.worldgeneration;
 
 import nl.civcraft.core.gamecomponents.LimitedInventory;
 import nl.civcraft.core.managers.WorldManager;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.npc.Civvy;
@@ -73,10 +74,13 @@ public class WorldGenerator implements Runnable {
             if (!voxelAt.isPresent()) {
                 throw new IllegalStateException("Voxel not present");
             }
+            GameObject civvyGameObject = new GameObject();
             Civvy civvy = new Civvy(civX, civY + 1, civZ, "civvy");
             civvy.setCurrentVoxel(voxelAt.get());
-            civvy.addComponent(new LimitedInventory(2));
-            worldManager.getWorld().addCivvy(civvy);
+            civvyGameObject.addComponent(new LimitedInventory(2));
+            civvyGameObject.addComponent(civvy);
+            //TODO: Move civvy management out of world
+            worldManager.getWorld().addCivvy(civvyGameObject);
         }
         setGenerationDone(true);
     }

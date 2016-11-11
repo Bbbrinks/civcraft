@@ -1,8 +1,9 @@
 package nl.civcraft.core.gamecomponents;
 
-import nl.civcraft.core.model.events.CivvyCreated;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.events.CivvyRemoved;
 import nl.civcraft.core.model.events.Tick;
+import nl.civcraft.core.npc.Civvy;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -22,15 +23,19 @@ public class HungerBinder {
     }
 
     @EventListener
-    public void handleCivvyCreated(CivvyCreated civvyCreated) {
+    public void handleCivvyCreated(GameObject gameObject) {
+        Optional<Civvy> component = gameObject.getComponent(Civvy.class);
+        if (!component.isPresent()) {
+            return;
+        }
         Hunger hunger = new Hunger();
-        civvyCreated.getCivvy().addComponent(hunger);
+        gameObject.addComponent(hunger);
         hungers.add(hunger);
     }
 
     @EventListener
     public void handleCivvyRemoved(CivvyRemoved civvyRemoved) {
-        Optional<Hunger> component = civvyRemoved.getCivvy().getComponent(Hunger.class);
+        Optional<Hunger> component = civvyRemoved.getCivvy().getGameObject().getComponent(Hunger.class);
         if (component.isPresent()) {
             removedHungers.add(component.get());
         }

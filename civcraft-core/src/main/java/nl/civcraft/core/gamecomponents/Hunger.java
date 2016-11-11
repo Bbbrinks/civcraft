@@ -4,29 +4,22 @@ import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.worldgeneration.Apple;
 
+import java.util.Optional;
 
-public class Hunger implements GameComponent {
+
+public class Hunger extends AbstractGameComponent {
     private Civvy civvy;
     private int calories;
     private int starvation;
 
     @Override
     public void addTo(GameObject gameObject) {
-        if (!(gameObject instanceof Civvy)) {
+        Optional<Civvy> component = gameObject.getComponent(Civvy.class);
+        if (!component.isPresent()) {
             throw new IllegalStateException("Hunger can only be added to Civvies");
         }
-        this.civvy = (Civvy) gameObject;
+        this.civvy = component.get();
         calories = 3000;
-    }
-
-    @Override
-    public GameObject getGameObject() {
-        return civvy;
-    }
-
-    @Override
-    public void destroyed(GameObject gameObject) {
-        //No op
     }
 
     public void handleTick() {

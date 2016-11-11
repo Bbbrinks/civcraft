@@ -3,8 +3,8 @@ package nl.civcraft.core.model;
 
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.model.events.ChunkAddedEvent;
-import nl.civcraft.core.model.events.CivvyCreated;
 import nl.civcraft.core.model.events.CivvyRemoved;
+import nl.civcraft.core.model.events.GameObjectCreatedEvent;
 import nl.civcraft.core.model.events.StockpileCreated;
 import nl.civcraft.core.npc.Civvy;
 import org.springframework.context.ApplicationEventPublisher;
@@ -101,10 +101,14 @@ public class World {
         return chunks;
     }
 
-    public void addCivvy(Civvy civvy) {
-        civvy.setWorld(this);
-        civvies.add(civvy);
-        publisher.publishEvent(new CivvyCreated(civvy, this));
+    public void addCivvy(GameObject gameObject) {
+        Optional<Civvy> component = gameObject.getComponent(Civvy.class);
+        if (!component.isPresent()) {
+            throw new IllegalStateException("No civvy game component found");
+        }
+        component.get().setWorld(this);
+        civvies.add(component.get());
+        publisher.publishEvent(new GameObjectCreatedEvent(gameObject, this));
     }
 
     public List<Civvy> getCivvies() {
