@@ -1,8 +1,5 @@
 package nl.civcraft.core.worldgeneration;
 
-import nl.civcraft.core.blocks.CobbleStone;
-import nl.civcraft.core.blocks.Dirt;
-import nl.civcraft.core.blocks.Grass;
 import nl.civcraft.core.managers.BlockManager;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.utils.MathUtil;
@@ -33,12 +30,12 @@ public class ChunkBuilder {
 
                     long rnd = MathUtil.rnd(8) - 1;
                     if (voxelY - y - rnd > 0) {
-                        blockManager.createVoxel(CobbleStone.BLOCK_NAME, x, y, z);
+                        blockManager.createVoxel("cobbleStone", x, y, z);
                     } else {
                         if (voxelY == y) {
-                            blockManager.createVoxel(Grass.BLOCK_NAME, x, y, z);
+                            blockManager.createVoxel("grass", x, y, z);
                         } else {
-                            blockManager.createVoxel(Dirt.BLOCK_NAME, x, y, z);
+                            blockManager.createVoxel("dirt", x, y, z);
                         }
                     }
                 }

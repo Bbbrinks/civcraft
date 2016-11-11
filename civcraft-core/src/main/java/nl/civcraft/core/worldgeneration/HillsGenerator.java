@@ -1,6 +1,5 @@
 package nl.civcraft.core.worldgeneration;
 
-import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.utils.MathUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,12 +31,19 @@ public class HillsGenerator implements HeightMapGenerator {
         int iterations = (int) MathUtil.rnd(minHills, maxHills);
 
         for (; iterations > 0; iterations--) {
-            DebugStatsState.LAST_MESSAGE = "Adding random hill to height map. (" + iterations + " hills left to add)";
-            LOGGER.trace(DebugStatsState.LAST_MESSAGE);
+            LOGGER.trace("Adding random hill to height map. (" + iterations + " hills left to add)");
             addRandomHill(heightMap);
         }
         normalize(maxHillHeight, heightMap);
         return heightMap;
+    }
+
+    private void addRandomHill(HeightMap heightMap) {
+        int peakX = (int) MathUtil.rnd(heightMap.getLength());
+        int peakZ = (int) MathUtil.rnd(heightMap.getWidth());
+
+        float hillRadius = MathUtil.rnd(minHillRadius, maxHillRadius);
+        handlePeak(peakX, peakZ, hillRadius, heightMap);
     }
 
     private void normalize(float maxHillHeight, HeightMap heightMap) {
@@ -48,14 +54,6 @@ public class HillsGenerator implements HeightMapGenerator {
                 heightMap.setHeight(x, z, Math.round((heightMap.getHeight(x, z)) * normalizer));
             }
         }
-    }
-
-    private void addRandomHill(HeightMap heightMap) {
-        int peakX = (int) MathUtil.rnd(heightMap.getLength());
-        int peakZ = (int) MathUtil.rnd(heightMap.getWidth());
-
-        float hillRadius = MathUtil.rnd(minHillRadius, maxHillRadius);
-        handlePeak(peakX, peakZ, hillRadius, heightMap);
     }
 
     private void handlePeak(int peakX, int peakZ, float hillRadius, HeightMap heightMap) {

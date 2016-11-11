@@ -1,4 +1,4 @@
-package nl.civcraft.core.worldgeneration;
+package nl.civcraft.jme3.worldgeneration;
 
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -7,6 +7,7 @@ import com.jme3.input.controls.KeyTrigger;
 import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.events.ChunkModifiedEvent;
+import nl.civcraft.core.worldgeneration.WorldGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;

@@ -11,7 +11,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Optional;
 
-import static nl.civcraft.core.util.ThrowableAssertion.assertThrown;
+import static nl.civcraft.test.util.ThrowableAssertion.assertThrown;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;

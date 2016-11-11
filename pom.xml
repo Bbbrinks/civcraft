@@ -11,6 +11,7 @@
     <modules>
         <module>civcraft-core</module>
         <module>jme3-renderer</module>
+        <module>civcraft-testing</module>
     </modules>
 
     <properties>
@@ -22,6 +23,7 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.language>java</sonar.language>
+        <jmonkey-version>3.1.0-beta1</jmonkey-version>
     </properties>
 
     <dependencies>

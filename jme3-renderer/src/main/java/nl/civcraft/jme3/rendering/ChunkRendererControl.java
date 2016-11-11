@@ -1,4 +1,4 @@
-package nl.civcraft.core.rendering;
+package nl.civcraft.jme3.rendering;
 
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;

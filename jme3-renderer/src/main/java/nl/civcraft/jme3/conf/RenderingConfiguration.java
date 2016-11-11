@@ -1,4 +1,4 @@
-package nl.civcraft.core.conf;
+package nl.civcraft.jme3.conf;
 
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -6,11 +6,10 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.Renderer;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.system.JmeContext;
-import nl.civcraft.core.Civcraft;
-import nl.civcraft.core.rendering.ChunkOptimizer;
-import nl.civcraft.core.rendering.ChunkRendererControl;
-import nl.civcraft.core.rendering.VoxelRendererControl;
+import nl.civcraft.jme3.Civcraft;
+import nl.civcraft.jme3.rendering.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -37,6 +36,20 @@ public class RenderingConfiguration {
         VoxelRendererControl voxelRendererControl = new VoxelRendererControl(chunks, chunkOptimizer);
         chunks.addControl(voxelRendererControl);
         return voxelRendererControl;
+    }
+
+    @Bean
+    public CivvyControl civvyControl(Node rootNode, Node civvy) {
+        CivvyControl control = new CivvyControl(rootNode, civvy);
+        rootNode.addControl(control);
+        return control;
+    }
+
+    @Bean
+    public VoxelHighlightControl voxelHighlightControl(Spatial hoverSpatial, Node selectionBoxes, Spatial rootNode) {
+        VoxelHighlightControl voxelHighlightControl = new VoxelHighlightControl(selectionBoxes, hoverSpatial);
+        rootNode.addControl(voxelHighlightControl);
+        return voxelHighlightControl;
     }
 
     @Bean

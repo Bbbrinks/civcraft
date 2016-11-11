@@ -7,7 +7,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 import nl.civcraft.core.model.Face;
-import nl.civcraft.core.model.VoxelFace;
+import nl.civcraft.jme3.model.VoxelFace;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -50,32 +50,32 @@ public class BlockUtil {
         Vector3f translation = null;
         float[] rotation = null;
         switch (face) {
-            case Face.TOP:
+            case TOP:
                 name = "top";
                 translation = new Vector3f(-0.5f, 0.5f, 0.5f);
                 rotation = new float[]{-90F * FastMath.DEG_TO_RAD, 0F, 0F};
                 break;
-            case Face.BOTTOM:
+            case BOTTOM:
                 name = "bottom";
                 translation = new Vector3f(-0.5f, -0.5f, -0.5f);
                 rotation = new float[]{90F * FastMath.DEG_TO_RAD, 0F, 0F};
                 break;
-            case Face.LEFT:
+            case LEFT:
                 name = "left";
                 translation = new Vector3f(0.5f, -0.5F, -0.5f);
                 rotation = new float[]{0F, 180F * FastMath.DEG_TO_RAD, 0F};
                 break;
-            case Face.RIGHT:
+            case RIGHT:
                 name = "right";
                 translation = new Vector3f(-0.5f, -0.5F, 0.5f);
                 rotation = new float[]{0F, 0F, 0F};
                 break;
-            case Face.FRONT:
+            case FRONT:
                 name = "front";
                 translation = new Vector3f(-0.5f, -0.5F, -0.5f);
                 rotation = new float[]{0F, 270F * FastMath.DEG_TO_RAD, 0F};
                 break;
-            case Face.BACK:
+            case BACK:
                 name = "back";
                 translation = new Vector3f(0.5f, -0.5F, 0.5f);
                 rotation = new float[]{0F, 90F * FastMath.DEG_TO_RAD, 0F};

@@ -44,8 +44,7 @@ public class World {
             } else {
                 chunkAt = addChunkAt(x, y, z);
             }
-            voxel.addNeighbours(getVoxelNeighbours(voxel));
-
+            addVoxelNeighbours(voxel);
             chunkAt.addVoxel(voxel);
         }
 
@@ -79,24 +78,23 @@ public class World {
         return chunk;
     }
 
-    private List<Voxel> getVoxelNeighbours(Voxel voxel) {
-        List<Voxel> neighbours = new ArrayList<>();
-        int x = voxel.getX();
-        int y = voxel.getY();
-        int z = voxel.getZ();
-        addIfPresent(neighbours, getVoxelAt(x - 1, y, z));
-        addIfPresent(neighbours, getVoxelAt(x, y - 1, z));
-        addIfPresent(neighbours, getVoxelAt(x, y, z - 1));
-        addIfPresent(neighbours, getVoxelAt(x + 1, y, z));
-        addIfPresent(neighbours, getVoxelAt(x, y + 1, z));
-        addIfPresent(neighbours, getVoxelAt(x, y, z + 1));
-        return neighbours;
+    private void addVoxelNeighbours(Voxel voxel) {
+        for (Face face : Face.values()) {
+            Optional<Voxel> voxelAt = getVoxelAt(voxel.getLocation().add(face.getTranslation()));
+            if (voxelAt.isPresent()) {
+                voxel.addNeighbour(face, voxelAt.get());
+            }
+        }
     }
 
     private <T> void addIfPresent(List<T> neighbours, Optional<T> voxelAt) {
         if (voxelAt.isPresent()) {
             neighbours.add(voxelAt.get());
         }
+    }
+
+    public Optional<Voxel> getVoxelAt(Vector3f target) {
+        return getVoxelAt(target.x, target.y, target.z);
     }
 
     public List<Chunk> getChunks() {
@@ -112,11 +110,6 @@ public class World {
     public List<Civvy> getCivvies() {
         return civvies;
     }
-
-    public Optional<Voxel> getVoxelAt(Vector3f target) {
-        return getVoxelAt(target.x, target.y, target.z);
-    }
-
 
     public void removeCivvy(Civvy civvy) {
         publisher.publishEvent(new CivvyRemoved(civvy, this));

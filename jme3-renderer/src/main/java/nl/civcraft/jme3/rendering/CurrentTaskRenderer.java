@@ -1,4 +1,4 @@
-package nl.civcraft.core.rendering;
+package nl.civcraft.jme3.rendering;
 
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;

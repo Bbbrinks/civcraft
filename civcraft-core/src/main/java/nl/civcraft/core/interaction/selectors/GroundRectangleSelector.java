@@ -1,11 +1,12 @@
 package nl.civcraft.core.interaction.selectors;
 
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import nl.civcraft.core.interaction.MouseTool;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.model.events.RemoveVoxelHighlights;
+import nl.civcraft.core.model.events.VoxelHighlighted;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Optional;
 
@@ -18,16 +19,14 @@ public abstract class GroundRectangleSelector implements MouseTool {
     private static final int MAX_HEIGHT_DIFFERENCE = 10;
     protected final WorldManager worldManager;
     private final CurrentVoxelHighlighter currentVoxelHighlighter;
-    private final Node selectionBoxes;
-    private final Spatial hoverSpatial;
+    private final ApplicationEventPublisher eventPublisher;
     private Voxel currentVoxel;
     private Voxel startingVoxel;
 
-    public GroundRectangleSelector(CurrentVoxelHighlighter currentVoxelHighlighter, Node selectionBoxes, Spatial hoverSpatial, WorldManager worldManager) {
+    public GroundRectangleSelector(CurrentVoxelHighlighter currentVoxelHighlighter, ApplicationEventPublisher eventPublisher, WorldManager worldManager) {
         this.currentVoxelHighlighter = currentVoxelHighlighter;
-        this.selectionBoxes = selectionBoxes;
-        this.hoverSpatial = hoverSpatial;
         this.worldManager = worldManager;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -39,7 +38,7 @@ public abstract class GroundRectangleSelector implements MouseTool {
                 startSelection();
                 loopThroughSelection((voxel) -> handleSelection(voxel));
                 endSelection();
-                selectionBoxes.detachAllChildren();
+                eventPublisher.publishEvent(new RemoveVoxelHighlights(this));
                 startingVoxel = null;
             }
         }
@@ -89,15 +88,13 @@ public abstract class GroundRectangleSelector implements MouseTool {
         } else {
             currentVoxelHighlighter.clear();
             currentVoxel = currentVoxelHighlighter.getCurrentVoxel();
-            selectionBoxes.detachAllChildren();
+            eventPublisher.publishEvent(new RemoveVoxelHighlights(this));
             loopThroughSelection(this::addHighlight);
         }
     }
 
     private void addHighlight(Voxel voxel) {
-        Spatial clone = hoverSpatial.clone();
-        clone.setLocalTranslation(clone.getLocalTranslation().x + voxel.getX(), clone.getLocalTranslation().y + voxel.getY(), clone.getLocalTranslation().z + voxel.getZ());
-        selectionBoxes.attachChild(clone);
+        eventPublisher.publishEvent(new VoxelHighlighted(voxel, this));
     }
 
     private void deleteBlock(int x, int z) {

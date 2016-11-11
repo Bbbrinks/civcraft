@@ -1,4 +1,4 @@
-package nl.civcraft.core;
+package nl.civcraft.jme3;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;

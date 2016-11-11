@@ -1,4 +1,4 @@
-package nl.civcraft.core.input;
+package nl.civcraft.jme3.input;
 
 import com.jme3.input.InputManager;
 import com.jme3.input.controls.Trigger;

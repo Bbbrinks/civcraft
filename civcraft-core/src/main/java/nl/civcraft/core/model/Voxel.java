@@ -2,13 +2,10 @@ package nl.civcraft.core.model;
 
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.gamecomponents.AbstractGameComponent;
-import nl.civcraft.core.gamecomponents.VoxelRenderer;
 import nl.civcraft.core.model.events.VoxelChangedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +19,7 @@ public class Voxel extends AbstractGameComponent {
     private final int x;
     private final int y;
     private final int z;
-    private final List<Voxel> neighbours;
+    private final Map<Face, Voxel> neighbours;
     private final ApplicationEventPublisher publisher;
     private Chunk chunk;
     private int localX;
@@ -36,7 +33,7 @@ public class Voxel extends AbstractGameComponent {
         this.z = z;
         this.type = type;
         this.publisher = publisher;
-        neighbours = new ArrayList<>();
+        neighbours = new HashMap<>();
     }
 
     public Chunk getChunk() {
@@ -71,51 +68,28 @@ public class Voxel extends AbstractGameComponent {
         return neighbours.size() != 6;
     }
 
-    private void addNeighbour(Voxel voxel) {
-        if (!neighbours.contains(voxel)) {
-            neighbours.add(voxel);
-            voxel.addNeighbour(this);
-            Face neighbourFace = getNeighbourFace(voxel);
-            VoxelFace voxelFace = getGameObject().getComponent(VoxelRenderer.class).get().getFaces().get(neighbourFace);
-            if (voxelFace != null) {
-                voxelFace.setVisible(false);
-            }
+    public void addNeighbour(Face face, Voxel voxel) {
+        boolean isNew = !neighbours.containsValue(voxel);
+        neighbours.put(face, voxel);
+        if (isNew) {
+            voxel.addNeighbour(face.getOpposite(), this);
         }
     }
 
-    private Face getNeighbourFace(Voxel voxel) {
-        for (Face face : Face.values()) {
-            Optional<Voxel> neighbour = getNeighbour(face);
-            if (neighbour.isPresent() && neighbour.get().equals(voxel)) {
-                return face;
-            }
-        }
-        return null;
-    }
-
-    private void removeNeighbour(Voxel voxel) {
-        if (neighbours.contains(voxel)) {
+    public void removeNeighbour(Voxel voxel) {
+        boolean removed = neighbours.entrySet().removeIf(entry -> entry.getValue().equals(voxel));
+        if (removed) {
             voxel.removeNeighbour(voxel);
-            neighbours.remove(voxel);
-            Face neighbourFace = getNeighbourFace(voxel);
-            VoxelFace voxelFace = getGameObject().getComponent(VoxelRenderer.class).get().getFaces().get(neighbourFace);
-            if (voxelFace != null) {
-                voxelFace.setVisible(true);
-            }
         }
     }
 
     public void remove() {
-        for (Voxel neighbour : neighbours) {
+        for (Voxel neighbour : neighbours.values()) {
             neighbour.removeNeighbour(this);
         }
     }
 
-    public void addNeighbours(List<Voxel> voxelNeighbours) {
-        voxelNeighbours.forEach(this::addNeighbour);
-    }
-
-    public List<Voxel> getNeighbours() {
+    public Map<Face, Voxel> getNeighbours() {
         return neighbours;
     }
 
@@ -154,7 +128,7 @@ public class Voxel extends AbstractGameComponent {
 
     //TODO move this out of Voxel class
     public List<Voxel> getEnterableNeighbours() {
-        List<Voxel> enterableNeighbours = neighbours.stream().filter(v -> !v.getNeighbour(Face.TOP).isPresent()).collect(Collectors.toList());
+        List<Voxel> enterableNeighbours = neighbours.entrySet().stream().filter(v -> !v.getValue().getNeighbour(Face.TOP).isPresent()).map(Map.Entry::getValue).collect(Collectors.toList());
         List<Voxel> verticalDiagonals = new ArrayList<>();
         for (Voxel enterableNeighbour : getNeighbours(Face.BACK, Face.FRONT, Face.LEFT, Face.RIGHT)) {
             if (enterableNeighbour != null) {
@@ -178,7 +152,7 @@ public class Voxel extends AbstractGameComponent {
     }
 
     public Optional<Voxel> getNeighbour(Face face) {
-        return neighbours.stream().filter(v -> v.getLocation().equals(face.getTranslation().add(getLocation()))).limit(1).findFirst();
+        return Optional.ofNullable(neighbours.get(face));
     }
 
     private List<Voxel> getNeighbours(Face... faces) {

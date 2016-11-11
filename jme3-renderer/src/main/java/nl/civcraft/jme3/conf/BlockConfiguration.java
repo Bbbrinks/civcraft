@@ -8,8 +8,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import nl.civcraft.core.model.Face;
-import nl.civcraft.core.utils.BlockUtil;
-import nl.civcraft.core.utils.MaterialUtil;
+import nl.civcraft.jme3.utils.BlockUtil;
+import nl.civcraft.jme3.utils.MaterialUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

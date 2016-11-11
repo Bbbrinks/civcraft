@@ -1,9 +1,10 @@
-package nl.civcraft.core;
+package nl.civcraft.jme3;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.renderer.RenderManager;
+import nl.civcraft.core.SystemEventHandler;
 import nl.civcraft.core.conf.InitialConfiguration;
 import nl.civcraft.core.event.SystemUpdate;
 import org.springframework.context.ApplicationEventPublisher;

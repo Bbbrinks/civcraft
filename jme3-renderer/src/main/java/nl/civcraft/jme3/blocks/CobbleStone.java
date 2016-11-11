@@ -3,9 +3,9 @@ package nl.civcraft.jme3.blocks;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import nl.civcraft.core.model.Face;
-import nl.civcraft.core.model.VoxelFace;
-import nl.civcraft.core.utils.BlockUtil;
-import nl.civcraft.core.utils.MaterialUtil;
+import nl.civcraft.jme3.model.VoxelFace;
+import nl.civcraft.jme3.utils.BlockUtil;
+import nl.civcraft.jme3.utils.MaterialUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import java.util.Map;
  */
 @Component
 public class CobbleStone extends SimpleBlock {
-    public static final String BLOCK_NAME = "cobble";
+    public static final String BLOCK_NAME = "cobbleStone";
     private final Material cobbleMaterial;
 
     @Autowired

@@ -1,13 +1,10 @@
 package nl.civcraft.core.worldgeneration;
 
-import nl.civcraft.core.debug.DebugStatsState;
 import nl.civcraft.core.gamecomponents.LimitedInventory;
-import nl.civcraft.core.managers.NpcManager;
 import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.npc.Civvy;
-import nl.civcraft.core.npc.Npc;
 import nl.civcraft.core.utils.MathUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,37 +28,32 @@ public class WorldGenerator implements Runnable {
 
     private final ChunkBuilder chunkBuilder;
     private final WorldManager worldManager;
-    private final NpcManager civvyManager;
     private final TreeGenerator treeGenerator;
     private HeightMap heightMap;
     private boolean generationDone;
 
     @Autowired
-    public WorldGenerator(@Value("${height_map_width}") int heightMapWidth, @Value("${height_map_height}") int heightMapHeight, HeightMapGenerator hillsGenerator, ChunkBuilder chunkBuilder, WorldManager worldManager, NpcManager civvyManager, TreeGenerator treeGenerator) {
+    public WorldGenerator(@Value("${height_map_width}") int heightMapWidth, @Value("${height_map_height}") int heightMapHeight, HeightMapGenerator hillsGenerator, ChunkBuilder chunkBuilder, WorldManager worldManager, TreeGenerator treeGenerator) {
         this.heightMapWidth = heightMapWidth;
         this.heightMapHeight = heightMapHeight;
         this.hillsGenerator = hillsGenerator;
         this.chunkBuilder = chunkBuilder;
         this.worldManager = worldManager;
-        this.civvyManager = civvyManager;
         this.treeGenerator = treeGenerator;
     }
 
     @Override
     public void run() {
-        DebugStatsState.LAST_MESSAGE = "Start generating height map";
-        LOGGER.trace(DebugStatsState.LAST_MESSAGE);
+        LOGGER.trace("Start generating height map");
 
         generateHeightMap();
-        DebugStatsState.LAST_MESSAGE = "End generating height map";
-        LOGGER.trace(DebugStatsState.LAST_MESSAGE);
+        LOGGER.trace("End generating height map");
         worldManager.getWorld().clearChunks();
         int chunkCount = 0;
         for (int x = 0; x < 4; x++) {
             for (int z = 0; z < 4; z++) {
                 generateChunk(x, z);
-                DebugStatsState.LAST_MESSAGE = "Generating chunk: " + chunkCount + "/36";
-                LOGGER.trace(DebugStatsState.LAST_MESSAGE);
+                LOGGER.trace("Generating chunk: " + chunkCount + "/36");
                 chunkCount++;
             }
         }
@@ -81,8 +73,7 @@ public class WorldGenerator implements Runnable {
             if (!voxelAt.isPresent()) {
                 throw new IllegalStateException("Voxel not present");
             }
-            Npc npc = civvyManager.getNpc("civvy");
-            Civvy civvy = new Civvy(civX, civY + 1, civZ, "civvy", npc);
+            Civvy civvy = new Civvy(civX, civY + 1, civZ, "civvy");
             civvy.setCurrentVoxel(voxelAt.get());
             civvy.addComponent(new LimitedInventory(2));
             worldManager.getWorld().addCivvy(civvy);

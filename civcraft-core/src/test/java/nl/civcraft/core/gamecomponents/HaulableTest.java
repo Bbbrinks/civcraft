@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static nl.civcraft.core.util.ThrowableAssertion.assertThrown;
+import static nl.civcraft.test.util.ThrowableAssertion.assertThrown;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 

@@ -1,10 +1,12 @@
 package nl.civcraft.jme3.blocks;
 
-import nl.civcraft.core.gamecomponents.StaticVoxelRenderer;
+
 import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.VoxelProducer;
+import nl.civcraft.jme3.gamecomponents.StaticVoxelRenderer;
+import nl.civcraft.jme3.model.VoxelFace;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Map;

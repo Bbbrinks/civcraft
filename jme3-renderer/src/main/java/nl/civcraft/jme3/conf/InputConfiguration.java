@@ -2,7 +2,7 @@ package nl.civcraft.jme3.conf;
 
 import com.jme3.input.*;
 import com.jme3.system.JmeContext;
-import nl.civcraft.core.Civcraft;
+import nl.civcraft.jme3.Civcraft;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

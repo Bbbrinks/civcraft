@@ -1,10 +1,10 @@
-package nl.civcraft.core.conf;
+package nl.civcraft.jme3.conf;
 
 import com.jme3.scene.Node;
 import com.simsilica.lemur.Container;
 import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.style.BaseStyles;
-import nl.civcraft.core.Civcraft;
+import nl.civcraft.jme3.Civcraft;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

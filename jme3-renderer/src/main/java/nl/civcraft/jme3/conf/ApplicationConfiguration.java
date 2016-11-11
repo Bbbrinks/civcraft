@@ -1,6 +1,7 @@
-package nl.civcraft.core.conf;
+package nl.civcraft.jme3.conf;
 
-import nl.civcraft.core.Civcraft;
+
+import nl.civcraft.jme3.Civcraft;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;

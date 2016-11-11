@@ -10,9 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jme3-renderer</artifactId>
-    <properties>
-        <jmonkey-version>3.1.0-beta1</jmonkey-version>
-    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -56,6 +53,12 @@
             <groupId>nl.civcraft</groupId>
             <artifactId>civcraft-core</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>nl.civcraft</groupId>
+            <artifactId>civcraft-testing</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

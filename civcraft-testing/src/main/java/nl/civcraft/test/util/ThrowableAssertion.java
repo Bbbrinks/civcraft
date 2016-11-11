@@ -1,10 +1,10 @@
-package nl.civcraft.core.util;
+package nl.civcraft.test.util;
+
 
 import org.junit.Assert;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.IsNull.notNullValue;
-
 
 /**
  * Created by Bob on 14-10-2016.
@@ -48,6 +48,7 @@ public class ThrowableAssertion {
         Assert.assertThat(caught.getCause(), isA((Class<Throwable>) exceptionClass));
         return this;
     }
+
 
     @FunctionalInterface
     public interface ExceptionThrower {

@@ -15,27 +15,17 @@
         <myproject.root>${basedir}/..</myproject.root>
     </properties>
     <dependencies>
+
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <groupId>nl.civcraft</groupId>
+            <artifactId>civcraft-testing</artifactId>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>jmonkey.csg</groupId>
-            <artifactId>jmonkey-hax</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jmonkey.csg</groupId>
-            <artifactId>csg</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.bushe</groupId>
             <artifactId>eventbus</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.simsilica</groupId>
-            <artifactId>lemur</artifactId>
         </dependency>
 
         <dependency>
@@ -52,6 +42,14 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
         </dependency>
-    </dependencies>
+        <!-- currently only used for Vector math -->
+        <!-- TODO: find a different Vector math dependency -->
+        <dependency>
+            <groupId>org.jmonkeyengine</groupId>
+            <artifactId>jme3-core</artifactId>
+            <version>${jmonkey-version}</version>
+        </dependency>
 
+
+    </dependencies>
 </project>

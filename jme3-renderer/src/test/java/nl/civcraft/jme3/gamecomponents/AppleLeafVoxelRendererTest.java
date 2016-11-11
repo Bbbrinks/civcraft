@@ -1,8 +1,10 @@
-package nl.civcraft.core.gamecomponents;
+package nl.civcraft.jme3.gamecomponents;
 
+import nl.civcraft.core.gamecomponents.Inventory;
 import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.VoxelFace;
+import nl.civcraft.jme3.model.VoxelFace;
+import nl.civcraft.test.util.ThrowableAssertion;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +14,6 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Map;
 
-import static nl.civcraft.core.util.ThrowableAssertion.assertThrown;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
@@ -47,7 +48,7 @@ public class AppleLeafVoxelRendererTest {
     @Test
     public void getNode_noInventory() throws Exception {
         testGameObject.removeComponent(inventory);
-        assertThrown(() -> underTest.getFaces()).isInstanceOf(IllegalStateException.class);
+        ThrowableAssertion.assertThrown(() -> underTest.getFaces()).isInstanceOf(IllegalStateException.class);
     }
 
     @Test

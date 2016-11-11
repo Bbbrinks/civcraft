@@ -1,4 +1,4 @@
-package nl.civcraft.core.conf;
+package nl.civcraft.jme3.conf;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;

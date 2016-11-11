@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static nl.civcraft.core.util.ThrowableAssertion.assertThrown;
+import static nl.civcraft.test.util.ThrowableAssertion.assertThrown;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 

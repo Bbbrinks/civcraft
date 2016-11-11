@@ -6,8 +6,6 @@ import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.tasks.Task;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Created by Bob on 29-12-2015.
@@ -15,9 +13,6 @@ import org.apache.logging.log4j.Logger;
  * This is probably not worth documenting
  */
 public class Civvy extends GameObject {
-    private static final Logger LOGGER = LogManager.getLogger();
-    private final String type;
-    private final Npc npc;
     private final float speed;
     private Vector3f location;
     private World world;
@@ -25,10 +20,8 @@ public class Civvy extends GameObject {
     private Task task;
     private Voxel currentVoxel;
 
-    public Civvy(float x, float y, float z, String type, Npc npc) {
+    public Civvy(float x, float y, float z, String type) {
         location = new Vector3f(x, y, z);
-        this.type = type;
-        this.npc = npc;
         speed = 2.0f;
     }
 
@@ -38,10 +31,6 @@ public class Civvy extends GameObject {
 
     public void setWorld(World world) {
         this.world = world;
-    }
-
-    public Npc cloneNpc() {
-        return (Npc) npc.clone();
     }
 
     public float getX() {

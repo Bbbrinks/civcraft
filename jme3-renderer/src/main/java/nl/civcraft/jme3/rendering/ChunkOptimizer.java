@@ -1,4 +1,4 @@
-package nl.civcraft.core.rendering;
+package nl.civcraft.jme3.rendering;
 
 import com.jme3.material.MatParam;
 import com.jme3.material.MatParamTexture;
@@ -11,9 +11,13 @@ import com.jme3.scene.VertexBuffer;
 import com.jme3.texture.Texture;
 import com.jme3.util.BufferUtils;
 import jme3tools.optimize.GeometryBatchFactory;
-import nl.civcraft.core.gamecomponents.VoxelRenderer;
-import nl.civcraft.core.model.*;
-import nl.civcraft.core.utils.BlockUtil;
+import nl.civcraft.core.model.Chunk;
+import nl.civcraft.core.model.Face;
+import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.model.World;
+import nl.civcraft.jme3.gamecomponents.VoxelRenderer;
+import nl.civcraft.jme3.model.VoxelFace;
+import nl.civcraft.jme3.utils.BlockUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
