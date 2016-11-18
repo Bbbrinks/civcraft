@@ -1,5 +1,6 @@
 package nl.civcraft.core.model;
 
+import com.jme3.math.Transform;
 import nl.civcraft.core.gamecomponents.GameComponent;
 
 import java.util.ArrayList;
@@ -13,9 +14,16 @@ import java.util.Optional;
  */
 public class GameObject {
 
+    private final Transform transform;
     private List<GameComponent> components;
 
     public GameObject() {
+        this(new Transform());
+
+    }
+
+    public GameObject(Transform transform) {
+        this.transform = transform;
         components = new ArrayList<>();
     }
 
@@ -40,5 +48,9 @@ public class GameObject {
 
     public void removeComponent(GameComponent gameComponent) {
         components.remove(gameComponent);
+    }
+
+    public Transform getTransform() {
+        return transform;
     }
 }

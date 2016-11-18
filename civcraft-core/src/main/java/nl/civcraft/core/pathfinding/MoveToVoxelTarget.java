@@ -1,7 +1,7 @@
 package nl.civcraft.core.pathfinding;
 
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.npc.Civvy;
 
 /**
  * Created by Bob on 22-3-2016.
@@ -16,7 +16,7 @@ public class MoveToVoxelTarget implements PathFindingTarget {
     }
 
     @Override
-    public boolean isReached(Civvy civvy, AStarNode current) {
+    public boolean isReached(GameObject gameObject, AStarNode current) {
         return target.equals(current.getVoxel());
     }
 

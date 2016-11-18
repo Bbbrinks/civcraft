@@ -2,6 +2,7 @@ package nl.civcraft.core.npc;
 
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.gamecomponents.AbstractGameComponent;
+import nl.civcraft.core.gamecomponents.GameComponent;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
@@ -13,16 +14,13 @@ import nl.civcraft.core.tasks.Task;
  * This is probably not worth documenting
  */
 public class Civvy extends AbstractGameComponent {
-    private final float speed;
-    private Vector3f location;
+
     private World world;
     private TaskManager taskManager;
     private Task task;
-    private Voxel currentVoxel;
 
-    public Civvy(float x, float y, float z, String type) {
-        location = new Vector3f(x, y, z);
-        speed = 2.0f;
+
+    public Civvy() {
     }
 
     public World getWorld() {
@@ -31,18 +29,6 @@ public class Civvy extends AbstractGameComponent {
 
     public void setWorld(World world) {
         this.world = world;
-    }
-
-    public float getX() {
-        return location.getX();
-    }
-
-    public float getY() {
-        return location.getY();
-    }
-
-    public float getZ() {
-        return location.getZ();
     }
 
     public void subscribe(TaskManager taskManager) {
@@ -68,7 +54,7 @@ public class Civvy extends AbstractGameComponent {
 
     public void update(float tpf) {
         if (task != null) {
-            Task.Result affect = task.affect(this, tpf);
+            Task.Result affect = task.affect(this.getGameObject(), tpf);
             if (affect.equals(Task.Result.COMPLETED)) {
                 task.completed(this);
             } else if (affect.equals(Task.Result.FAILED)) {
@@ -79,45 +65,19 @@ public class Civvy extends AbstractGameComponent {
         }
     }
 
-    public Voxel currentVoxel() {
-        return currentVoxel;
-    }
-
-    public void moveToward(Voxel target, float tpf) {
-        Vector3f location = target.getLocation().add(new Vector3f(0, 1, 0));
-        Vector3f movement = location.subtract(this.location);
-        if (distance(target) >= tpf * speed) {
-            movement.normalizeLocal();
-            movement = movement.mult(tpf * speed);
-
-        } else {
-            currentVoxel = target;
-        }
-
-        this.location = this.location.add(movement);
-    }
-
-    public float distance(Voxel target) {
-        return target.getLocation().distance(getLocation().subtract(0, 1, 0));
-    }
-
-    public Vector3f getLocation() {
-        return location;
-    }
-
-    public Voxel getCurrentVoxel() {
-        return currentVoxel;
-    }
-
-    public void setCurrentVoxel(Voxel currentVoxel) {
-        this.currentVoxel = currentVoxel;
-    }
-
     public Vector3f getLocationAtVoxel(Voxel voxel) {
         return voxel.getLocation().add(new Vector3f(0, 1, 0));
     }
 
-    public void kill() {
-        world.removeCivvy(this);
+    public static class Factory implements GameComponentFactory<Civvy> {
+        @Override
+        public GameComponent build() {
+            return new Civvy();
+        }
+
+        @Override
+        public Class<Civvy> getComponentType() {
+            return Civvy.class;
+        }
     }
 }

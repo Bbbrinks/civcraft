@@ -13,4 +13,10 @@ public interface GameComponent {
     GameObject getGameObject();
 
     void destroyed(GameObject gameObject);
+
+    interface GameComponentFactory<T extends GameComponent> {
+        GameComponent build();
+
+        Class<T> getComponentType();
+    }
 }

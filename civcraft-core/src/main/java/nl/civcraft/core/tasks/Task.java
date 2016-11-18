@@ -1,5 +1,6 @@
 package nl.civcraft.core.tasks;
 
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +20,7 @@ public abstract class Task {
         this.state = state;
     }
 
-    public abstract Result affect(Civvy civvy, float tpf);
+    public abstract Result affect(GameObject target, float tpf);
 
     public void completed(Civvy civvy) {
         if (!State.CONTINUAL.equals(state)) {

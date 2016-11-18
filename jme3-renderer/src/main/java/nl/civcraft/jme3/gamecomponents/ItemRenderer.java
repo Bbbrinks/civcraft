@@ -9,7 +9,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
 import nl.civcraft.core.gamecomponents.AbstractGameComponent;
 import nl.civcraft.core.gamecomponents.ItemComponent;
-import nl.civcraft.core.managers.Physical;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Item;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +53,7 @@ public class ItemRenderer extends AbstractGameComponent {
         mat.setColor("Color", ColorRGBA.Brown);
         mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         item.setMaterial(mat);
-        Optional<Physical> physical = gameObject.getComponent(Physical.class);
-        if (!physical.isPresent()) {
-            throw new IllegalStateException("ItemRenderer can only be applied with Physical");
-        }
-        item.setLocalTransform(physical.get().getTransform());
+        item.setLocalTransform(gameObject.getTransform());
         entityNode.attachChild(item);
         renderedItems.put(itemComponent.get().getItem(), item);
         super.addTo(gameObject);

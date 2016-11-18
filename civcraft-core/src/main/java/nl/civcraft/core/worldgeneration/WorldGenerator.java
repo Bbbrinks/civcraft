@@ -1,15 +1,16 @@
 package nl.civcraft.core.worldgeneration;
 
-import nl.civcraft.core.gamecomponents.LimitedInventory;
+import com.jme3.math.Transform;
+import com.jme3.math.Vector3f;
+import nl.civcraft.core.managers.GameObjectManager;
 import nl.civcraft.core.managers.WorldManager;
-import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.World;
-import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.utils.MathUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -30,17 +31,21 @@ public class WorldGenerator implements Runnable {
     private final ChunkBuilder chunkBuilder;
     private final WorldManager worldManager;
     private final TreeGenerator treeGenerator;
+    private final GameObjectManager civvyManager;
     private HeightMap heightMap;
     private boolean generationDone;
 
     @Autowired
-    public WorldGenerator(@Value("${height_map_width}") int heightMapWidth, @Value("${height_map_height}") int heightMapHeight, HeightMapGenerator hillsGenerator, ChunkBuilder chunkBuilder, WorldManager worldManager, TreeGenerator treeGenerator) {
+    public WorldGenerator(@Value("${height_map_width}") int heightMapWidth, @Value("${height_map_height}") int heightMapHeight,
+                          HeightMapGenerator hillsGenerator, ChunkBuilder chunkBuilder, WorldManager worldManager, TreeGenerator treeGenerator,
+                          @Qualifier(value = "civvy") GameObjectManager civvyManager) {
         this.heightMapWidth = heightMapWidth;
         this.heightMapHeight = heightMapHeight;
         this.hillsGenerator = hillsGenerator;
         this.chunkBuilder = chunkBuilder;
         this.worldManager = worldManager;
         this.treeGenerator = treeGenerator;
+        this.civvyManager = civvyManager;
     }
 
     @Override
@@ -74,13 +79,7 @@ public class WorldGenerator implements Runnable {
             if (!voxelAt.isPresent()) {
                 throw new IllegalStateException("Voxel not present");
             }
-            GameObject civvyGameObject = new GameObject();
-            Civvy civvy = new Civvy(civX, civY + 1, civZ, "civvy");
-            civvy.setCurrentVoxel(voxelAt.get());
-            civvyGameObject.addComponent(new LimitedInventory(2));
-            civvyGameObject.addComponent(civvy);
-            //TODO: Move civvy management out of world
-            worldManager.getWorld().addCivvy(civvyGameObject);
+            civvyManager.build(new Transform(new Vector3f(civX, civY + 1, civZ)));
         }
         setGenerationDone(true);
     }

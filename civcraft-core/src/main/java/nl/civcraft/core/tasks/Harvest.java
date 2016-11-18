@@ -3,9 +3,9 @@ package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.gamecomponents.Harvestable;
 import nl.civcraft.core.managers.EntityManager;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Item;
 import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 
 import java.util.Optional;
@@ -23,17 +23,17 @@ public class Harvest extends MoveToRange {
     }
 
     @Override
-    public Result affect(Civvy civvy, float tpf) {
-        Result inRange = super.affect(civvy, tpf);
+    public Result affect(GameObject target, float tpf) {
+        Result inRange = super.affect(target, tpf);
         if (inRange.equals(COMPLETED)) {
-            Optional<Harvestable> component = target.getGameObject().getComponent(Harvestable.class);
+            Optional<Harvestable> component = this.target.getGameObject().getComponent(Harvestable.class);
             if (!component.isPresent()) {
                 return FAILED;
             }
             Harvestable harvestable = component.get();
-            Optional<Item> harvest = harvestable.harvest(civvy);
+            Optional<Item> harvest = harvestable.harvest(target);
             if (harvest.isPresent()) {
-                entityManager.addEntity(harvest.get(), civvy.getWorld().getGroundAt((int) civvy.getX(), (int) civvy.getY(), (int) civvy.getZ(), 10).get());
+                entityManager.addEntity(harvest.get(), target.getTransform());
                 return COMPLETED;
             } else {
                 return FAILED;

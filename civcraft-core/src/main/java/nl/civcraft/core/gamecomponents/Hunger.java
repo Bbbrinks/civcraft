@@ -32,7 +32,7 @@ public class Hunger extends AbstractGameComponent {
             starvation -= 10;
         }
         if (starvation > 200) {
-            civvy.kill();
+            gameObject.destroy();
         }
     }
 

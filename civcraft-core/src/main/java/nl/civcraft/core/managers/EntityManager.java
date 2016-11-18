@@ -1,12 +1,12 @@
 package nl.civcraft.core.managers;
 
-import nl.civcraft.core.gamecomponents.Haulable;
+import com.jme3.math.Transform;
 import nl.civcraft.core.gamecomponents.ItemComponent;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Item;
-import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.events.EntityCreatedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -24,11 +24,13 @@ public class EntityManager {
 
     private final List<GameObject> entities;
     private final ApplicationEventPublisher publisher;
+    private final GameObjectManager gameObjectManager;
 
     @Autowired
-    public EntityManager(ApplicationEventPublisher publisher) {
+    public EntityManager(ApplicationEventPublisher publisher, @Qualifier("item") GameObjectManager gameObjectManager) {
         this.publisher = publisher;
         entities = new ArrayList<>();
+        this.gameObjectManager = gameObjectManager;
     }
 
     /***
@@ -36,12 +38,9 @@ public class EntityManager {
      * @param item
      * @param groundAt
      */
-    public void addEntity(Item item, Voxel groundAt) {
-        GameObject gameObject = new GameObject();
-        gameObject.addComponent(new ItemComponent(item));
-        gameObject.addComponent(new Physical(groundAt, groundAt.getLocation().add(0, 0.2f, 0)));
-        gameObject.addComponent(new Haulable());
-        entities.add(gameObject);
-        publisher.publishEvent(new EntityCreatedEvent(gameObject, this));
+    public void addEntity(Item item, Transform transform) {
+        GameObject build = gameObjectManager.build(transform);
+        build.getComponent(ItemComponent.class).get().setItem(item);
+        publisher.publishEvent(new EntityCreatedEvent(build, this));
     }
 }

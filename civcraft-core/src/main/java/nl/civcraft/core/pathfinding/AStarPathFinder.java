@@ -1,7 +1,7 @@
 package nl.civcraft.core.pathfinding;
 
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.npc.Civvy;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -10,7 +10,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 @Component
 public class AStarPathFinder {
 
-    public Queue<Voxel> findPath(Civvy civvy, Voxel start, PathFindingTarget target) {
+    public Queue<Voxel> findPath(GameObject civvy, Voxel start, PathFindingTarget target) {
         if (start.equals(target)) {
             return new LinkedBlockingDeque<>();
         }

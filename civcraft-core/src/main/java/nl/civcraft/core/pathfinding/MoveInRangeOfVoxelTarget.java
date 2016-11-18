@@ -1,6 +1,7 @@
 package nl.civcraft.core.pathfinding;
 
 import com.jme3.math.Vector3f;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.npc.Civvy;
 import org.apache.logging.log4j.LogManager;
@@ -24,8 +25,8 @@ public class MoveInRangeOfVoxelTarget implements PathFindingTarget {
     }
 
     @Override
-    public boolean isReached(Civvy civvy, AStarNode current) {
-        Vector3f locationAtVoxel = civvy.getLocationAtVoxel(current.getVoxel());
+    public boolean isReached(GameObject civvy, AStarNode current) {
+        Vector3f locationAtVoxel = civvy.getComponent(Civvy.class).get().getLocationAtVoxel(current.getVoxel());
         float distance = locationAtVoxel.distance(target.getLocation());
         return distance < range;
     }

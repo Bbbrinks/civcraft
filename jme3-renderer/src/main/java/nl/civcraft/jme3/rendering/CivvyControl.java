@@ -33,11 +33,15 @@ public class CivvyControl extends AbstractControl {
 
     @EventListener
     public void addCivvy(GameObjectCreatedEvent civvyCreated) {
-        Optional<Civvy> component = civvyCreated.getGameObject().getComponent(Civvy.class);
-        if (!component.isPresent()) {
-            return;
+        try {
+            Optional<Civvy> component = civvyCreated.getGameObject().getComponent(Civvy.class);
+            if (!component.isPresent()) {
+                return;
+            }
+            civvies.add(component.get());
+        } catch (NullPointerException e) {
+            throw e;
         }
-        civvies.add(component.get());
     }
 
     @EventListener
@@ -50,7 +54,7 @@ public class CivvyControl extends AbstractControl {
         civviesNode.detachAllChildren();
         for (Civvy civvy : civvies) {
             Spatial npc = civvySpatial.clone();
-            npc.setLocalTranslation(npc.getLocalTranslation().add(civvy.getX(), civvy.getY(), civvy.getZ()));
+            npc.setLocalTransform(civvy.getGameObject().getTransform());
             civviesNode.attachChild(npc);
         }
     }

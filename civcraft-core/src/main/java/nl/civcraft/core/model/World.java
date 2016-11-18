@@ -3,10 +3,7 @@ package nl.civcraft.core.model;
 
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.model.events.ChunkAddedEvent;
-import nl.civcraft.core.model.events.CivvyRemoved;
-import nl.civcraft.core.model.events.GameObjectCreatedEvent;
 import nl.civcraft.core.model.events.StockpileCreated;
-import nl.civcraft.core.npc.Civvy;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.*;
@@ -15,14 +12,12 @@ public class World {
 
     public static final int CHUNK_SIZE = 30;
     private final List<Chunk> chunks;
-    private final List<Civvy> civvies;
     private final ApplicationEventPublisher publisher;
     private final Set<Stockpile> stockpiles;
 
     public World(ApplicationEventPublisher publisher) {
         this.publisher = publisher;
         chunks = new ArrayList<>();
-        civvies = new ArrayList<>();
         stockpiles = new HashSet<>();
     }
 
@@ -101,29 +96,18 @@ public class World {
         return chunks;
     }
 
-    public void addCivvy(GameObject gameObject) {
-        Optional<Civvy> component = gameObject.getComponent(Civvy.class);
-        if (!component.isPresent()) {
-            throw new IllegalStateException("No civvy game component found");
-        }
-        component.get().setWorld(this);
-        civvies.add(component.get());
-        publisher.publishEvent(new GameObjectCreatedEvent(gameObject, this));
-    }
-
-    public List<Civvy> getCivvies() {
-        return civvies;
-    }
-
-    public void removeCivvy(Civvy civvy) {
-        publisher.publishEvent(new CivvyRemoved(civvy, this));
-        this.civvies.remove(civvy);
-
-    }
 
     public void addStockpile(Stockpile createdStockpile) {
         this.stockpiles.add(createdStockpile);
         publisher.publishEvent(new StockpileCreated(createdStockpile, this));
+    }
+
+    public Optional<Stockpile> getStockPile() {
+        return stockpiles.stream().findAny();
+    }
+
+    public Optional<Voxel> getGroundAt(Vector3f translation, int maxHeightDifference) {
+        return getGroundAt((int) translation.getX(), (int) translation.getY(), (int) translation.getZ(), maxHeightDifference);
     }
 
     public Optional<Voxel> getGroundAt(int x, int y, int z, int maxHeightDifference) {
@@ -146,9 +130,5 @@ public class World {
             }
         }
         return Optional.empty();
-    }
-
-    public Optional<Stockpile> getStockPile() {
-        return stockpiles.stream().findAny();
     }
 }

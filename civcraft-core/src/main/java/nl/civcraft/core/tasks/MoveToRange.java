@@ -1,10 +1,12 @@
 package nl.civcraft.core.tasks;
 
+import nl.civcraft.core.gamecomponents.GroundMovement;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.pathfinding.MoveInRangeOfVoxelTarget;
 
+import java.util.Optional;
 import java.util.Queue;
 
 /**
@@ -17,7 +19,7 @@ public class MoveToRange extends Task {
     private final float range;
     protected Voxel target;
     private Queue<Voxel> path;
-    private Civvy civvy;
+    private GameObject currentGameObject;
 
     public MoveToRange(Voxel target, float range, AStarPathFinder pathFinder) {
         super(Task.State.TODO);
@@ -27,13 +29,18 @@ public class MoveToRange extends Task {
     }
 
     @Override
-    public Result affect(Civvy civvy, float tpf) {
-        if (this.civvy != civvy) {
+    public Result affect(GameObject target, float tpf) {
+        Optional<GroundMovement> component = target.getComponent(GroundMovement.class);
+        if (!component.isPresent()) {
+            throw new IllegalStateException("Move to can only be done by GroundMovement game objects");
+        }
+        GroundMovement groundMovement = component.get();
+        if (this.currentGameObject != target) {
             path = null;
         }
-        this.civvy = civvy;
+        this.currentGameObject = target;
         if (path == null) {
-            path = pathFinder.findPath(civvy, civvy.getCurrentVoxel(), new MoveInRangeOfVoxelTarget(range, target));
+            path = pathFinder.findPath(currentGameObject, groundMovement.getCurrentVoxel(), new MoveInRangeOfVoxelTarget(range, this.target));
             if (path == null) {
                 return Result.FAILED;
             }
@@ -42,8 +49,8 @@ public class MoveToRange extends Task {
         if (peek == null) {
             return Result.COMPLETED;
         }
-        civvy.moveToward(peek, tpf);
-        if (civvy.getCurrentVoxel().equals(peek)) {
+        groundMovement.moveToward(peek, tpf);
+        if (groundMovement.getCurrentVoxel().equals(peek)) {
             path.poll();
         }
         return Result.IN_PROGRESS;

@@ -8,7 +8,7 @@ import nl.civcraft.core.model.Item;
  * This is probably not worth documenting
  */
 public class ItemComponent extends AbstractGameComponent {
-    private final Item item;
+    private Item item;
 
     public ItemComponent(Item item) {
         this.item = item;
@@ -16,5 +16,21 @@ public class ItemComponent extends AbstractGameComponent {
 
     public Item getItem() {
         return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public static class Factory implements GameComponentFactory<ItemComponent> {
+        @Override
+        public GameComponent build() {
+            return new ItemComponent(null);
+        }
+
+        @Override
+        public Class<ItemComponent> getComponentType() {
+            return ItemComponent.class;
+        }
     }
 }

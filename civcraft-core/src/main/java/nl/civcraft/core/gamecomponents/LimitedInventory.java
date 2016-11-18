@@ -56,4 +56,24 @@ public class LimitedInventory extends AbstractGameComponent implements Inventory
     public void remove(Item item) {
         //TODO remove item
     }
+
+    public static class Factory implements GameComponentFactory<LimitedInventory> {
+        private final int size;
+
+        public Factory(int size) {
+            this.size = size;
+        }
+
+        @Override
+        public GameComponent build() {
+            return new LimitedInventory(size);
+        }
+
+        @Override
+        public Class<LimitedInventory> getComponentType() {
+            return LimitedInventory.class;
+        }
+
+
+    }
 }

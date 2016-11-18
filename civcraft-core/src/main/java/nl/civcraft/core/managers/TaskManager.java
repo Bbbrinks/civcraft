@@ -59,7 +59,7 @@ public class TaskManager {
         Optional<Haulable> component = entity.getComponent(Haulable.class);
         Optional<Stockpile> stockPile = world.getStockPile();
         if (component.isPresent() && stockPile.isPresent()) {
-            addTask(component.get().getTask(stockPile.get(), pathFinder));
+            addTask(component.get().getTask(stockPile.get(), pathFinder, world));
         }
     }
 

@@ -1,8 +1,8 @@
 package nl.civcraft.core.gamecomponents;
 
-import nl.civcraft.core.managers.Physical;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Stockpile;
+import nl.civcraft.core.model.World;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.tasks.Haul;
 import nl.civcraft.core.tasks.Task;
@@ -28,26 +28,19 @@ public class HaulableTest {
     @Mock
     private ItemComponent itemComponent;
     @Mock
-    private Physical physicalComponent;
-    @Mock
     private AStarPathFinder pathFinder;
     @Mock
     private Stockpile stockpile;
+    @Mock
+    private World world;
 
     @Before
     public void setUp() throws Exception {
         testGameObject = new GameObject();
         testGameObject.addComponent(itemComponent);
-        testGameObject.addComponent(physicalComponent);
 
         underTest = new Haulable();
         underTest.addTo(testGameObject);
-    }
-
-    @Test
-    public void addTo_noPhysical() throws Exception {
-        testGameObject.removeComponent(physicalComponent);
-        assertThrown(() -> underTest.addTo(testGameObject)).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -58,7 +51,7 @@ public class HaulableTest {
 
     @Test
     public void getTask() throws Exception {
-        Task task = underTest.getTask(stockpile, pathFinder);
+        Task task = underTest.getTask(stockpile, pathFinder, world);
         assertThat(task, instanceOf(Haul.class));
     }
 
