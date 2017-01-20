@@ -1,7 +1,7 @@
 package nl.civcraft.core.pathfinding;
 
+import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Voxel;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -10,7 +10,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 @Component
 public class AStarPathFinder {
 
-    public Queue<Voxel> findPath(GameObject civvy, Voxel start, PathFindingTarget target) {
+    public Queue<GameObject> findPath(GameObject civvy, GameObject start, PathFindingTarget target) {
         if (start.equals(target)) {
             return new LinkedBlockingDeque<>();
         }
@@ -25,10 +25,12 @@ public class AStarPathFinder {
             current = findLowestCost(openList, target);
             closedList.add(current);
             openList.remove(current);
-            for (Voxel voxel : current.getVoxel().getEnterableNeighbours()) {
-                Optional<AStarNode> currentAdjacent = openList.stream().filter(n -> n.getVoxel().equals(voxel)).findFirst();
+            for (GameObject voxel : current.getGameObject().getComponent(Neighbour.class).
+                    map(Neighbour::getEnterableNeighbours).
+                    orElse(Collections.emptyList())) {
+                Optional<AStarNode> currentAdjacent = openList.stream().filter(n -> n.getGameObject().equals(voxel)).findFirst();
                 if (!currentAdjacent.isPresent()) {
-                    if (closedList.stream().filter(n -> n.getVoxel().equals(voxel)).findFirst().isPresent()) {
+                    if (closedList.stream().filter(n -> n.getGameObject().equals(voxel)).findFirst().isPresent()) {
                         continue;
                     }
                     AStarNode neighbour = new AStarNode(voxel);
@@ -66,24 +68,24 @@ public class AStarPathFinder {
 
     }
 
-    private Queue<Voxel> buildPath(AStarNode current) {
-        List<Voxel> path = new ArrayList<>();
-        path.add(current.getVoxel());
+    private Queue<GameObject> buildPath(AStarNode current) {
+        List<GameObject> path = new ArrayList<>();
+        path.add(current.getGameObject());
         while (current.getPrevious() != null) {
             current = current.getPrevious();
-            path.add(current.getVoxel());
+            path.add(current.getGameObject());
         }
         Collections.reverse(path);
-        Queue<Voxel> reversed = new LinkedBlockingDeque<>();
+        Queue<GameObject> reversed = new LinkedBlockingDeque<>();
         reversed.addAll(path);
         return reversed;
     }
 
-    private void expandSearchArea(Set<Voxel> openList, Set<Voxel> closedList) {
-        List<Voxel> newNeighbours = new ArrayList<>();
-        for (Voxel voxel : openList) {
+    private void expandSearchArea(Set<GameObject> openList, Set<GameObject> closedList) {
+        List<GameObject> newNeighbours = new ArrayList<>();
+        for (GameObject voxel : openList) {
             if (!closedList.contains(voxel)) {
-                newNeighbours.addAll(voxel.getEnterableNeighbours());
+                newNeighbours.addAll(voxel.getComponent(Neighbour.class).map(Neighbour::getEnterableNeighbours).orElse(Collections.emptyList()));
                 closedList.add(voxel);
             }
         }

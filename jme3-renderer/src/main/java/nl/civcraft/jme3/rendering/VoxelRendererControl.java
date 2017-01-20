@@ -6,7 +6,9 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
+import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.Chunk;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.events.GameObjectCreatedEvent;
 import nl.civcraft.jme3.gamecomponents.VoxelRenderer;
 import nl.civcraft.jme3.utils.BlockUtil;
@@ -26,6 +28,7 @@ public class VoxelRendererControl extends AbstractControl {
     private final ExecutorService executorService;
     private final Queue<Future<ChunkOptimizer.ChunkOptimizerThread>> newOptimizedChunks;
     private final Map<Chunk, Future<ChunkOptimizer.ChunkOptimizerThread>> optimizerThreadMap;
+    private final VoxelManager voxelManager;
 
     @Autowired
     public VoxelRendererControl(Node chunks, ChunkOptimizer chunkOptimizer) {
@@ -34,16 +37,19 @@ public class VoxelRendererControl extends AbstractControl {
         this.chunkOptimizer = chunkOptimizer;
         this.chunks = chunks;
         executorService = Executors.newFixedThreadPool(4);
+        voxelManager = new VoxelManager();
     }
 
 
     @EventListener
     public void handleVoxelAdded(GameObjectCreatedEvent gameObjectCreatedEvent) {
-        Optional<VoxelRenderer> component = gameObjectCreatedEvent.getGameObject().getComponent(VoxelRenderer.class);
+        GameObject voxelGameObject = gameObjectCreatedEvent.getGameObject();
+        Optional<VoxelRenderer> component = voxelGameObject.getComponent(VoxelRenderer.class);
         if (!component.isPresent()) {
             return;
         }
-        Chunk chunk = component.get().getVoxel().getChunk();
+        voxelManager.addVoxel(voxelGameObject);
+        Chunk chunk = voxelManager.getChunkAt(voxelGameObject).map(c -> c).orElseThrow(() -> new IllegalStateException("Chunk not foudn"));
         if (optimizerThreadMap.containsKey(chunk)) {
             optimizerThreadMap.get(chunk).cancel(true);
             newOptimizedChunks.remove(optimizerThreadMap.get(chunk));
@@ -70,17 +76,23 @@ public class VoxelRendererControl extends AbstractControl {
             ChunkOptimizer.ChunkOptimizerThread chunkOptimizerThread;
             try {
                 chunkOptimizerThread = next.get();
-            } catch (InterruptedException | ExecutionException | CancellationException e) {
+            } catch (InterruptedException | CancellationException e) {
                 failed.add(next);
                 continue;
+            } catch (ExecutionException e) {
+                throw new IllegalStateException("Failed to render", e);
             }
             List<Geometry> geometries = chunkOptimizerThread.getGeometries();
             Chunk chunk = chunkOptimizerThread.getChunk();
             Node chunkNode = (Node) chunks.getChild(chunk.getName());
+            if (chunkNode == null) {
+                chunkNode = new Node(chunk.getName());
+                chunks.attachChild(chunkNode);
+            }
             chunkNode.setShadowMode(RenderQueue.ShadowMode.Off);
             chunkNode.detachAllChildren();
             for (Geometry geometry : geometries) {
-                geometry.setLocalTranslation(chunk.getX() - BlockUtil.BLOCK_SIZE, chunk.getY() - BlockUtil.BLOCK_SIZE, chunk.getZ() - BlockUtil.BLOCK_SIZE);
+                geometry.setLocalTranslation(chunk.getTransform().getTranslation().getX() - BlockUtil.BLOCK_SIZE, chunk.getTransform().getTranslation().getY() - BlockUtil.BLOCK_SIZE, chunk.getTransform().getTranslation().getZ() - BlockUtil.BLOCK_SIZE);
                 chunkNode.attachChild(geometry);
             }
             chunkNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);

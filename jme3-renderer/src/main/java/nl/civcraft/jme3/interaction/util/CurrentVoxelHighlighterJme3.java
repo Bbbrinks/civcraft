@@ -9,8 +9,8 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
-import nl.civcraft.core.managers.WorldManager;
-import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.managers.VoxelManager;
+import nl.civcraft.core.model.GameObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,37 +23,37 @@ public class CurrentVoxelHighlighterJme3 implements CurrentVoxelHighlighter {
     private final Camera camera;
     private final InputManager inputManager;
     private final Node rootNode;
-    private final WorldManager worldManager;
+    private final VoxelManager voxelManager;
     private final Spatial hoverSpatial;
     private Node hoverBoxes;
-    private Voxel voxelAt;
+    private GameObject voxelAt;
 
     @Autowired
-    public CurrentVoxelHighlighterJme3(Camera camera, InputManager inputManager, Node rootNode, WorldManager worldManager, Spatial hoverSpatial) {
+    public CurrentVoxelHighlighterJme3(Camera camera, InputManager inputManager, Node rootNode, VoxelManager voxelManager, Spatial hoverSpatial) {
         this.camera = camera;
         this.inputManager = inputManager;
         this.rootNode = rootNode;
-        this.worldManager = worldManager;
+        this.voxelManager = voxelManager;
         this.hoverSpatial = hoverSpatial;
         hoverBoxes = new Node("hoverBoxes");
         rootNode.attachChild(hoverBoxes);
     }
 
     @Override
-    public Voxel highLight() {
-        Voxel voxelAt = getCurrentVoxel();
+    public GameObject highLight() {
+        GameObject voxelAt = getCurrentVoxel();
         if (voxelAt != null) {
-            Voxel currentVoxel = voxelAt;
+            GameObject currentVoxel = voxelAt;
             hoverBoxes.detachAllChildren();
             Spatial clone = hoverSpatial.clone();
-            clone.setLocalTranslation(clone.getLocalTranslation().x + currentVoxel.getX(), clone.getLocalTranslation().y + currentVoxel.getY(), clone.getLocalTranslation().z + currentVoxel.getZ());
+            clone.setLocalTranslation(currentVoxel.getTransform().getTranslation());
             hoverBoxes.attachChild(clone);
         }
         return voxelAt;
     }
 
     @Override
-    public Voxel getCurrentVoxel() {
+    public GameObject getCurrentVoxel() {
         Spatial voxelNode = rootNode.getChild("chunks");
         if (voxelNode == null) {
             return null;
@@ -79,7 +79,7 @@ public class CurrentVoxelHighlighterJme3 implements CurrentVoxelHighlighter {
                 }
                 int x = Math.round(contactPoint.x);
                 int z = Math.round(contactPoint.z);
-                Optional<Voxel> newVoxel = worldManager.getWorld().getVoxelAt(x, y, z);
+                Optional<GameObject> newVoxel = voxelManager.getVoxelAt(x, y, z);
                 if (newVoxel.isPresent()) {
                     this.voxelAt = newVoxel.get();
                     break;

@@ -2,7 +2,7 @@ package nl.civcraft.core.interaction.selectors;
 
 import nl.civcraft.core.interaction.MouseTool;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
-import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.model.GameObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class SingleVoxelSelector implements MouseTool {
 
     private final CurrentVoxelHighlighter currentVoxelHighlighter;
-    protected Voxel currentVoxel;
+    protected GameObject currentVoxel;
 
     @Autowired
     public SingleVoxelSelector(CurrentVoxelHighlighter currentVoxelHighlighter) {

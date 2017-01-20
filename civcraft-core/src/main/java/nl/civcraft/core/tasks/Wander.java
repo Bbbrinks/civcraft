@@ -1,12 +1,13 @@
 package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.gamecomponents.GroundMovement;
+import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.utils.RandomUtil;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,14 +31,20 @@ public class Wander extends Task {
             throw new IllegalStateException("Move to can only be done by GroundMovement game objects");
         }
         GroundMovement groundMovement = component.get();
-        Voxel voxel = groundMovement.currentVoxel();
-        if (voxel != null) {
-            List<Voxel> possibleNextVoxels = voxel.getEnterableNeighbours();
+        GameObject currentVoxel = groundMovement.currentVoxel();
+        if (currentVoxel != null) {
+            List<GameObject> possibleNextVoxels = currentVoxel.getComponent(Neighbour.class).map(Neighbour::getEnterableNeighbours).orElse(Collections.emptyList());
             if (!possibleNextVoxels.isEmpty()) {
-                Voxel target = possibleNextVoxels.get(RandomUtil.getNextInt(possibleNextVoxels.size()));
+                GameObject target = possibleNextVoxels.get(RandomUtil.getNextInt(possibleNextVoxels.size()));
                 MoveTo task = new MoveTo(target, pathFinder);
                 task.setState(State.DOING);
-                civvy.getComponent(Civvy.class).get().setTask(task);
+
+                Optional<Civvy> civvyOptional = civvy.getComponent(Civvy.class);
+                if (civvyOptional.isPresent()) {
+                    civvyOptional.get().setTask(task);
+                } else {
+                    throw new IllegalStateException("Only civvies can wander");
+                }
             }
         }
         return Result.IN_PROGRESS;

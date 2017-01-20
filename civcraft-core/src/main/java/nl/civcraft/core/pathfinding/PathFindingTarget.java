@@ -1,7 +1,6 @@
 package nl.civcraft.core.pathfinding;
 
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Voxel;
 
 /**
  * Created by Bob on 22-3-2016.
@@ -13,5 +12,5 @@ public interface PathFindingTarget {
 
     int getCostFrom(AStarNode next);
 
-    int getMaxSearchArea(Voxel start);
+    int getMaxSearchArea(GameObject start);
 }

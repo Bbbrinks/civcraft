@@ -3,7 +3,7 @@ package nl.civcraft.jme3.rendering;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import nl.civcraft.core.event.SystemUpdate;
-import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.events.CivvyRemoved;
 import nl.civcraft.core.model.events.GameObjectCreatedEvent;
 import nl.civcraft.core.npc.Civvy;
@@ -52,13 +52,14 @@ public class CurrentTaskRenderer {
         for (Civvy civvy : civvies) {
             if (civvy.getTask() instanceof MoveTo) {
                 Spatial clone = moveToSpatial.clone();
-                Voxel voxel = ((MoveTo) civvy.getTask()).getTarget();
-                clone.setLocalTranslation(clone.getLocalTranslation().x + voxel.getX(), clone.getLocalTranslation().y + voxel.getY(), clone.getLocalTranslation().z + voxel.getZ());
+                GameObject voxel = ((MoveTo) civvy.getTask()).getTarget();
+                clone.setLocalTranslation(clone.getLocalTranslation().x + voxel.getTransform().getTranslation().getX(), clone.getLocalTranslation().y + voxel.getTransform().getTranslation().getY(), clone.getLocalTranslation().z + voxel.getTransform().getTranslation().getZ());
                 highlightNode.attachChild(clone);
             } else if (civvy.getTask() instanceof MoveToRange) {
                 Spatial clone = moveToSpatial.clone();
-                Voxel voxel = ((MoveToRange) civvy.getTask()).getTarget();
-                clone.setLocalTranslation(clone.getLocalTranslation().x + voxel.getX(), clone.getLocalTranslation().y + voxel.getY(), clone.getLocalTranslation().z + voxel.getZ());
+                GameObject voxel = ((MoveToRange) civvy.getTask()).getTarget();
+                clone.setLocalTranslation(clone.getLocalTranslation().x + voxel.getTransform().getTranslation().getX(), clone.getLocalTranslation().y + voxel.getTransform().getTranslation().getY
+                        (), clone.getLocalTranslation().z + voxel.getTransform().getTranslation().getZ());
                 highlightNode.attachChild(clone);
             }
         }

@@ -2,8 +2,8 @@ package nl.civcraft.core.interaction.selectors;
 
 import nl.civcraft.core.interaction.MouseTool;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
-import nl.civcraft.core.managers.WorldManager;
-import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.managers.VoxelManager;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.events.RemoveVoxelHighlights;
 import nl.civcraft.core.model.events.VoxelHighlighted;
 import org.springframework.context.ApplicationEventPublisher;
@@ -17,15 +17,15 @@ import java.util.Optional;
  */
 public abstract class GroundRectangleSelector implements MouseTool {
     private static final int MAX_HEIGHT_DIFFERENCE = 10;
-    protected final WorldManager worldManager;
+    protected final VoxelManager voxelManager;
     private final CurrentVoxelHighlighter currentVoxelHighlighter;
     private final ApplicationEventPublisher eventPublisher;
-    private Voxel currentVoxel;
-    private Voxel startingVoxel;
+    private GameObject currentVoxel;
+    private GameObject startingVoxel;
 
-    public GroundRectangleSelector(CurrentVoxelHighlighter currentVoxelHighlighter, ApplicationEventPublisher eventPublisher, WorldManager worldManager) {
+    public GroundRectangleSelector(CurrentVoxelHighlighter currentVoxelHighlighter, ApplicationEventPublisher eventPublisher, VoxelManager voxelManager) {
         this.currentVoxelHighlighter = currentVoxelHighlighter;
-        this.worldManager = worldManager;
+        this.voxelManager = voxelManager;
         this.eventPublisher = eventPublisher;
     }
 
@@ -36,7 +36,7 @@ public abstract class GroundRectangleSelector implements MouseTool {
                 startingVoxel = currentVoxelHighlighter.getCurrentVoxel();
             } else {
                 startSelection();
-                loopThroughSelection((voxel) -> handleSelection(voxel));
+                loopThroughSelection(this::handleSelection);
                 endSelection();
                 eventPublisher.publishEvent(new RemoveVoxelHighlights(this));
                 startingVoxel = null;
@@ -51,33 +51,31 @@ public abstract class GroundRectangleSelector implements MouseTool {
             selectionLooper.handleElement(startingVoxel);
             return;
         }
-        int startX = startingVoxel.getX();
-        int startZ = startingVoxel.getZ();
-        int endX = currentVoxel.getX();
-        int endZ = currentVoxel.getZ();
+        float startX = startingVoxel.getTransform().getTranslation().getX();
+        float startZ = startingVoxel.getTransform().getTranslation().getZ();
+        float endX = currentVoxel.getTransform().getTranslation().getX();
+        float endZ = currentVoxel.getTransform().getTranslation().getZ();
 
         if (startX > endX) {
-            int tmp = startX;
+            float tmp = startX;
             startX = endX;
             endX = tmp;
         }
 
         if (startZ > endZ) {
-            int tmp = startZ;
+            float tmp = startZ;
             startZ = endZ;
             endZ = tmp;
         }
-        for (int x = startX; x <= endX; x++) {
-            for (int z = startZ; z <= endZ; z++) {
-                Optional<Voxel> voxelOptional = worldManager.getWorld().getGroundAt(x, startingVoxel.getY(), z, MAX_HEIGHT_DIFFERENCE);
-                if (voxelOptional.isPresent()) {
-                    selectionLooper.handleElement(voxelOptional.get());
-                }
+        for (float x = startX; x <= endX; x++) {
+            for (float z = startZ; z <= endZ; z++) {
+                Optional<GameObject> voxelOptional = voxelManager.getGroundAt(x, startingVoxel.getTransform()
+                                .getTranslation().getY(), z,
+                        MAX_HEIGHT_DIFFERENCE);
+                voxelOptional.ifPresent(selectionLooper::handleElement);
             }
         }
     }
-
-    protected abstract void handleSelection(Voxel voxel);
 
     protected abstract void endSelection();
 
@@ -93,19 +91,14 @@ public abstract class GroundRectangleSelector implements MouseTool {
         }
     }
 
-    private void addHighlight(Voxel voxel) {
-        eventPublisher.publishEvent(new VoxelHighlighted(voxel, this));
-    }
+    protected abstract void handleSelection(GameObject voxel);
 
-    private void deleteBlock(int x, int z) {
-        Optional<Voxel> voxelAt = worldManager.getWorld().getVoxelAt(x, startingVoxel.getY(), z);
-        if (voxelAt.isPresent()) {
-            voxelAt.get().breakBlock();
-        }
+    private void addHighlight(GameObject voxel) {
+        eventPublisher.publishEvent(new VoxelHighlighted(voxel, this));
     }
 
     @FunctionalInterface
     private interface SelectionLooper {
-        void handleElement(Voxel voxel);
+        void handleElement(GameObject voxel);
     }
 }

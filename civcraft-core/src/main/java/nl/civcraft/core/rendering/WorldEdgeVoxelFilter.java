@@ -1,32 +1,32 @@
 package nl.civcraft.core.rendering;
 
-import nl.civcraft.core.managers.WorldManager;
-import nl.civcraft.core.model.Chunk;
-import nl.civcraft.core.model.Face;
+import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.model.World;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class WorldEdgeVoxelFilter implements RenderedVoxelFilter {
 
     @SuppressWarnings("SpringJavaAutowiredMembersInspection")
 
-    private final WorldManager worldManager;
+    private final VoxelManager voxelManager;
 
     @Autowired
-    public WorldEdgeVoxelFilter(WorldManager worldManager) {
-        this.worldManager = worldManager;
+    public WorldEdgeVoxelFilter(VoxelManager voxelManager) {
+        this.voxelManager = voxelManager;
     }
 
     @Override
     public List<Voxel> filter(List<Voxel> unoptimizedVoxels) {
-        List<Chunk> worldEdgeChunks = worldManager.getWorld().getChunks().stream().filter(c -> c.getNeighbours().size() != 6).collect(Collectors.toList());
+        return unoptimizedVoxels;
+    }
+
+/*    @Override
+    public List<Voxel> filter(List<Voxel> unoptimizedVoxels) {
+        List<Chunk> worldEdgeChunks = voxelManager.getChunks().stream().filter(c -> c.getNeighbours().size() != 6).collect(Collectors.toList());
         for (Chunk chunk : worldEdgeChunks) {
             for (Face face : Face.values()) {
                 Chunk neighbour = chunk.getNeighbour(face);
@@ -93,7 +93,7 @@ public class WorldEdgeVoxelFilter implements RenderedVoxelFilter {
                 ).forEach(unoptimizedVoxels::remove);
             }
         }
-    }
+    }*/
 
 
 }

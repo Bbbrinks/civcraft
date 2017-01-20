@@ -2,9 +2,8 @@ package nl.civcraft.core.npc;
 
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.gamecomponents.AbstractGameComponent;
-import nl.civcraft.core.gamecomponents.GameComponent;
 import nl.civcraft.core.managers.TaskManager;
-import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.tasks.Task;
 
@@ -65,13 +64,13 @@ public class Civvy extends AbstractGameComponent {
         }
     }
 
-    public Vector3f getLocationAtVoxel(Voxel voxel) {
-        return voxel.getLocation().add(new Vector3f(0, 1, 0));
+    public Vector3f getLocationAt(GameObject voxel) {
+        return voxel.getTransform().getTranslation().add(new Vector3f(0, 1, 0));
     }
 
     public static class Factory implements GameComponentFactory<Civvy> {
         @Override
-        public GameComponent build() {
+        public Civvy build() {
             return new Civvy();
         }
 

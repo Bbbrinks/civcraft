@@ -1,6 +1,6 @@
 package nl.civcraft.core.gamecomponents;
 
-import nl.civcraft.core.model.Item;
+import nl.civcraft.core.model.GameObject;
 
 /**
  * Created by Bob on 9-9-2016.
@@ -8,23 +8,23 @@ import nl.civcraft.core.model.Item;
  * This is probably not worth documenting
  */
 public class ItemComponent extends AbstractGameComponent {
-    private Item item;
+    private GameObject item;
 
-    public ItemComponent(Item item) {
+    public ItemComponent(GameObject item) {
         this.item = item;
     }
 
-    public Item getItem() {
+    public GameObject getItem() {
         return item;
     }
 
-    public void setItem(Item item) {
+    public void setItem(GameObject item) {
         this.item = item;
     }
 
     public static class Factory implements GameComponentFactory<ItemComponent> {
         @Override
-        public GameComponent build() {
+        public ItemComponent build() {
             return new ItemComponent(null);
         }
 

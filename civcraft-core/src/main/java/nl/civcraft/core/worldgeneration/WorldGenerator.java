@@ -2,9 +2,10 @@ package nl.civcraft.core.worldgeneration;
 
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import nl.civcraft.core.managers.GameObjectManager;
+import nl.civcraft.core.managers.PrefabManager;
+import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.managers.WorldManager;
-import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.World;
 import nl.civcraft.core.utils.MathUtil;
 import org.apache.logging.log4j.LogManager;
@@ -31,14 +32,15 @@ public class WorldGenerator implements Runnable {
     private final ChunkBuilder chunkBuilder;
     private final WorldManager worldManager;
     private final TreeGenerator treeGenerator;
-    private final GameObjectManager civvyManager;
+    private final PrefabManager civvyManager;
+    private final VoxelManager voxelManager;
     private HeightMap heightMap;
     private boolean generationDone;
 
     @Autowired
     public WorldGenerator(@Value("${height_map_width}") int heightMapWidth, @Value("${height_map_height}") int heightMapHeight,
                           HeightMapGenerator hillsGenerator, ChunkBuilder chunkBuilder, WorldManager worldManager, TreeGenerator treeGenerator,
-                          @Qualifier(value = "civvy") GameObjectManager civvyManager) {
+                          @Qualifier(value = "civvy") PrefabManager civvyManager, VoxelManager voxelManager) {
         this.heightMapWidth = heightMapWidth;
         this.heightMapHeight = heightMapHeight;
         this.hillsGenerator = hillsGenerator;
@@ -46,6 +48,7 @@ public class WorldGenerator implements Runnable {
         this.worldManager = worldManager;
         this.treeGenerator = treeGenerator;
         this.civvyManager = civvyManager;
+        this.voxelManager = voxelManager;
     }
 
     @Override
@@ -54,7 +57,7 @@ public class WorldGenerator implements Runnable {
 
         generateHeightMap();
         LOGGER.trace("End generating height map");
-        worldManager.getWorld().clearChunks();
+        voxelManager.clearChunks();
         int chunkCount = 0;
         for (int x = 0; x < 4; x++) {
             for (int z = 0; z < 4; z++) {
@@ -75,11 +78,11 @@ public class WorldGenerator implements Runnable {
             float civX = MathUtil.rnd(0f, 120f);
             float civZ = MathUtil.rnd(0f, 120f);
             float civY = heightMap.getHeight((int) civX, (int) civZ);
-            Optional<Voxel> voxelAt = worldManager.getWorld().getVoxelAt(civX, civY, civZ);
+            Optional<GameObject> voxelAt = voxelManager.getVoxelAt(civX, civY, civZ);
             if (!voxelAt.isPresent()) {
                 throw new IllegalStateException("Voxel not present");
             }
-            civvyManager.build(new Transform(new Vector3f(civX, civY + 1, civZ)));
+            civvyManager.build(new Transform(new Vector3f(civX, civY + 1, civZ)), true);
         }
         setGenerationDone(true);
     }

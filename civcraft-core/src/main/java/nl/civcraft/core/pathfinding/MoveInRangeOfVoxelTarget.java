@@ -2,7 +2,6 @@ package nl.civcraft.core.pathfinding;
 
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.npc.Civvy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,30 +16,34 @@ public class MoveInRangeOfVoxelTarget implements PathFindingTarget {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final float range;
-    private final Voxel target;
+    private final GameObject target;
 
-    public MoveInRangeOfVoxelTarget(float range, Voxel target) {
+    public MoveInRangeOfVoxelTarget(float range, GameObject target) {
         this.range = range;
         this.target = target;
     }
 
     @Override
     public boolean isReached(GameObject civvy, AStarNode current) {
-        Vector3f locationAtVoxel = civvy.getComponent(Civvy.class).get().getLocationAtVoxel(current.getVoxel());
-        float distance = locationAtVoxel.distance(target.getLocation());
+        //TODO: Make this available for non civvy gameobjects
+        Vector3f locationAtVoxel = civvy.getComponent(Civvy.class).
+                map(c -> c.getLocationAt(current.getGameObject())).
+                orElseThrow(() -> new IllegalStateException("Only civvies can MoveInRageOfTarget"));
+        float distance = locationAtVoxel.distance(target.getTransform().getTranslation());
         return distance < range;
     }
 
+    //TODO: move this elsewhere
     @Override
     public int getCostFrom(AStarNode next) {
-        int xCost = Math.abs(next.getVoxel().getX() - target.getX());
-        int yCost = Math.abs(next.getVoxel().getY() - target.getY());
-        int zCost = Math.abs(next.getVoxel().getZ() - target.getZ());
-        return xCost + yCost + zCost;
+        float xCost = Math.abs(next.getGameObject().getTransform().getTranslation().getX() - target.getTransform().getTranslation().getX());
+        float yCost = Math.abs(next.getGameObject().getTransform().getTranslation().getY() - target.getTransform().getTranslation().getY());
+        float zCost = Math.abs(next.getGameObject().getTransform().getTranslation().getZ() - target.getTransform().getTranslation().getZ());
+        return (int) (xCost + yCost + zCost);
     }
 
     @Override
-    public int getMaxSearchArea(Voxel start) {
-        return (int) (target.getLocation().distance(start.getLocation()) * 5);
+    public int getMaxSearchArea(GameObject start) {
+        return (int) (target.getTransform().getTranslation().distance(start.getTransform().getTranslation()) * 5);
     }
 }

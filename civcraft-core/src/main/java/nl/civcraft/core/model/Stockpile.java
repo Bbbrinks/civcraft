@@ -8,27 +8,27 @@ import java.util.*;
  * This is probably not worth documenting
  */
 public class Stockpile {
-    private final Set<Voxel> voxels;
-    private final List<Item> items;
+    private final Set<GameObject> voxels;
+    private final List<GameObject> items;
 
     public Stockpile() {
-        this.items = new ArrayList<>();
+        this.items = new ArrayList<GameObject>();
         voxels = new HashSet<>();
     }
 
-    public void addVoxel(Voxel voxelAt) {
+    public void addVoxel(GameObject voxelAt) {
         this.voxels.add(voxelAt);
     }
 
-    public Set<Voxel> getVoxels() {
+    public Set<GameObject> getVoxels() {
         return voxels;
     }
 
-    public Optional<Voxel> getAvailableSpot(Item item) {
+    public Optional<GameObject> getAvailableSpot(GameObject item) {
         return voxels.stream().findFirst();
     }
 
-    public boolean addItem(Item item) {
+    public boolean addItem(GameObject item) {
         items.add(item);
         return true;
     }

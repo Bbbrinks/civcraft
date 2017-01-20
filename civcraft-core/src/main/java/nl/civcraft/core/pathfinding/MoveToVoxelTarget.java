@@ -1,7 +1,6 @@
 package nl.civcraft.core.pathfinding;
 
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Voxel;
 
 /**
  * Created by Bob on 22-3-2016.
@@ -9,28 +8,28 @@ import nl.civcraft.core.model.Voxel;
  * This is probably not worth documenting
  */
 public class MoveToVoxelTarget implements PathFindingTarget {
-    private final Voxel target;
+    private final GameObject target;
 
-    public MoveToVoxelTarget(Voxel target) {
+    public MoveToVoxelTarget(GameObject target) {
         this.target = target;
     }
 
     @Override
     public boolean isReached(GameObject gameObject, AStarNode current) {
-        return target.equals(current.getVoxel());
+        return target.equals(current.getGameObject());
     }
 
     @Override
     public int getCostFrom(AStarNode next) {
-        int xCost = Math.abs(next.getVoxel().getX() - target.getX());
-        int yCost = Math.abs(next.getVoxel().getY() - target.getY());
-        int zCost = Math.abs(next.getVoxel().getZ() - target.getZ());
-        return xCost + yCost + zCost;
+        float xCost = Math.abs(next.getGameObject().getTransform().getTranslation().getX() - target.getTransform().getTranslation().getX());
+        float yCost = Math.abs(next.getGameObject().getTransform().getTranslation().getY() - target.getTransform().getTranslation().getY());
+        float zCost = Math.abs(next.getGameObject().getTransform().getTranslation().getZ() - target.getTransform().getTranslation().getZ());
+        return (int) (xCost + yCost + zCost);
     }
 
 
     @Override
-    public int getMaxSearchArea(Voxel start) {
-        return (int) (target.getLocation().distance(start.getLocation()) * 5);
+    public int getMaxSearchArea(GameObject start) {
+        return (int) (target.getTransform().getTranslation().distance(start.getTransform().getTranslation()) * 5);
     }
 }

@@ -3,7 +3,6 @@ package nl.civcraft.core.managers;
 import com.jme3.math.Transform;
 import nl.civcraft.core.gamecomponents.ItemComponent;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Item;
 import nl.civcraft.core.model.events.EntityCreatedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,22 +23,22 @@ public class EntityManager {
 
     private final List<GameObject> entities;
     private final ApplicationEventPublisher publisher;
-    private final GameObjectManager gameObjectManager;
+    private final PrefabManager prefabManager;
 
     @Autowired
-    public EntityManager(ApplicationEventPublisher publisher, @Qualifier("item") GameObjectManager gameObjectManager) {
+    public EntityManager(ApplicationEventPublisher publisher, @Qualifier("item") PrefabManager prefabManager) {
         this.publisher = publisher;
         entities = new ArrayList<>();
-        this.gameObjectManager = gameObjectManager;
+        this.prefabManager = prefabManager;
     }
 
     /***
      * Spawn item entity on the voxel
-     * @param item
      * @param groundAt
+     * @param item
      */
-    public void addEntity(Item item, Transform transform) {
-        GameObject build = gameObjectManager.build(transform);
+    public void addEntity(GameObject item, Transform transform) {
+        GameObject build = prefabManager.build(transform, true);
         build.getComponent(ItemComponent.class).get().setItem(item);
         publisher.publishEvent(new EntityCreatedEvent(build, this));
     }

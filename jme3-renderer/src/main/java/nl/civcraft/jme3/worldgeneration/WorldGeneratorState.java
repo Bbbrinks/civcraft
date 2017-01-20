@@ -4,15 +4,11 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import nl.civcraft.core.managers.WorldManager;
-import nl.civcraft.core.model.Chunk;
-import nl.civcraft.core.model.events.ChunkModifiedEvent;
+import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.worldgeneration.WorldGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class WorldGeneratorState implements ActionListener {
@@ -23,23 +19,19 @@ public class WorldGeneratorState implements ActionListener {
 
     private final WorldGenerator worldGenerator;
 
-
-    private final WorldManager worldManager;
-
-
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final VoxelManager voxelManager;
 
     @Autowired
-    public WorldGeneratorState(WorldGenerator worldGenerator, WorldManager worldManager, ApplicationEventPublisher applicationEventPublisher, InputManager inputManager) {
+    public WorldGeneratorState(WorldGenerator worldGenerator, ApplicationEventPublisher applicationEventPublisher, InputManager inputManager, VoxelManager voxelManager) {
         this.worldGenerator = worldGenerator;
-        this.worldManager = worldManager;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.voxelManager = voxelManager;
         registerInput(inputManager);
     }
 
     private void registerInput(InputManager inputManager) {
         inputManager.addMapping(GENERATE_WORLD, new KeyTrigger(KeyInput.KEY_G));
-        inputManager.addMapping(OPTIMIZE_CHUNKS, new KeyTrigger(KeyInput.KEY_O));
         inputManager.addListener(this, GENERATE_WORLD, OPTIMIZE_CHUNKS);
     }
 
@@ -50,12 +42,7 @@ public class WorldGeneratorState implements ActionListener {
         if (name.equals(GENERATE_WORLD)) {
             generateInitialChunk();
         }
-        if (name.equals(OPTIMIZE_CHUNKS)) {
-            List<Chunk> chunks = worldManager.getWorld().getChunks();
-            for (Chunk chunk : chunks) {
-                applicationEventPublisher.publishEvent(new ChunkModifiedEvent(chunk, this));
-            }
-        }
+
     }
 
     private void generateInitialChunk() {

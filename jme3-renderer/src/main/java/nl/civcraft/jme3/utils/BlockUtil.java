@@ -7,7 +7,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 import nl.civcraft.core.model.Face;
-import nl.civcraft.jme3.model.VoxelFace;
+import nl.civcraft.jme3.model.RenderedVoxelFace;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -25,24 +25,6 @@ public class BlockUtil {
     private static final Geometry RIGHT = getBlockQuadGeometry(Face.RIGHT);
     private static final Geometry FRONT = getBlockQuadGeometry(Face.FRONT);
     private static final Geometry BACK = getBlockQuadGeometry(Face.BACK);
-
-    public static Map<Face, VoxelFace> getQuadBlock(Material topMaterial, Material sideMaterial, Material bottomMaterial) {
-        Map<Face, VoxelFace> block = new EnumMap<>(Face.class);
-
-        block.put(Face.TOP, new VoxelFace(topMaterial, TOP.clone()));
-
-        block.put(Face.BOTTOM, new VoxelFace(bottomMaterial, BOTTOM.clone()));
-
-        block.put(Face.LEFT, new VoxelFace(sideMaterial, LEFT.clone()));
-
-        block.put(Face.RIGHT, new VoxelFace(sideMaterial, RIGHT.clone()));
-
-        block.put(Face.FRONT, new VoxelFace(sideMaterial, FRONT.clone()));
-
-        block.put(Face.BACK, new VoxelFace(sideMaterial, BACK.clone()));
-
-        return block;
-    }
 
     public static Geometry getBlockQuadGeometry(Face face) {
         Quad quad = new Quad(BLOCK_SIZE * 2, BLOCK_SIZE * 2);
@@ -89,5 +71,27 @@ public class BlockUtil {
         geometry.setLocalTranslation(translation);
 
         return geometry;
+    }
+
+    public static Map<Face, RenderedVoxelFace> getQuadBlock(Material material) {
+        return getQuadBlock(material, material, material);
+    }
+
+    public static Map<Face, RenderedVoxelFace> getQuadBlock(Material topMaterial, Material sideMaterial, Material bottomMaterial) {
+        Map<Face, RenderedVoxelFace> block = new EnumMap<>(Face.class);
+
+        block.put(Face.TOP, new RenderedVoxelFace(topMaterial, TOP.clone()));
+
+        block.put(Face.BOTTOM, new RenderedVoxelFace(bottomMaterial, BOTTOM.clone()));
+
+        block.put(Face.LEFT, new RenderedVoxelFace(sideMaterial, LEFT.clone()));
+
+        block.put(Face.RIGHT, new RenderedVoxelFace(sideMaterial, RIGHT.clone()));
+
+        block.put(Face.FRONT, new RenderedVoxelFace(sideMaterial, FRONT.clone()));
+
+        block.put(Face.BACK, new RenderedVoxelFace(sideMaterial, BACK.clone()));
+
+        return block;
     }
 }

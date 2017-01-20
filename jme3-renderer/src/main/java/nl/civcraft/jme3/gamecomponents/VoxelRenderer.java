@@ -1,10 +1,11 @@
 package nl.civcraft.jme3.gamecomponents;
 
 import nl.civcraft.core.gamecomponents.AbstractGameComponent;
+import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
-import nl.civcraft.jme3.model.VoxelFace;
+import nl.civcraft.jme3.model.RenderedVoxelFace;
 
 import java.util.Map;
 import java.util.Optional;
@@ -14,7 +15,7 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-public abstract class VoxelRenderer extends AbstractGameComponent {
+public abstract class VoxelRenderer extends AbstractGameComponent implements nl.civcraft.core.rendering.VoxelRenderer {
     protected Voxel voxel;
 
     @Override
@@ -27,9 +28,13 @@ public abstract class VoxelRenderer extends AbstractGameComponent {
         super.addTo(gameObject);
     }
 
-    public abstract Map<Face, VoxelFace> getFaces();
+    public abstract Map<Face, RenderedVoxelFace> getFaces();
 
     public Voxel getVoxel() {
         return voxel;
+    }
+
+    public boolean isVisible() {
+        return gameObject.getComponent(Neighbour.class).map(n -> n.getNeighbours().size() < 6).orElse(true);
     }
 }

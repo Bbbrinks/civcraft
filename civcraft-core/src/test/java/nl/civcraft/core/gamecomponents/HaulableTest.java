@@ -1,8 +1,8 @@
 package nl.civcraft.core.gamecomponents;
 
+import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Stockpile;
-import nl.civcraft.core.model.World;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.tasks.Haul;
 import nl.civcraft.core.tasks.Task;
@@ -32,7 +32,7 @@ public class HaulableTest {
     @Mock
     private Stockpile stockpile;
     @Mock
-    private World world;
+    private VoxelManager voxelManager;
 
     @Before
     public void setUp() throws Exception {
@@ -51,7 +51,7 @@ public class HaulableTest {
 
     @Test
     public void getTask() throws Exception {
-        Task task = underTest.getTask(stockpile, pathFinder, world);
+        Task task = underTest.getTask(stockpile, pathFinder, voxelManager);
         assertThat(task, instanceOf(Haul.class));
     }
 

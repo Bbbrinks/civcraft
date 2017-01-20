@@ -1,6 +1,6 @@
 package nl.civcraft.core.pathfinding;
 
-import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.model.GameObject;
 
 /**
  * Created by Bob on 11-3-2016.
@@ -8,25 +8,25 @@ import nl.civcraft.core.model.Voxel;
  * This is probably not worth documenting
  */
 public class AStarNode {
-    private final Voxel voxel;
+    private final GameObject gameObject;
     private AStarNode previous;
     private float hCost;
     private float gCost;
 
-    public AStarNode(Voxel voxel) {
-        this.voxel = voxel;
+    public AStarNode(GameObject gameObject) {
+        this.gameObject = gameObject;
     }
 
     public AStarNode getPrevious() {
         return previous;
     }
 
-    public Voxel getVoxel() {
-        return voxel;
-    }
-
     public void setPrevious(AStarNode previous) {
         this.previous = previous;
+    }
+
+    public GameObject getGameObject() {
+        return gameObject;
     }
 
     public float gethCost() {
@@ -49,7 +49,7 @@ public class AStarNode {
 
     public float calcGCost(AStarNode current) {
         float g = 1.0f;
-        if (current.getVoxel().getY() < getVoxel().getY()) {
+        if (current.getGameObject().getTransform().getTranslation().getY() < getGameObject().getTransform().getTranslation().getY()) {
             g = 1.5f;
         }
 

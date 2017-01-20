@@ -10,7 +10,6 @@ import com.jme3.scene.shape.Quad;
 import nl.civcraft.core.gamecomponents.AbstractGameComponent;
 import nl.civcraft.core.gamecomponents.ItemComponent;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,14 +28,14 @@ public class ItemRenderer extends AbstractGameComponent {
 
     private final Node entityNode;
     private final AssetManager assetManager;
-    private final Map<Item, Geometry> renderedItems;
+    private final Map<GameObject, Geometry> renderedItems;
 
     @Autowired
     public ItemRenderer(Node rootNode, AssetManager assetManager) {
         this.assetManager = assetManager;
         entityNode = new Node("entityNode");
         rootNode.attachChild(entityNode);
-        renderedItems = new HashMap<>();
+        renderedItems = new HashMap<GameObject, Geometry>();
     }
 
     @Override
@@ -61,7 +60,7 @@ public class ItemRenderer extends AbstractGameComponent {
 
     @Override
     public void destroyed(GameObject gameObject) {
-        Item item = gameObject.getComponent(ItemComponent.class).get().getItem();
+        GameObject item = gameObject.getComponent(ItemComponent.class).get().getItem();
         entityNode.detachChild(renderedItems.remove(item));
         super.destroyed(gameObject);
     }

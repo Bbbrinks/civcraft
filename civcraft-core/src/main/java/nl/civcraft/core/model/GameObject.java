@@ -32,8 +32,8 @@ public class GameObject {
     }
 
     public void addComponent(GameComponent component) {
-        component.addTo(this);
         components.add(component);
+        component.addTo(this);
     }
 
     public void changed() {

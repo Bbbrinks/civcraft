@@ -1,7 +1,6 @@
 package nl.civcraft.core.gamecomponents;
 
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Item;
 
 import java.util.Optional;
 
@@ -11,5 +10,5 @@ import java.util.Optional;
  * This is probably not worth documenting
  */
 public interface Harvestable {
-    Optional<Item> harvest(GameObject harvester);
+    Optional<GameObject> harvest(GameObject harvester);
 }

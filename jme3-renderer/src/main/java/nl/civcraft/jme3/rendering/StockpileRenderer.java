@@ -3,8 +3,8 @@ package nl.civcraft.jme3.rendering;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import nl.civcraft.core.event.SystemUpdate;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Stockpile;
-import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.model.events.StockpileCreated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -37,9 +37,9 @@ public class StockpileRenderer {
     public void update(SystemUpdate systemUpdate) {
         stockpileNode.detachAllChildren();
         for (Stockpile stockpile : stockpiles) {
-            for (Voxel voxel : stockpile.getVoxels()) {
+            for (GameObject voxel : stockpile.getVoxels()) {
                 Spatial clone = stockpileSpatial.clone();
-                clone.setLocalTranslation(clone.getLocalTranslation().add(voxel.getX(), voxel.getY(), voxel.getZ()));
+                clone.setLocalTranslation(clone.getLocalTranslation().add(voxel.getTransform().getTranslation()));
                 stockpileNode.attachChild(clone);
             }
         }

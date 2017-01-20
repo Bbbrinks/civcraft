@@ -1,9 +1,11 @@
 package nl.civcraft.core.gamecomponents;
 
 import com.jme3.math.Vector3f;
-import nl.civcraft.core.managers.WorldManager;
+import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Voxel;
+
+import java.util.Optional;
 
 /**
  * Created by Bob on 18-11-2016.
@@ -12,20 +14,24 @@ import nl.civcraft.core.model.Voxel;
  */
 public class GroundMovement extends AbstractGameComponent {
     private final float speed;
-    private final WorldManager worldManager;
-    private Voxel currentVoxel;
+    private final VoxelManager voxelManager;
+    private GameObject currentVoxel;
 
-    public GroundMovement(float speed, WorldManager worldManager) {
+    public GroundMovement(float speed, VoxelManager voxelManager) {
         this.speed = speed;
-        this.worldManager = worldManager;
+        this.voxelManager = voxelManager;
     }
 
-    public Voxel currentVoxel() {
+    public GameObject currentVoxel() {
         return currentVoxel;
     }
 
-    public void moveToward(Voxel target, float tpf) {
-        Vector3f location = target.getLocation().add(new Vector3f(0, 1, 0));
+    public void moveToward(GameObject target, float tpf) {
+        Optional<Voxel> voxelOptional = target.getComponent(Voxel.class);
+        if (!voxelOptional.isPresent()) {
+            throw new IllegalStateException("Can only move toward voxels");
+        }
+        Vector3f location = target.getTransform().getTranslation().add(new Vector3f(0, 1, 0));
         Vector3f movement = location.subtract(gameObject.getTransform().getTranslation());
         if (distance(target) >= tpf * speed) {
             movement.normalizeLocal();
@@ -38,37 +44,42 @@ public class GroundMovement extends AbstractGameComponent {
         gameObject.getTransform().setTranslation(gameObject.getTransform().getTranslation().add(movement));
     }
 
-    public float distance(Voxel target) {
-        return target.getLocation().distance(gameObject.getTransform().getTranslation().subtract(0, 1, 0));
+    public float distance(GameObject target) {
+        return target.getTransform().getTranslation().distance(gameObject.getTransform().getTranslation().subtract(0, 1, 0));
     }
 
 
     @Override
     public void addTo(GameObject gameObject) {
         super.addTo(gameObject);
-        setCurrentVoxel(worldManager.getWorld().getGroundAt(gameObject.getTransform().getTranslation(), 10).get());
+
+        GameObject groundVoxel = voxelManager.getGroundAt(gameObject.getTransform().getTranslation(), 10).
+                map(v -> v).
+                orElseThrow(() -> new IllegalStateException("No ground found at " + gameObject.getTransform().getTranslation()));
+
+        setCurrentVoxel(groundVoxel);
     }
 
-    public Voxel getCurrentVoxel() {
+    public GameObject getCurrentVoxel() {
         return currentVoxel;
     }
 
-    public void setCurrentVoxel(Voxel currentVoxel) {
+    public void setCurrentVoxel(GameObject currentVoxel) {
         this.currentVoxel = currentVoxel;
     }
 
     public static class Factory implements GameComponentFactory<GroundMovement> {
         private final float speed;
-        private final WorldManager worldManager;
+        private final VoxelManager voxelManager;
 
-        public Factory(float speed, WorldManager worldManager) {
+        public Factory(float speed, VoxelManager voxelManager) {
             this.speed = speed;
-            this.worldManager = worldManager;
+            this.voxelManager = voxelManager;
         }
 
         @Override
-        public GameComponent build() {
-            return new GroundMovement(speed, worldManager);
+        public GroundMovement build() {
+            return new GroundMovement(speed, voxelManager);
         }
 
         @Override

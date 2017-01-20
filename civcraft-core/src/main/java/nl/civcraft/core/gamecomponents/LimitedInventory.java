@@ -1,6 +1,6 @@
 package nl.civcraft.core.gamecomponents;
 
-import nl.civcraft.core.model.Item;
+import nl.civcraft.core.model.GameObject;
 
 import java.util.Optional;
 
@@ -10,16 +10,16 @@ import java.util.Optional;
  * This is probably not worth documenting
  */
 public class LimitedInventory extends AbstractGameComponent implements Inventory, GameComponent {
-    private final Item[] items;
+    private final GameObject[] items;
 
     public LimitedInventory(int size) {
-        items = new Item[size];
+        items = new GameObject[size];
     }
 
 
     @Override
-    public Optional<Item> getFirstItem() {
-        Item firstItem = items[0];
+    public Optional<GameObject> getFirstItem() {
+        GameObject firstItem = items[0];
         items[0] = items[1];
         if (gameObject != null) {
             gameObject.changed();
@@ -28,9 +28,9 @@ public class LimitedInventory extends AbstractGameComponent implements Inventory
     }
 
     @Override
-    public boolean addItem(Item item) {
+    public boolean addItem(GameObject item) {
         for (int i = 0; i < items.length; i++) {
-            Item slotItem = items[i];
+            GameObject slotItem = items[i];
             if (slotItem == null) {
                 items[i] = item;
                 if (gameObject != null) {
@@ -53,7 +53,7 @@ public class LimitedInventory extends AbstractGameComponent implements Inventory
     }
 
     @Override
-    public void remove(Item item) {
+    public void remove(GameObject item) {
         //TODO remove item
     }
 
@@ -65,7 +65,7 @@ public class LimitedInventory extends AbstractGameComponent implements Inventory
         }
 
         @Override
-        public GameComponent build() {
+        public LimitedInventory build() {
             return new LimitedInventory(size);
         }
 

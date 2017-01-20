@@ -2,7 +2,6 @@ package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.gamecomponents.GroundMovement;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.pathfinding.MoveToVoxelTarget;
 
@@ -18,11 +17,11 @@ public class MoveTo extends Task {
 
 
     private final AStarPathFinder pathFinder;
-    protected Voxel target;
-    private Queue<Voxel> path;
+    protected GameObject target;
+    private Queue<GameObject> path;
     private GameObject civvy;
 
-    public MoveTo(Voxel target, AStarPathFinder pathFinder) {
+    public MoveTo(GameObject target, AStarPathFinder pathFinder) {
         super(State.TODO);
         this.target = target;
         this.pathFinder = pathFinder;
@@ -48,7 +47,7 @@ public class MoveTo extends Task {
                 return Result.FAILED;
             }
         }
-        Voxel peek = path.peek();
+        GameObject peek = path.peek();
         if (peek == null) {
             return Result.COMPLETED;
         }
@@ -59,7 +58,7 @@ public class MoveTo extends Task {
         return Result.IN_PROGRESS;
     }
 
-    public Voxel getTarget() {
+    public GameObject getTarget() {
         return target;
     }
 }

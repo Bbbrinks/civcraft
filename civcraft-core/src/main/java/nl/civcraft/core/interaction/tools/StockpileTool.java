@@ -2,9 +2,10 @@ package nl.civcraft.core.interaction.tools;
 
 import nl.civcraft.core.interaction.selectors.GroundRectangleSelector;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
+import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.managers.WorldManager;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Stockpile;
-import nl.civcraft.core.model.Voxel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -17,11 +18,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class StockpileTool extends GroundRectangleSelector {
 
+    private final WorldManager worldManager;
     private Stockpile createdStockpile;
 
     @Autowired
-    public StockpileTool(CurrentVoxelHighlighter currentVoxelHighlighter, ApplicationEventPublisher eventPublisher, WorldManager worldManager) {
-        super(currentVoxelHighlighter, eventPublisher, worldManager);
+    public StockpileTool(CurrentVoxelHighlighter currentVoxelHighlighter, ApplicationEventPublisher eventPublisher, VoxelManager voxelManager, WorldManager worldManager) {
+        super(currentVoxelHighlighter, eventPublisher, voxelManager);
+        this.worldManager = worldManager;
     }
 
     @Override
@@ -30,14 +33,14 @@ public class StockpileTool extends GroundRectangleSelector {
     }
 
     @Override
-    protected void handleSelection(Voxel voxel) {
-        createdStockpile.addVoxel(voxel);
-    }
-
-    @Override
     protected void endSelection() {
         worldManager.getWorld().addStockpile(createdStockpile);
         createdStockpile = null;
+    }
+
+    @Override
+    protected void handleSelection(GameObject voxel) {
+        createdStockpile.addVoxel(voxel);
     }
 
 }

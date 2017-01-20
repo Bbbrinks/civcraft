@@ -1,6 +1,6 @@
 package nl.civcraft.core.gamecomponents;
 
-import nl.civcraft.core.model.Item;
+import nl.civcraft.core.model.GameObject;
 
 import java.util.Optional;
 
@@ -10,11 +10,11 @@ import java.util.Optional;
  * This is probably not worth documenting
  */
 public interface Inventory extends GameComponent {
-    Optional<Item> getFirstItem();
+    Optional<GameObject> getFirstItem();
 
-    boolean addItem(Item item);
+    boolean addItem(GameObject item);
 
     boolean isEmpty();
 
-    void remove(Item item);
+    void remove(GameObject item);
 }

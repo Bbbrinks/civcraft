@@ -5,7 +5,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.events.RemoveVoxelHighlights;
 import nl.civcraft.core.model.events.VoxelHighlighted;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +40,9 @@ public class VoxelHighlightControl extends AbstractControl {
 
     @EventListener
     public void handleAddVoxelHighlight(VoxelHighlighted voxelHighlighted) {
-        Voxel voxel = voxelHighlighted.getVoxel();
+        GameObject voxel = voxelHighlighted.getVoxel();
         Spatial clone = hoverSpatial.clone();
-        clone.setLocalTranslation(clone.getLocalTranslation().x + voxel.getX(), clone.getLocalTranslation().y + voxel.getY(), clone.getLocalTranslation().z + voxel.getZ());
+        clone.setLocalTranslation(clone.getLocalTranslation().x + voxel.getTransform().getTranslation().getX(), clone.getLocalTranslation().y + voxel.getTransform().getTranslation().getY(), clone.getLocalTranslation().z + voxel.getTransform().getTranslation().getZ());
         spatials.add(clone);
     }
 

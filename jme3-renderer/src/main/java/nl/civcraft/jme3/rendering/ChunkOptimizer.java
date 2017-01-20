@@ -13,17 +13,13 @@ import com.jme3.util.BufferUtils;
 import jme3tools.optimize.GeometryBatchFactory;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.Face;
-import nl.civcraft.core.model.Voxel;
-import nl.civcraft.core.model.World;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.jme3.gamecomponents.VoxelRenderer;
-import nl.civcraft.jme3.model.VoxelFace;
+import nl.civcraft.jme3.model.RenderedVoxelFace;
 import nl.civcraft.jme3.utils.BlockUtil;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 /**
@@ -41,7 +37,7 @@ public class ChunkOptimizer {
     public static class ChunkOptimizerThread implements Callable<ChunkOptimizerThread> {
 
         private final Chunk chunk;
-        private final Set<VoxelFace> renderedFaces;
+        private final Set<RenderedVoxelFace> renderedFaces;
         private final List<Geometry> geometries;
 
         public ChunkOptimizerThread(Chunk chunk) {
@@ -54,13 +50,13 @@ public class ChunkOptimizer {
             return chunk;
         }
 
-        public Set<VoxelFace> getRenderedFaces() {
+        public Set<RenderedVoxelFace> getRenderedFaces() {
             return renderedFaces;
         }
 
         @Override
         public ChunkOptimizerThread call() throws Exception {
-            Voxel[] voxels = chunk.getVoxels();
+            GameObject[] voxels = chunk.getVoxels();
             //Copied from https://raw.githubusercontent.com/roboleary/GreedyMesh/master/src/mygame/Main.java
             /*
          * These are just working variables for the algorithm - almost all taken
@@ -78,12 +74,12 @@ public class ChunkOptimizer {
          * We create a mask - this will contain the groups of matching voxel faces
          * as we proceed through the chunk in 6 directions - once for each face.
          */
-            final VoxelFace[] mask = new VoxelFace[World.CHUNK_SIZE * World.CHUNK_SIZE];
+            final RenderedVoxelFace[] mask = new RenderedVoxelFace[Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE];
 
         /*
          * These are just working variables to hold two faces during comparison.
          */
-            VoxelFace voxelFace, voxelFace1;
+            RenderedVoxelFace voxelFace, voxelFace1;
 
             /**
              * We start with the lesser-spotted boolean for-loop (also known as the old flippy floppy).
@@ -129,7 +125,7 @@ public class ChunkOptimizer {
                 /*
                  * We move through the dimension from front to back
                  */
-                    for (x[d] = -1; x[d] < World.CHUNK_SIZE; ) {
+                    for (x[d] = -1; x[d] < Chunk.CHUNK_SIZE; ) {
 
                     /*
                      * -------------------------------------------------------------------
@@ -138,15 +134,15 @@ public class ChunkOptimizer {
                      */
                         n = 0;
 
-                        for (x[v] = 0; x[v] < World.CHUNK_SIZE; x[v]++) {
+                        for (x[v] = 0; x[v] < Chunk.CHUNK_SIZE; x[v]++) {
 
-                            for (x[u] = 0; x[u] < World.CHUNK_SIZE; x[u]++) {
+                            for (x[u] = 0; x[u] < Chunk.CHUNK_SIZE; x[u]++) {
 
                             /*
                              * Here we retrieve two voxel faces for comparison.
                              */
                                 voxelFace = (x[d] >= 0) ? getVoxelFace(voxels, x[0], x[1], x[2], side) : null;
-                                voxelFace1 = (x[d] < World.CHUNK_SIZE - 1) ? getVoxelFace(voxels, x[0] + q[0], x[1] + q[1], x[2] + q[2], side) : null;
+                                voxelFace1 = (x[d] < Chunk.CHUNK_SIZE - 1) ? getVoxelFace(voxels, x[0] + q[0], x[1] + q[1], x[2] + q[2], side) : null;
 
                             /*
                              * Note that we're using the equals function in the voxel face class here, which lets the faces
@@ -167,16 +163,16 @@ public class ChunkOptimizer {
                      */
                         n = 0;
 
-                        for (j = 0; j < World.CHUNK_SIZE; j++) {
+                        for (j = 0; j < Chunk.CHUNK_SIZE; j++) {
 
-                            for (i = 0; i < World.CHUNK_SIZE; ) {
+                            for (i = 0; i < Chunk.CHUNK_SIZE; ) {
 
                                 if (mask[n] != null) {
 
                                 /*
                                  * We compute the width
                                  */
-                                    for (w = 1; i + w < World.CHUNK_SIZE && mask[n + w] != null && mask[n + w].canMerge(mask[n]); w++) {
+                                    for (w = 1; i + w < Chunk.CHUNK_SIZE && mask[n + w] != null && mask[n + w].canMerge(mask[n]); w++) {
                                     }
 
                                 /*
@@ -184,11 +180,11 @@ public class ChunkOptimizer {
                                  */
                                     boolean done = false;
 
-                                    for (h = 1; j + h < World.CHUNK_SIZE; h++) {
+                                    for (h = 1; j + h < Chunk.CHUNK_SIZE; h++) {
 
                                         for (k = 0; k < w; k++) {
 
-                                            if (mask[n + k + h * World.CHUNK_SIZE] == null || !mask[n + k + h * World.CHUNK_SIZE].canMerge(mask[n])) {
+                                            if (mask[n + k + h * Chunk.CHUNK_SIZE] == null || !mask[n + k + h * Chunk.CHUNK_SIZE].canMerge(mask[n])) {
                                                 done = true;
                                                 break;
                                             }
@@ -200,7 +196,7 @@ public class ChunkOptimizer {
                                     }
 
                                 /*
-                                 * Here we check the "transparent" attribute in the VoxelFace class to ensure that we don't mesh
+                                 * Here we check the "transparent" attribute in the RenderedVoxelFace class to ensure that we don't mesh
                                  * any culled faces.
                                  */
                                     if (mask[n].isVisible()) {
@@ -223,7 +219,7 @@ public class ChunkOptimizer {
                                     /*
                                      * And here we call the quad function in order to render a merged quad in the scene.
                                      *
-                                     * We pass mask[n] to the function, which is an instance of the VoxelFace class containing
+                                     * We pass mask[n] to the function, which is an instance of the RenderedVoxelFace class containing
                                      * all the attributes of the face - which allows for variables to be passed to shaders - for
                                      * example lighting values used to create ambient occlusion.
                                      */
@@ -243,7 +239,7 @@ public class ChunkOptimizer {
                                     for (l = 0; l < h; ++l) {
 
                                         for (k = 0; k < w; ++k) {
-                                            mask[n + k + l * World.CHUNK_SIZE] = null;
+                                            mask[n + k + l * Chunk.CHUNK_SIZE] = null;
                                         }
                                     }
 
@@ -269,17 +265,25 @@ public class ChunkOptimizer {
             return this;
         }
 
-        private VoxelFace getVoxelFace(Voxel[] voxels, int x, int y, int z, Face face) {
-            int arrayIndex = (World.CHUNK_SIZE * World.CHUNK_SIZE * z) + (World.CHUNK_SIZE * y) + x;
+        private RenderedVoxelFace getVoxelFace(GameObject[] voxels, int x, int y, int z, Face face) {
+            int arrayIndex = (Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE * z) + (Chunk.CHUNK_SIZE * y) + x;
             if (arrayIndex < 0 || arrayIndex >= voxels.length) {
                 return null;
             }
 
-            Voxel voxel = voxels[arrayIndex];
-            if (voxel == null || !voxel.isVisible()) {
+            GameObject voxel = voxels[arrayIndex];
+            if (voxel == null) {
                 return null;
             }
-            return voxel.getGameObject().getComponent(VoxelRenderer.class).get().getFaces().get(face);
+            Optional<VoxelRenderer> voxelRenderer = voxel.getComponent(VoxelRenderer.class);
+
+            if (!voxelRenderer.isPresent() || !voxelRenderer.get().isVisible()) {
+                return null;
+            }
+
+
+            return voxelRenderer.get().getFaces().get(face);
+
         }
 
         /**
@@ -306,7 +310,7 @@ public class ChunkOptimizer {
                   final Vector3f bottomRight,
                   final int width,
                   final int height,
-                  final VoxelFace voxel,
+                  final RenderedVoxelFace voxel,
                   final boolean backFace,
                   final Face side) {
 

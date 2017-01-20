@@ -15,24 +15,33 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-public class GameObjectManager {
+public class PrefabManager {
     private final List<GameObject> managedObjects;
     private final List<GameComponent.GameComponentFactory> gameComponents;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final PrefabManager parent;
 
-    public GameObjectManager(ApplicationEventPublisher applicationEventPublisher) {
+    public PrefabManager(ApplicationEventPublisher applicationEventPublisher, PrefabManager parent) {
+        this.parent = parent;
         managedObjects = new ArrayList<>();
         gameComponents = new ArrayList<>();
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public GameObject build(Transform transform) {
-        GameObject gameObject = new GameObject(transform);
+    public GameObject build(Transform transform, boolean publish) {
+        GameObject gameObject;
+        if (parent != null) {
+            gameObject = parent.build(transform, false);
+        } else {
+            gameObject = new GameObject(transform);
+        }
         for (GameComponent.GameComponentFactory gameComponent : gameComponents) {
             gameObject.addComponent(gameComponent.build());
         }
         managedObjects.add(gameObject);
-        applicationEventPublisher.publishEvent(new GameObjectCreatedEvent(gameObject, this));
+        if (publish) {
+            applicationEventPublisher.publishEvent(new GameObjectCreatedEvent(gameObject, this));
+        }
         return gameObject;
     }
 

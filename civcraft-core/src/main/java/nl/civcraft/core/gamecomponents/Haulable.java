@@ -1,7 +1,7 @@
 package nl.civcraft.core.gamecomponents;
 
+import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.Stockpile;
-import nl.civcraft.core.model.World;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.tasks.Haul;
 import nl.civcraft.core.tasks.Task;
@@ -13,13 +13,13 @@ import nl.civcraft.core.tasks.Task;
  */
 public class Haulable extends AbstractGameComponent {
 
-    public Task getTask(Stockpile target, AStarPathFinder pathFinder, World world) {
-        return new Haul(target, gameObject, pathFinder, world);
+    public Task getTask(Stockpile target, AStarPathFinder pathFinder, VoxelManager voxelManager) {
+        return new Haul(target, gameObject, pathFinder, voxelManager);
     }
 
     public static class Factory implements GameComponentFactory<Haulable> {
         @Override
-        public GameComponent build() {
+        public Haulable build() {
             return new Haulable();
         }
 

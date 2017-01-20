@@ -2,7 +2,9 @@ package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.gamecomponents.Inventory;
 import nl.civcraft.core.gamecomponents.ItemComponent;
-import nl.civcraft.core.model.*;
+import nl.civcraft.core.managers.VoxelManager;
+import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.model.Stockpile;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 
 import java.util.Optional;
@@ -16,24 +18,24 @@ public class Haul extends Task {
     private final GameObject itemToHaul;
     private final Stockpile target;
     private final AStarPathFinder pathFinder;
-    private final World world;
+    private final VoxelManager voxelManager;
     private MoveTo moveToObject;
     private MoveTo moveToStockPile;
     private boolean itemPickedUp = false;
-    private Item item;
+    private GameObject item;
 
-    public Haul(Stockpile target, GameObject itemToHaul, AStarPathFinder pathFinder, World world) {
+    public Haul(Stockpile target, GameObject itemToHaul, AStarPathFinder pathFinder, VoxelManager world) {
         super(State.TODO);
         this.itemToHaul = itemToHaul;
         this.pathFinder = pathFinder;
         this.target = target;
-        this.world = world;
+        this.voxelManager = world;
     }
 
     @Override
     public Result affect(GameObject civvy, float tpf) {
         if (moveToObject == null) {
-            moveToObject = new MoveTo(world.getGroundAt(itemToHaul.getTransform().getTranslation(), 10).get(), pathFinder);
+            moveToObject = new MoveTo(voxelManager.getGroundAt(itemToHaul.getTransform().getTranslation(), 10).get(), pathFinder);
         }
         if (!moveToObject.getState().equals(State.DONE)) {
             return moveToObject(civvy, tpf);
@@ -43,7 +45,7 @@ public class Haul extends Task {
             itemToHaul.destroy();
             itemPickedUp = true;
 
-            Optional<Voxel> targetVoxel = target.getAvailableSpot(itemToHaul.getComponent(ItemComponent.class).get().getItem());
+            Optional<GameObject> targetVoxel = target.getAvailableSpot(itemToHaul.getComponent(ItemComponent.class).get().getItem());
             if (!targetVoxel.isPresent()) {
                 setState(State.FAILED);
                 moveToStockPile = null;

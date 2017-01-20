@@ -26,12 +26,14 @@ public class TaskManager {
 
     private final World world;
     private final AStarPathFinder pathFinder;
+    private final VoxelManager voxelManager;
     private List<Civvy> civvies;
     private List<Task> tasks;
 
     @Autowired
-    public TaskManager(WorldManager worldManager, AStarPathFinder pathFinder) {
+    public TaskManager(WorldManager worldManager, AStarPathFinder pathFinder, VoxelManager voxelManager) {
         this.pathFinder = pathFinder;
+        this.voxelManager = voxelManager;
         civvies = new CopyOnWriteArrayList<>();
         tasks = new ArrayList<>();
         world = worldManager.getWorld();
@@ -59,7 +61,7 @@ public class TaskManager {
         Optional<Haulable> component = entity.getComponent(Haulable.class);
         Optional<Stockpile> stockPile = world.getStockPile();
         if (component.isPresent() && stockPile.isPresent()) {
-            addTask(component.get().getTask(stockPile.get(), pathFinder, world));
+            addTask(component.get().getTask(stockPile.get(), pathFinder, voxelManager));
         }
     }
 

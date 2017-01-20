@@ -8,12 +8,12 @@ import com.jme3.scene.Geometry;
  * <p>
  * This is probably not worth documenting
  */
-public class VoxelFace {
+public class RenderedVoxelFace {
     private final Geometry geometry;
     private final Material material;
     private boolean visible = true;
 
-    public VoxelFace(Material material, Geometry geometry) {
+    public RenderedVoxelFace(Material material, Geometry geometry) {
         this.material = material;
         this.geometry = geometry;
         geometry.setMaterial(material);
@@ -23,7 +23,7 @@ public class VoxelFace {
         return geometry;
     }
 
-    public boolean canMerge(VoxelFace voxelFace) {
+    public boolean canMerge(RenderedVoxelFace voxelFace) {
         return getMaterial().equals(voxelFace.getMaterial());
 
     }
