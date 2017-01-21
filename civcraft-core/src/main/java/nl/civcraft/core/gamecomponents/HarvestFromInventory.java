@@ -31,4 +31,16 @@ public class HarvestFromInventory extends AbstractGameComponent implements Harve
         super.addTo(gameObject);
     }
 
+
+    public static class Factory implements GameComponentFactory<HarvestFromInventory> {
+        @Override
+        public HarvestFromInventory build() {
+            return new HarvestFromInventory();
+        }
+
+        @Override
+        public Class<HarvestFromInventory> getComponentType() {
+            return HarvestFromInventory.class;
+        }
+    }
 }

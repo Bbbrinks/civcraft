@@ -1,7 +1,9 @@
 package nl.civcraft.core.gamecomponents;
 
+import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -12,12 +14,15 @@ import java.util.stream.Collectors;
  * <p>
  * This is probably not worth documenting
  */
+//TODO: maybe merge this with voxels as they are the only objects that have neighbours now?.. Consider that neighbour is used by AStar
 public class Neighbour extends AbstractGameComponent {
 
     private final Map<Face, GameObject> neighbours;
+    private final VoxelManager voxelManager;
 
-    public Neighbour() {
-        neighbours = new HashMap<>();
+    public Neighbour(VoxelManager voxelManager) {
+        this.voxelManager = voxelManager;
+        neighbours = new EnumMap<>(Face.class);
     }
 
     public static Map<Face, GameObject> getNeighbours(GameObject gameObject) {
@@ -29,6 +34,9 @@ public class Neighbour extends AbstractGameComponent {
     @Override
     public void addTo(GameObject gameObject) {
         super.addTo(gameObject);
+        for (Face face : Face.values()) {
+            voxelManager.getVoxelAt(getGameObject().getTransform().getTranslation().add(face.getTranslation())).ifPresent(v -> addNeighbour(face, v));
+        }
     }
 
     @Override
@@ -124,9 +132,16 @@ public class Neighbour extends AbstractGameComponent {
     @Component
     public static class Factory implements GameComponentFactory<Neighbour> {
 
+        private final VoxelManager voxelManager;
+
+        @Autowired
+        public Factory(VoxelManager voxelManager) {
+            this.voxelManager = voxelManager;
+        }
+
         @Override
         public Neighbour build() {
-            return new Neighbour();
+            return new Neighbour(voxelManager);
         }
 
         @Override

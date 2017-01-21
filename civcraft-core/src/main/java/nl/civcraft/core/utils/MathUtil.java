@@ -27,6 +27,10 @@ public class MathUtil {
     public static float rnd(float min, float max) {
         return  (float)(min + (Math.random() * max));
     }
+
+    public static float valueOrMin(float value, float min) {
+        return value > min ? value : min;
+    }
 }
 
 

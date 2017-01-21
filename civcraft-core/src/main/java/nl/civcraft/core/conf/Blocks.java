@@ -1,7 +1,9 @@
 package nl.civcraft.core.conf;
 
+import nl.civcraft.core.gamecomponents.HarvestFromInventory;
 import nl.civcraft.core.gamecomponents.Inventory;
 import nl.civcraft.core.gamecomponents.LimitedInventory;
+import nl.civcraft.core.gamecomponents.RandomItemGenerator;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
@@ -61,11 +63,13 @@ public class Blocks {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     @Qualifier("treeLeaf")
-    public PrefabManager treeLeafManager(ApplicationEventPublisher applicationEventPublisher, @Qualifier("block") PrefabManager blockManager, VoxelRenderer.StateBasedVoxelRendererFactoryFactory stateBasedVoxelRenderer, VoxelManager voxelManager) {
+    public PrefabManager treeLeafManager(ApplicationEventPublisher applicationEventPublisher, @Qualifier("block") PrefabManager blockManager, VoxelRenderer.StateBasedVoxelRendererFactoryFactory stateBasedVoxelRenderer, VoxelManager voxelManager, PrefabManager itemManager) {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, blockManager);
         Voxel.Factory voxel = new Voxel.Factory("treeLeaf", voxelManager);
         prefabManager.registerComponent(voxel);
         prefabManager.registerComponent(new LimitedInventory.Factory(4));
+        prefabManager.registerComponent(new HarvestFromInventory.Factory());
+        prefabManager.registerComponent(new RandomItemGenerator.Factory(4, itemManager));
         prefabManager.registerComponent(stateBasedVoxelRenderer.build(new Function<GameObject, String>() {
             @Override
             public String apply(GameObject gameObject) {

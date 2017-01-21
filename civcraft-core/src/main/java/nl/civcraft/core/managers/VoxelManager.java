@@ -44,10 +44,6 @@ public class VoxelManager {
 
     }
 
-    public Optional<GameObject> getVoxelAt(Vector3f target) {
-        return getVoxelAt(target.x, target.y, target.z);
-    }
-
     public List<Chunk> getChunks() {
         return chunks;
     }
@@ -124,5 +120,17 @@ public class VoxelManager {
 
     public Optional<Chunk> getChunkAt(GameObject voxelGameObject) {
         return getChunkAt((int) voxelGameObject.getTransform().getTranslation().getX(), (int) voxelGameObject.getTransform().getTranslation().getY(), (int) voxelGameObject.getTransform().getTranslation().getZ());
+    }
+
+    public List<GameObject> getVoxelsAt(Vector3f[] neighbourLocations) {
+        List<GameObject> foundVoxels = new ArrayList<>();
+        for (Vector3f neighbourLocation : neighbourLocations) {
+            getVoxelAt(neighbourLocation).ifPresent(foundVoxels::add);
+        }
+        return foundVoxels;
+    }
+
+    public Optional<GameObject> getVoxelAt(Vector3f target) {
+        return getVoxelAt(target.x, target.y, target.z);
     }
 }

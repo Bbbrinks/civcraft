@@ -32,6 +32,18 @@ public class MaterialUtil {
         return material;
     }
 
+    public static Material getPhongIllumnitedMaterial(AssetManager assetManager, String name) {
+        Texture texture = assetManager.loadTexture(
+                name);
+        Material material = new Material(assetManager,
+                "Common/MatDefs/Light/Lighting.j3md");
+        material.setTexture("DiffuseMap", texture);
+        material.setColor("Diffuse", ColorRGBA.White); // with Lighting.j3md
+        material.setColor("Ambient", ColorRGBA.White); // with Lighting.j3md
+        material.setBoolean("UseMaterialColors", true);
+        return material;
+    }
+
     public static Material getGrayScaleMaterial(AssetManager assetManager, ColorRGBA color, String texture) {
         Texture grassTopTex = assetManager.loadTexture(
                 texture);

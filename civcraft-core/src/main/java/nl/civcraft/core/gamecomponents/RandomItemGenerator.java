@@ -34,4 +34,24 @@ public class RandomItemGenerator extends AbstractGameComponent {
             limitedInventory.addItem(itemSupplier.build(gameObject.getTransform(), true));
         }
     }
+
+    public static class Factory implements GameComponentFactory<RandomItemGenerator> {
+        private final int maxItems;
+        private final PrefabManager itemManager;
+
+        public Factory(int maxItems, PrefabManager itemManager) {
+            this.maxItems = maxItems;
+            this.itemManager = itemManager;
+        }
+
+        @Override
+        public RandomItemGenerator build() {
+            return new RandomItemGenerator(maxItems, itemManager);
+        }
+
+        @Override
+        public Class<RandomItemGenerator> getComponentType() {
+            return RandomItemGenerator.class;
+        }
+    }
 }

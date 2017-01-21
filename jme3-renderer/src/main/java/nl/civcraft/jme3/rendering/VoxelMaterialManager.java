@@ -42,7 +42,7 @@ public class VoxelMaterialManager {
             String join = String.join("-", possibleNames);
             AssetInfo assetInfo = assetManager.locateAsset(new TextureKey(TEXTURES + join + ".png"));
             if (assetInfo != null) {
-                Material material = MaterialUtil.getUnshadedMaterial(assetManager, TEXTURES + join + ".png");
+                Material material = MaterialUtil.getPhongIllumnitedMaterial(assetManager, TEXTURES + join + ".png");
                 loadedMaterials.put(String.join("-", materialNames), material);
                 return material;
             }

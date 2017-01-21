@@ -12,6 +12,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import nl.civcraft.core.model.events.Tick;
+import nl.civcraft.core.utils.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -19,28 +20,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class SunLighting {
 
-    private static final float SUN_SPEED = 0.001f;
+    private static final float SUN_SPEED = 0.01f;
 
-    private final DirectionalLight sun;
+    private final DirectionalLight sunLight;
+    private final DirectionalLightShadowRenderer dlsr;
     private float sunCount = 90f;
 
     @Autowired
     public SunLighting(Spatial rootNode, AssetManager assetManager, ViewPort mainViewPort) {
-        sun = new DirectionalLight();
-        sun.setColor(ColorRGBA.White);
-        rootNode.addLight(sun);
+        sunLight = new DirectionalLight();
+        sunLight.setColor(ColorRGBA.White);
+        rootNode.addLight(sunLight);
 
         AmbientLight al = new AmbientLight();
         al.setColor(ColorRGBA.White.mult(1.3f));
         rootNode.addLight(al);
 
         final int SHADOWMAP_SIZE = 2048;
-        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
-        dlsr.setLight(sun);
+        dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
+        dlsr.setLight(sunLight);
         mainViewPort.addProcessor(dlsr);
 
         DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, SHADOWMAP_SIZE, 3);
-        dlsf.setLight(sun);
+        dlsf.setLight(sunLight);
         dlsf.setEnabled(true);
         FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
         fpp.addFilter(dlsf);
@@ -55,7 +57,9 @@ public class SunLighting {
         sunPosition.setY(FastMath.cos(sunCount));
         sunPosition.setZ(-0.2f);
         sunPosition.mult(100f);
-        sun.setDirection(sunPosition.subtract(new Vector3f(0, 0, 0)));
+        sunLight.setDirection(sunPosition.subtract(new Vector3f(0, 0, 0)));
+        float sunHeight = sunPosition.y * -1;
+        sunLight.setColor(new ColorRGBA(0.8f, MathUtil.valueOrMin(sunHeight, 0.01f), MathUtil.valueOrMin(sunHeight, 0.01f), MathUtil.valueOrMin(sunHeight, 0.01f)));
         if (sunCount > 360) {
             sunCount = 0;
         }

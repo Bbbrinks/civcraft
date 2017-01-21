@@ -9,9 +9,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Bob on 9-9-2016.
  * <p>
@@ -21,20 +18,17 @@ import java.util.List;
 public class EntityManager {
 
 
-    private final List<GameObject> entities;
     private final ApplicationEventPublisher publisher;
     private final PrefabManager prefabManager;
 
     @Autowired
     public EntityManager(ApplicationEventPublisher publisher, @Qualifier("item") PrefabManager prefabManager) {
         this.publisher = publisher;
-        entities = new ArrayList<>();
         this.prefabManager = prefabManager;
     }
 
     /***
      * Spawn item entity on the voxel
-     * @param groundAt
      * @param item
      */
     public void addEntity(GameObject item, Transform transform) {
