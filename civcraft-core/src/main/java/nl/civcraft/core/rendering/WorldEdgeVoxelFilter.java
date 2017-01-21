@@ -1,7 +1,7 @@
 package nl.civcraft.core.rendering;
 
+import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.managers.VoxelManager;
-import nl.civcraft.core.model.Voxel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
 package nl.civcraft.core.model.events;
 
+import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.model.Chunk;
-import nl.civcraft.core.model.Voxel;
 import org.springframework.context.ApplicationEvent;
 
 /**

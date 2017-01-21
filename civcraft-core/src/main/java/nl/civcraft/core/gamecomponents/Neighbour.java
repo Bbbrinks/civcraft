@@ -41,6 +41,7 @@ public class Neighbour extends AbstractGameComponent {
 
     @Override
     public void destroyed(GameObject gameObject) {
+        neighbours.values().stream().filter(Objects::nonNull).forEach(n -> n.getComponent(Neighbour.class).ifPresent(on -> on.removeNeighbour(getGameObject())));
         super.destroyed(gameObject);
     }
 

@@ -20,8 +20,8 @@ public abstract class GroundRectangleSelector implements MouseTool {
     protected final VoxelManager voxelManager;
     private final CurrentVoxelHighlighter currentVoxelHighlighter;
     private final ApplicationEventPublisher eventPublisher;
+    protected GameObject startingVoxel;
     private GameObject currentVoxel;
-    private GameObject startingVoxel;
 
     public GroundRectangleSelector(CurrentVoxelHighlighter currentVoxelHighlighter, ApplicationEventPublisher eventPublisher, VoxelManager voxelManager) {
         this.currentVoxelHighlighter = currentVoxelHighlighter;

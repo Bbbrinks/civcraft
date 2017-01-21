@@ -74,7 +74,7 @@ public class TaskManager {
     }
 
     public void requestTask(Civvy civvy) {
-        List<Task> todo = tasks.stream().filter(t -> t.getState().equals(Task.State.TODO)).collect(Collectors.toList());
+        List<Task> todo = tasks.stream().filter(t -> t.getState().equals(Task.State.TODO) && t.canBeHandledBy(civvy)).collect(Collectors.toList());
         if (!todo.isEmpty()) {
             civvy.handleTask(todo.get((int) MathUtil.rnd(1, todo.size()) - 1));
             return;

@@ -1,13 +1,9 @@
 package nl.civcraft.core.conf;
 
-import nl.civcraft.core.gamecomponents.HarvestFromInventory;
-import nl.civcraft.core.gamecomponents.Inventory;
-import nl.civcraft.core.gamecomponents.LimitedInventory;
-import nl.civcraft.core.gamecomponents.RandomItemGenerator;
+import nl.civcraft.core.gamecomponents.*;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Voxel;
 import nl.civcraft.core.rendering.VoxelRenderer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;

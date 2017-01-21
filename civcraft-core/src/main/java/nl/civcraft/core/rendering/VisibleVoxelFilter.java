@@ -1,6 +1,6 @@
 package nl.civcraft.core.rendering;
 
-import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.gamecomponents.Voxel;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

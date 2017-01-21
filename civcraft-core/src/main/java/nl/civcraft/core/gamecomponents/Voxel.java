@@ -1,7 +1,9 @@
-package nl.civcraft.core.model;
+package nl.civcraft.core.gamecomponents;
 
-import nl.civcraft.core.gamecomponents.AbstractGameComponent;
 import nl.civcraft.core.managers.VoxelManager;
+import nl.civcraft.core.model.Face;
+import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.model.VoxelFace;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +13,7 @@ import java.util.Map;
  * <p>
  * This is probably not worth documenting
  */
-public class Voxel extends AbstractGameComponent {
+public class Voxel extends AbstractGameComponent implements Breakable {
 
     private final String type;
     private final Map<Face, VoxelFace> faces;
@@ -40,6 +42,12 @@ public class Voxel extends AbstractGameComponent {
 
     public String getType() {
         return type;
+    }
+
+    @Override
+    public boolean damageMe(GameObject civvy) {
+        getGameObject().destroy();
+        return true;
     }
 
     public static class Factory implements GameComponentFactory<Voxel> {

@@ -26,7 +26,7 @@ public class GuiConfiguration {
         Container myWindow = new Container();
         civcraft.getGuiNode().attachChild(myWindow);
 
-        myWindow.setLocalTranslation(0, 80, 0);
+        myWindow.setLocalTranslation(0, civcraft.getSettings().getHeight(), 0);
         return myWindow;
     }
 

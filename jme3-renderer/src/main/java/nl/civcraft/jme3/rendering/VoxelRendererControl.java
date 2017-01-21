@@ -10,6 +10,7 @@ import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.events.GameObjectCreatedEvent;
+import nl.civcraft.core.model.events.GameObjectDestroyedEvent;
 import nl.civcraft.jme3.gamecomponents.VoxelRenderer;
 import nl.civcraft.jme3.utils.BlockUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,24 @@ public class VoxelRendererControl extends AbstractControl {
             return;
         }
         voxelManager.addVoxel(voxelGameObject);
+        Chunk chunk = voxelManager.getChunkAt(voxelGameObject).map(c -> c).orElseThrow(() -> new IllegalStateException("Chunk not foudn"));
+        if (optimizerThreadMap.containsKey(chunk)) {
+            optimizerThreadMap.get(chunk).cancel(true);
+            newOptimizedChunks.remove(optimizerThreadMap.get(chunk));
+        }
+        Future<ChunkOptimizer.ChunkOptimizerThread> submit = executorService.submit(chunkOptimizer.optimizeChunk(chunk));
+        newOptimizedChunks.add(submit);
+        optimizerThreadMap.put(chunk, submit);
+    }
+
+    @EventListener
+    public void handleVoxelRemoved(GameObjectDestroyedEvent gameObjectDestroyedEvent) {
+        GameObject voxelGameObject = gameObjectDestroyedEvent.getGameObject();
+        Optional<VoxelRenderer> component = voxelGameObject.getComponent(VoxelRenderer.class);
+        if (!component.isPresent()) {
+            return;
+        }
+        voxelManager.removeVoxel(voxelGameObject);
         Chunk chunk = voxelManager.getChunkAt(voxelGameObject).map(c -> c).orElseThrow(() -> new IllegalStateException("Chunk not foudn"));
         if (optimizerThreadMap.containsKey(chunk)) {
             optimizerThreadMap.get(chunk).cancel(true);

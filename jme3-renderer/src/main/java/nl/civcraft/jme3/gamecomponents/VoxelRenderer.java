@@ -2,9 +2,9 @@ package nl.civcraft.jme3.gamecomponents;
 
 import nl.civcraft.core.gamecomponents.AbstractGameComponent;
 import nl.civcraft.core.gamecomponents.Neighbour;
+import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Voxel;
 import nl.civcraft.jme3.model.RenderedVoxelFace;
 
 import java.util.Map;

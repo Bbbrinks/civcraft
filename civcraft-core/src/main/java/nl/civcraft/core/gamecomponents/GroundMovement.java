@@ -3,7 +3,6 @@ package nl.civcraft.core.gamecomponents;
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Voxel;
 
 import java.util.Optional;
 

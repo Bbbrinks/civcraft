@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SunLighting {
 
-    private static final float SUN_SPEED = 0.01f;
+    private static final float SUN_SPEED = 0.0f;
 
     private final DirectionalLight sunLight;
     private final DirectionalLightShadowRenderer dlsr;

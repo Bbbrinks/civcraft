@@ -5,6 +5,7 @@ import nl.civcraft.core.gamecomponents.ItemComponent;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.Stockpile;
+import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 
 import java.util.Optional;
@@ -66,6 +67,11 @@ public class Haul extends Task {
             target.addItem(item);
             return Result.COMPLETED;
         }
+    }
+
+    @Override
+    public boolean canBeHandledBy(Civvy civvy) {
+        return true;
     }
 
     private Result moveToObject(GameObject civvy, float tpf) {

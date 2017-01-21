@@ -74,7 +74,7 @@ public class WorldGenerator implements Runnable {
 
         }
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 20; i++) {
             float civX = MathUtil.rnd(0f, 120f);
             float civZ = MathUtil.rnd(0f, 120f);
             float civY = heightMap.getHeight((int) civX, (int) civZ);

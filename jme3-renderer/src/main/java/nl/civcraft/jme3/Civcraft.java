@@ -24,6 +24,10 @@ public class Civcraft extends SimpleApplication {
      */
     public static void main(String[] args) {
         instance = new Civcraft();
+        AppSettings settings = new AppSettings(true);
+        settings.setWidth(1280);
+        settings.setHeight(800);
+        instance.setSettings(settings);
         instance.start();
     }
 

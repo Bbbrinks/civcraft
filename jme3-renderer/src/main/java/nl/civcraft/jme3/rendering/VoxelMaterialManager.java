@@ -4,7 +4,7 @@ import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;
 import com.jme3.material.Material;
-import nl.civcraft.core.model.Voxel;
+import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.jme3.utils.MaterialUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
