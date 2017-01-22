@@ -23,6 +23,7 @@ public class ItemComponent extends AbstractGameComponent {
 
     public void setInInventory(boolean inInventory) {
         this.inInventory = inInventory;
+        gameObject.changed();
     }
 
     public static class Factory implements GameComponentFactory<ItemComponent> {

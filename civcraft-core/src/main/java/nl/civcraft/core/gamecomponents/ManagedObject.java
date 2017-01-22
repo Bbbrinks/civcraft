@@ -20,4 +20,10 @@ public class ManagedObject extends AbstractGameComponent implements GameComponen
         prefabManager.destroy(gameObject);
         super.destroyed();
     }
+
+    @Override
+    public void changed() {
+        prefabManager.changed(gameObject);
+        super.changed();
+    }
 }

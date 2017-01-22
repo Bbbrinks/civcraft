@@ -4,6 +4,7 @@ import com.jme3.math.Transform;
 import nl.civcraft.core.gamecomponents.GameComponent;
 import nl.civcraft.core.gamecomponents.ManagedObject;
 import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.model.events.GameObjectChangedEvent;
 import nl.civcraft.core.model.events.GameObjectCreatedEvent;
 import nl.civcraft.core.model.events.GameObjectDestroyedEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -65,5 +66,9 @@ public class PrefabManager {
 
     public void destroy(GameObject gameObject) {
         applicationEventPublisher.publishEvent(new GameObjectDestroyedEvent(gameObject, this));
+    }
+
+    public void changed(GameObject gameObject) {
+        applicationEventPublisher.publishEvent(new GameObjectChangedEvent(gameObject, this));
     }
 }

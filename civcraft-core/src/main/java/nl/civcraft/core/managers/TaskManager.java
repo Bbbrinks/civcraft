@@ -1,11 +1,7 @@
 package nl.civcraft.core.managers;
 
 import nl.civcraft.core.event.SystemUpdate;
-import nl.civcraft.core.gamecomponents.Haulable;
-import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Stockpile;
 import nl.civcraft.core.model.World;
-import nl.civcraft.core.model.events.EntityCreatedEvent;
 import nl.civcraft.core.model.events.GameObjectCreatedEvent;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
@@ -53,16 +49,6 @@ public class TaskManager {
             return;
         }
         component.get().subscribe(this);
-    }
-
-    @EventListener
-    public void handleEntityCreated(EntityCreatedEvent entityCreatedEvent) {
-        GameObject entity = entityCreatedEvent.getEntity();
-        Optional<Haulable> component = entity.getComponent(Haulable.class);
-        Optional<Stockpile> stockPile = world.getStockPile();
-        if (component.isPresent() && stockPile.isPresent()) {
-            addTask(component.get().getTask(stockPile.get(), pathFinder, voxelManager));
-        }
     }
 
     public void addTask(Task task) {

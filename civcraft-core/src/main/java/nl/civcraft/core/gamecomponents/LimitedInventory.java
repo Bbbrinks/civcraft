@@ -2,6 +2,7 @@ package nl.civcraft.core.gamecomponents;
 
 import nl.civcraft.core.model.GameObject;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -31,11 +32,11 @@ public class LimitedInventory extends AbstractGameComponent implements Inventory
     @Override
     public boolean addItem(GameObject item) {
         ItemComponent itemComponent = item.getComponent(ItemComponent.class).map(i -> i).orElseThrow(() -> new IllegalStateException("Not an item"));
+        item.getTransform().setTranslation(getGameObject().getTransform().getTranslation().clone());
         for (int i = 0; i < items.length; i++) {
             GameObject slotItem = items[i];
             if (slotItem == null) {
                 items[i] = item;
-                gameObject.changed();
                 itemComponent.setInInventory(true);
                 return true;
             }
@@ -57,7 +58,7 @@ public class LimitedInventory extends AbstractGameComponent implements Inventory
     public void remove(GameObject item) {
         for (int i = 0; i < items.length; i++) {
             GameObject object = items[i];
-            if (object.equals(item)) {
+            if (Objects.equals(object, item)) {
                 item.getComponent(ItemComponent.class).ifPresent(foundItem -> foundItem.setInInventory(false));
                 items[i] = null;
             }

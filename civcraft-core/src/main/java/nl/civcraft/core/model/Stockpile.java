@@ -30,6 +30,7 @@ public class Stockpile {
 
     @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     public boolean addItem(GameObject item) {
+        item.getTransform().setTranslation(voxels.stream().findFirst().get().getTransform().getTranslation().clone());
         items.add(item);
         return true;
     }

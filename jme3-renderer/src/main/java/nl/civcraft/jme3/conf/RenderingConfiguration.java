@@ -1,5 +1,6 @@
 package nl.civcraft.jme3.conf;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -9,10 +10,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.JmeContext;
 import nl.civcraft.jme3.Civcraft;
-import nl.civcraft.jme3.rendering.ChunkOptimizer;
-import nl.civcraft.jme3.rendering.CivvyControl;
-import nl.civcraft.jme3.rendering.VoxelHighlightControl;
-import nl.civcraft.jme3.rendering.VoxelRendererControl;
+import nl.civcraft.jme3.rendering.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,6 +30,13 @@ public class RenderingConfiguration {
         VoxelRendererControl voxelRendererControl = new VoxelRendererControl(chunks, chunkOptimizer);
         chunks.addControl(voxelRendererControl);
         return voxelRendererControl;
+    }
+
+    @Bean
+    public ItemRendererControl itemRendererControl(Node rootNode, AssetManager assetManager) {
+        ItemRendererControl itemRendererControl = new ItemRendererControl(assetManager, rootNode);
+        rootNode.addControl(itemRendererControl);
+        return itemRendererControl;
     }
 
     @Bean
