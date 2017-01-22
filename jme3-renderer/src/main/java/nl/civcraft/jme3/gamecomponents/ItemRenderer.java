@@ -28,14 +28,14 @@ public class ItemRenderer extends AbstractGameComponent {
 
     private final Node entityNode;
     private final AssetManager assetManager;
-    private final Map<GameObject, Geometry> renderedItems;
+    private final Map<ItemComponent, Geometry> renderedItems;
 
     @Autowired
     public ItemRenderer(Node rootNode, AssetManager assetManager) {
         this.assetManager = assetManager;
         entityNode = new Node("entityNode");
         rootNode.attachChild(entityNode);
-        renderedItems = new HashMap<GameObject, Geometry>();
+        renderedItems = new HashMap<>();
     }
 
     @Override
@@ -54,14 +54,13 @@ public class ItemRenderer extends AbstractGameComponent {
         item.setMaterial(mat);
         item.setLocalTransform(gameObject.getTransform());
         entityNode.attachChild(item);
-        renderedItems.put(itemComponent.get().getItem(), item);
+        renderedItems.put(itemComponent.get(), item);
         super.addTo(gameObject);
     }
 
     @Override
-    public void destroyed(GameObject gameObject) {
-        GameObject item = gameObject.getComponent(ItemComponent.class).get().getItem();
-        entityNode.detachChild(renderedItems.remove(item));
-        super.destroyed(gameObject);
+    public void destroyed() {
+        gameObject.getComponent(ItemComponent.class).ifPresent((item) -> entityNode.detachChild(renderedItems.remove(item)));
+        super.destroyed();
     }
 }

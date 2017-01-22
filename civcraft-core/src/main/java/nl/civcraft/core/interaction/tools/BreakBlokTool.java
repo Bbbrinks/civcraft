@@ -32,4 +32,9 @@ public class BreakBlokTool extends SingleVoxelSelector {
             taskManager.addTask(new BreakBlockTask(currentVoxel, pathFinder));
         }
     }
+
+    @Override
+    public String getLabel() {
+        return "Break block";
+    }
 }

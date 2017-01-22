@@ -7,6 +7,8 @@ import nl.civcraft.core.model.GameObject;
 import nl.civcraft.jme3.model.RenderedVoxelFace;
 import nl.civcraft.jme3.rendering.VoxelMaterialManager;
 import nl.civcraft.jme3.utils.BlockUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
@@ -20,7 +22,7 @@ public class StaticVoxelRenderer extends VoxelRenderer implements nl.civcraft.co
     private final VoxelMaterialManager voxelMaterialManager;
     private Map<Face, RenderedVoxelFace> block;
 
-    public StaticVoxelRenderer(VoxelMaterialManager voxelMaterialManager) {
+    private StaticVoxelRenderer(VoxelMaterialManager voxelMaterialManager) {
         this.voxelMaterialManager = voxelMaterialManager;
     }
 
@@ -40,9 +42,11 @@ public class StaticVoxelRenderer extends VoxelRenderer implements nl.civcraft.co
         return block;
     }
 
+    @Component
     public static class StaticVoxelRenderFactoryImpl implements StaticVoxelRendererFactory<StaticVoxelRenderer> {
         private final VoxelMaterialManager voxelMaterialManager;
 
+        @Autowired
         public StaticVoxelRenderFactoryImpl(VoxelMaterialManager voxelMaterialManager) {
             this.voxelMaterialManager = voxelMaterialManager;
         }

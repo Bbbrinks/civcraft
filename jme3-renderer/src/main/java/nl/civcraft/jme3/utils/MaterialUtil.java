@@ -13,9 +13,9 @@ import com.jme3.texture.Texture;
  */
 public class MaterialUtil {
 
-    public static final String COLOR = "Color";
-    public static final String TEXTURE_MAP = "TextureMap";
-    public static final String GRAY_SCALE_MAT_DEF = "matdefs/GrayScaleColorMap.j3md";
+    private static final String COLOR = "Color";
+    private static final String TEXTURE_MAP = "TextureMap";
+    private static final String GRAY_SCALE_MAT_DEF = "matdefs/GrayScaleColorMap.j3md";
     private static final String UNSHADED_MAT_DEF = "Common/MatDefs/Misc/Unshaded.j3md";
     private static final String COLOR_MAP = "ColorMap";
 

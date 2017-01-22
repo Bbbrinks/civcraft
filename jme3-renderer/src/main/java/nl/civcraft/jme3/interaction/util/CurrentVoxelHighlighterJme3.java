@@ -19,13 +19,13 @@ import java.util.Optional;
 @Component
 public class CurrentVoxelHighlighterJme3 implements CurrentVoxelHighlighter {
 
-    public static final float EPSILON = 0.0001f;
+    private static final float EPSILON = 0.0001f;
     private final Camera camera;
     private final InputManager inputManager;
     private final Node rootNode;
     private final VoxelManager voxelManager;
     private final Spatial hoverSpatial;
-    private Node hoverBoxes;
+    private final Node hoverBoxes;
     private GameObject voxelAt;
 
     @Autowired
@@ -43,10 +43,9 @@ public class CurrentVoxelHighlighterJme3 implements CurrentVoxelHighlighter {
     public GameObject highLight() {
         GameObject voxelAt = getCurrentVoxel();
         if (voxelAt != null) {
-            GameObject currentVoxel = voxelAt;
             hoverBoxes.detachAllChildren();
             Spatial clone = hoverSpatial.clone();
-            clone.setLocalTranslation(currentVoxel.getTransform().getTranslation());
+            clone.setLocalTranslation(voxelAt.getTransform().getTranslation());
             hoverBoxes.attachChild(clone);
         }
         return voxelAt;

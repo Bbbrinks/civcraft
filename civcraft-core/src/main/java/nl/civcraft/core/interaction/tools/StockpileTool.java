@@ -43,4 +43,9 @@ public class StockpileTool extends GroundRectangleSelector {
         createdStockpile.addVoxel(voxel);
     }
 
+    @Override
+    public String getLabel() {
+        return "Stockpile";
+    }
+
 }

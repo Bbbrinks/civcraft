@@ -43,7 +43,7 @@ public class GroundMovement extends AbstractGameComponent {
         gameObject.getTransform().setTranslation(gameObject.getTransform().getTranslation().add(movement));
     }
 
-    public float distance(GameObject target) {
+    private float distance(GameObject target) {
         return target.getTransform().getTranslation().distance(gameObject.getTransform().getTranslation().subtract(0, 1, 0));
     }
 
@@ -63,7 +63,7 @@ public class GroundMovement extends AbstractGameComponent {
         return currentVoxel;
     }
 
-    public void setCurrentVoxel(GameObject currentVoxel) {
+    private void setCurrentVoxel(GameObject currentVoxel) {
         this.currentVoxel = currentVoxel;
     }
 
@@ -71,6 +71,7 @@ public class GroundMovement extends AbstractGameComponent {
         private final float speed;
         private final VoxelManager voxelManager;
 
+        @SuppressWarnings("SameParameterValue")
         public Factory(float speed, VoxelManager voxelManager) {
             this.speed = speed;
             this.voxelManager = voxelManager;

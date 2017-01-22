@@ -12,7 +12,7 @@ public class Stockpile {
     private final List<GameObject> items;
 
     public Stockpile() {
-        this.items = new ArrayList<GameObject>();
+        this.items = new ArrayList<>();
         voxels = new HashSet<>();
     }
 
@@ -28,6 +28,7 @@ public class Stockpile {
         return voxels.stream().findFirst();
     }
 
+    @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     public boolean addItem(GameObject item) {
         items.add(item);
         return true;

@@ -15,7 +15,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * <p>
  * This is probably not worth documenting
  */
-public class CivCraftAppState implements AppState {
+class CivCraftAppState implements AppState {
     private ApplicationEventPublisher applicationEventPublisher;
     private boolean initialized;
     private boolean enabled;

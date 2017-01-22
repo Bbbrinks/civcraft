@@ -21,7 +21,12 @@ public abstract class AbstractGameComponent implements GameComponent {
     }
 
     @Override
-    public void destroyed(GameObject gameObject) {
+    public void destroyed() {
         this.gameObject = null;
+    }
+
+    @Override
+    public void changed() {
+        //Noop
     }
 }

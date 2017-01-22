@@ -58,10 +58,8 @@ public class PrefabManager {
     public void unRegisterComponent(GameComponent.GameComponentFactory componentFactory) {
         gameComponents.remove(componentFactory);
         for (GameObject managedObject : managedObjects) {
-            Optional<GameComponent> component = managedObject.getComponent(componentFactory.getComponentType());
-            if (component.isPresent()) {
-                managedObject.removeComponent(component.get());
-            }
+            @SuppressWarnings("unchecked") Optional<GameComponent> component = managedObject.getComponent(componentFactory.getComponentType());
+            component.ifPresent(managedObject::removeComponent);
         }
     }
 

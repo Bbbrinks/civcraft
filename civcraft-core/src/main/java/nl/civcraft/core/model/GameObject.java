@@ -15,7 +15,7 @@ import java.util.Optional;
 public class GameObject {
 
     private final Transform transform;
-    private List<GameComponent> components;
+    private final List<GameComponent> components;
 
     public GameObject() {
         this(new Transform());
@@ -27,8 +27,8 @@ public class GameObject {
         components = new ArrayList<>();
     }
 
-    public <T> Optional<T> getComponent(Class<T> componentType) {
-        return (Optional<T>) components.stream().filter(i -> componentType.isAssignableFrom(i.getClass())).findFirst();
+    public <T extends GameComponent> Optional<T> getComponent(Class<T> componentType) {
+        return components.stream().filter(i -> componentType.isAssignableFrom(i.getClass())).map(componentType::cast).findFirst();
     }
 
     public void addComponent(GameComponent component) {
@@ -37,12 +37,14 @@ public class GameObject {
     }
 
     public void changed() {
-        //no op}
+        for (GameComponent component : components) {
+            component.changed();
+        }
     }
 
     public void destroy() {
         for (GameComponent component : components) {
-            component.destroyed(this);
+            component.destroyed();
         }
     }
 

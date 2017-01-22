@@ -29,14 +29,10 @@ public class VoxelManager {
             int x = Math.round(voxel.getTransform().getTranslation().getX());
             int y = Math.round(voxel.getTransform().getTranslation().getY());
             int z = Math.round(voxel.getTransform().getTranslation().getZ());
-            Optional<Chunk> chunkOptional = getChunkAt(x, y, z);
-            Chunk chunkAt;
-            if (chunkOptional.isPresent()) {
-                chunkAt = chunkOptional.get();
-            } else {
-                chunkAt = addChunkAt(x, y, z);
-            }
-            chunkAt.addVoxel(voxel);
+            getChunkAt(x, y, z).
+                    orElseGet(() -> addChunkAt(x, y, z)).
+                    addVoxel(voxel);
+
         } else {
             this.removeVoxel(voxelAt.get());
             addVoxel(voxel);
@@ -49,14 +45,12 @@ public class VoxelManager {
     }
 
     private Chunk addChunkAt(int x, int y, int z) {
-        double dx = x;
-        double dy = y;
-        double dz = z;
-        Chunk chunk = new Chunk((int) Math.floor(dx / Chunk.CHUNK_SIZE), (int) Math.floor(dy / Chunk.CHUNK_SIZE), (int) Math.floor(dz / Chunk.CHUNK_SIZE));
+        Chunk chunk = new Chunk((int) Math.floor((double) x / Chunk.CHUNK_SIZE), (int) Math.floor((double) y / Chunk.CHUNK_SIZE), (int) Math.floor((double) z / Chunk.CHUNK_SIZE));
         chunks.add(chunk);
         return chunk;
     }
 
+    @SuppressWarnings("SameParameterValue")
     public Optional<GameObject> getGroundAt(Vector3f translation, int maxHeightDifference) {
         return getGroundAt((int) translation.getX(), (int) translation.getY(), (int) translation.getZ(), maxHeightDifference);
     }
@@ -89,7 +83,7 @@ public class VoxelManager {
                 orElse(Optional.empty());
     }
 
-    public Optional<Chunk> getChunkAt(int x, int y, int z) {
+    private Optional<Chunk> getChunkAt(int x, int y, int z) {
         return chunks.stream().filter(c -> c.containsCoors(x, y, z)).findFirst();
     }
 

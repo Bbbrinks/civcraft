@@ -28,7 +28,7 @@ public class MathUtil {
         return  (float)(min + (Math.random() * max));
     }
 
-    public static float valueOrMin(float value, float min) {
+    public static float valueOrMin(float value, @SuppressWarnings("SameParameterValue") float min) {
         return value > min ? value : min;
     }
 }

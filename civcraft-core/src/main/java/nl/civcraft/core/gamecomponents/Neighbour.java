@@ -40,9 +40,9 @@ public class Neighbour extends AbstractGameComponent {
     }
 
     @Override
-    public void destroyed(GameObject gameObject) {
+    public void destroyed() {
         neighbours.values().stream().filter(Objects::nonNull).forEach(n -> n.getComponent(Neighbour.class).ifPresent(on -> on.removeNeighbour(getGameObject())));
-        super.destroyed(gameObject);
+        super.destroyed();
     }
 
     public Map<Face, GameObject> getNeighbours() {
@@ -85,10 +85,7 @@ public class Neighbour extends AbstractGameComponent {
     private List<GameObject> getNeighbours(Face... faces) {
         List<GameObject> neighbours = new ArrayList<>();
         for (Face face : faces) {
-            Optional<GameObject> neighbour = getNeighbour(face);
-            if (neighbour.isPresent()) {
-                neighbours.add(neighbour.get());
-            }
+            getNeighbour(face).ifPresent(neighbours::add);
         }
         return neighbours;
     }
@@ -103,13 +100,13 @@ public class Neighbour extends AbstractGameComponent {
         return Optional.ofNullable(neighbours.get(face));
     }
 
-    public static List<GameObject> getNeighbours(GameObject gameObject, Face... faces) {
+    private static List<GameObject> getNeighbours(GameObject gameObject, Face... faces) {
         return gameObject.getComponent(Neighbour.class).
                 map(n -> n.getNeighbours(faces)).
                 orElse(Collections.emptyList());
     }
 
-    public void addNeighbour(Face face, GameObject gameObject) {
+    private void addNeighbour(Face face, GameObject gameObject) {
         boolean isNew = !neighbours.containsValue(gameObject);
         neighbours.put(face, gameObject);
         if (isNew) {
@@ -117,7 +114,7 @@ public class Neighbour extends AbstractGameComponent {
         }
     }
 
-    public void removeNeighbour(GameObject gameObject) {
+    private void removeNeighbour(GameObject gameObject) {
         boolean removed = neighbours.entrySet().removeIf(entry -> entry.getValue().equals(gameObject));
         if (removed) {
             gameObject.getComponent(Neighbour.class).ifPresent(n -> n.removeNeighbour(this.getGameObject()));

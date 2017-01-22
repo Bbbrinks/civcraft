@@ -18,12 +18,11 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SunLighting {
+class SunLighting {
 
     private static final float SUN_SPEED = 0.0f;
 
     private final DirectionalLight sunLight;
-    private final DirectionalLightShadowRenderer dlsr;
     private float sunCount = 90f;
 
     @Autowired
@@ -37,7 +36,7 @@ public class SunLighting {
         rootNode.addLight(al);
 
         final int SHADOWMAP_SIZE = 2048;
-        dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
+        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
         dlsr.setLight(sunLight);
         mainViewPort.addProcessor(dlsr);
 

@@ -99,7 +99,8 @@ public class WorldGenerator implements Runnable {
         return generationDone;
     }
 
-    public void setGenerationDone(boolean generationDone) {
+    @SuppressWarnings("SameParameterValue")
+    private void setGenerationDone(boolean generationDone) {
         this.generationDone = generationDone;
     }
 

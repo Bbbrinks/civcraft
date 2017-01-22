@@ -15,13 +15,14 @@ import java.util.Queue;
  * This is probably not worth documenting
  */
 public class MoveToRange extends Task {
+    final GameObject target;
     private final AStarPathFinder pathFinder;
     private final float range;
-    protected GameObject target;
     private Queue<GameObject> path;
     private GameObject currentGameObject;
 
-    public MoveToRange(GameObject target, float range, AStarPathFinder pathFinder) {
+    @SuppressWarnings("SameParameterValue")
+    MoveToRange(GameObject target, float range, AStarPathFinder pathFinder) {
         super(Task.State.TODO);
         this.target = target;
         this.pathFinder = pathFinder;

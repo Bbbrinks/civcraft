@@ -12,7 +12,10 @@ public interface GameComponent {
 
     GameObject getGameObject();
 
-    void destroyed(GameObject gameObject);
+    void destroyed();
+
+    @SuppressWarnings("EmptyMethod")
+    void changed();
 
     interface GameComponentFactory<T extends GameComponent> {
         T build();

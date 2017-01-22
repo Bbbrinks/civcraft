@@ -9,4 +9,6 @@ public interface MouseTool {
     void handleLeftClick(boolean isPressed);
 
     void handleMouseMotion();
+
+    String getLabel();
 }

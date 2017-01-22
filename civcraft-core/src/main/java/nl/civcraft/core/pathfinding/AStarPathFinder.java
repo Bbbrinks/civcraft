@@ -30,7 +30,7 @@ public class AStarPathFinder {
                     orElse(Collections.emptyList())) {
                 Optional<AStarNode> currentAdjacent = openList.stream().filter(n -> n.getGameObject().equals(voxel)).findFirst();
                 if (!currentAdjacent.isPresent()) {
-                    if (closedList.stream().filter(n -> n.getGameObject().equals(voxel)).findFirst().isPresent()) {
+                    if (closedList.stream().anyMatch(n -> n.getGameObject().equals(voxel))) {
                         continue;
                     }
                     AStarNode neighbour = new AStarNode(voxel);
@@ -60,7 +60,7 @@ public class AStarPathFinder {
     }
 
     private AStarNode findLowestCost(Set<AStarNode> openList, PathFindingTarget target) {
-        return openList.stream().min((v1, v2) -> calculateCost(v1, target) - calculateCost(v2, target)).get();
+        return openList.stream().min(Comparator.comparingInt(v -> calculateCost(v, target))).map(n -> n).orElseThrow(() -> new IllegalStateException("No lowest cost node"));
     }
 
     private int calculateCost(AStarNode next, PathFindingTarget target) {

@@ -16,7 +16,7 @@ public abstract class Task {
 
     private State state;
 
-    public Task(State state) {
+    Task(State state) {
         this.state = state;
     }
 

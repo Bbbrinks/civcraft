@@ -21,7 +21,7 @@ public class CivvyControl extends AbstractControl {
 
     private final Node civviesNode;
     private final Node civvySpatial;
-    private List<Civvy> civvies;
+    private final List<Civvy> civvies;
 
     @Autowired
     public CivvyControl(Node rootNode, Node civvy) {
@@ -33,15 +33,11 @@ public class CivvyControl extends AbstractControl {
 
     @EventListener
     public void addCivvy(GameObjectCreatedEvent civvyCreated) {
-        try {
-            Optional<Civvy> component = civvyCreated.getGameObject().getComponent(Civvy.class);
-            if (!component.isPresent()) {
-                return;
-            }
-            civvies.add(component.get());
-        } catch (NullPointerException e) {
-            throw e;
+        Optional<Civvy> component = civvyCreated.getGameObject().getComponent(Civvy.class);
+        if (!component.isPresent()) {
+            return;
         }
+        civvies.add(component.get());
     }
 
     @EventListener

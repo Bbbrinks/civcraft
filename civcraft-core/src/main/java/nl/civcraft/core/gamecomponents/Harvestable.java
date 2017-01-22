@@ -9,6 +9,6 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-public interface Harvestable {
+public interface Harvestable extends GameComponent {
     Optional<GameObject> harvest(GameObject harvester);
 }

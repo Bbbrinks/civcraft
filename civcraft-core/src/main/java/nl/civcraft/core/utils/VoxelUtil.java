@@ -5,7 +5,7 @@ package nl.civcraft.core.utils;
  * <p>
  * This is probably not worth documenting
  */
-public class VoxelUtil {
+class VoxelUtil {
     private VoxelUtil() {
         //Hide default constructor
     }

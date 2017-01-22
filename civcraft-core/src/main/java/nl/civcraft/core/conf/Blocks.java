@@ -59,13 +59,15 @@ public class Blocks {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     @Qualifier("treeLeaf")
-    public PrefabManager treeLeafManager(ApplicationEventPublisher applicationEventPublisher, @Qualifier("block") PrefabManager blockManager, VoxelRenderer.StateBasedVoxelRendererFactoryFactory stateBasedVoxelRenderer, VoxelManager voxelManager, PrefabManager itemManager) {
+    public PrefabManager treeLeafManager(ApplicationEventPublisher applicationEventPublisher, @Qualifier("block") PrefabManager blockManager, VoxelRenderer.StateBasedVoxelRendererFactoryFactory
+            stateBasedVoxelRenderer, VoxelManager voxelManager, @Qualifier("apple") PrefabManager itemManager) {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, blockManager);
         Voxel.Factory voxel = new Voxel.Factory("treeLeaf", voxelManager);
         prefabManager.registerComponent(voxel);
         prefabManager.registerComponent(new LimitedInventory.Factory(4));
         prefabManager.registerComponent(new HarvestFromInventory.Factory());
         prefabManager.registerComponent(new RandomItemGenerator.Factory(4, itemManager));
+        //noinspection Convert2Lambda
         prefabManager.registerComponent(stateBasedVoxelRenderer.build(new Function<GameObject, String>() {
             @Override
             public String apply(GameObject gameObject) {

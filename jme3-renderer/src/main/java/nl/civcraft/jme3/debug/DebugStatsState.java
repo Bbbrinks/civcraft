@@ -13,17 +13,17 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DebugStatsState implements ActionListener {
+class DebugStatsState implements ActionListener {
 
-    protected static final String TOGGLE_DEBUG_INFO = "TOGGLE_DEBUG_INFO";
-    public static String LAST_MESSAGE; //NOSONAR
+    private static final String TOGGLE_DEBUG_INFO = "TOGGLE_DEBUG_INFO";
+    private static String LAST_MESSAGE; //NOSONAR
 
     private final BitmapText fpsText;
     private final BitmapText logMessageText;
+    private final Node debugNode;
     private float secondCounter;
     private int frameCounter;
     private boolean show = false;
-    private Node debugNode;
 
     @Autowired
     public DebugStatsState(Node guiNode, BitmapText fpsText, BitmapText logMessageText, InputManager inputManager) {

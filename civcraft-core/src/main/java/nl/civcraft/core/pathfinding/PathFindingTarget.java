@@ -7,7 +7,7 @@ import nl.civcraft.core.model.GameObject;
  * <p>
  * This is probably not worth documenting
  */
-public interface PathFindingTarget {
+interface PathFindingTarget {
     boolean isReached(GameObject gameObject, AStarNode current);
 
     int getCostFrom(AStarNode next);

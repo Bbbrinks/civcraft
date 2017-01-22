@@ -11,11 +11,12 @@ import static org.hamcrest.core.IsNull.notNullValue;
  * <p>
  * This is probably not worth documenting
  */
+@SuppressWarnings("unchecked")
 public class ThrowableAssertion {
 
     private final Throwable caught;
 
-    public ThrowableAssertion(Throwable caught) {
+    private ThrowableAssertion(Throwable caught) {
         this.caught = caught;
     }
 
@@ -52,6 +53,7 @@ public class ThrowableAssertion {
 
     @FunctionalInterface
     public interface ExceptionThrower {
+        @SuppressWarnings("RedundantThrows")
         void throwException() throws Throwable;
     }
 

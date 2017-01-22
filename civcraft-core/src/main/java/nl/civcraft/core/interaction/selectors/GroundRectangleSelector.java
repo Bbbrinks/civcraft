@@ -17,7 +17,7 @@ import java.util.Optional;
  */
 public abstract class GroundRectangleSelector implements MouseTool {
     private static final int MAX_HEIGHT_DIFFERENCE = 10;
-    protected final VoxelManager voxelManager;
+    private final VoxelManager voxelManager;
     private final CurrentVoxelHighlighter currentVoxelHighlighter;
     private final ApplicationEventPublisher eventPublisher;
     protected GameObject startingVoxel;

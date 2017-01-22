@@ -36,9 +36,7 @@ public class HungerBinder {
     @EventListener
     public void handleCivvyRemoved(CivvyRemoved civvyRemoved) {
         Optional<Hunger> component = civvyRemoved.getCivvy().getGameObject().getComponent(Hunger.class);
-        if (component.isPresent()) {
-            removedHungers.add(component.get());
-        }
+        component.ifPresent(removedHungers::add);
     }
 
     @EventListener

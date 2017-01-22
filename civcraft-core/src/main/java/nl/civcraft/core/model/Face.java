@@ -34,7 +34,7 @@ public enum Face {
         return opposite;
     }
 
-    public void setOpposite(Face opposite) {
+    private void setOpposite(Face opposite) {
         this.opposite = opposite;
     }
 }

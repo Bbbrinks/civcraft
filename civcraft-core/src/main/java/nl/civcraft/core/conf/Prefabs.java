@@ -1,6 +1,9 @@
 package nl.civcraft.core.conf;
 
-import nl.civcraft.core.gamecomponents.*;
+import nl.civcraft.core.gamecomponents.GroundMovement;
+import nl.civcraft.core.gamecomponents.Haulable;
+import nl.civcraft.core.gamecomponents.LimitedInventory;
+import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.npc.Civvy;
@@ -35,7 +38,6 @@ public class Prefabs {
     @Qualifier("item")
     public PrefabManager itemManager(ApplicationEventPublisher applicationEventPublisher) {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, null);
-        prefabManager.registerComponent(new ItemComponent.Factory());
         prefabManager.registerComponent(new Haulable.Factory());
         return prefabManager;
     }

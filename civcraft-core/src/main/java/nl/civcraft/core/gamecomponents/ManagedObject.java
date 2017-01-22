@@ -1,7 +1,6 @@
 package nl.civcraft.core.gamecomponents;
 
 import nl.civcraft.core.managers.PrefabManager;
-import nl.civcraft.core.model.GameObject;
 
 /**
  * Created by Bob on 21-1-2017.
@@ -17,7 +16,8 @@ public class ManagedObject extends AbstractGameComponent implements GameComponen
     }
 
     @Override
-    public void destroyed(GameObject gameObject) {
+    public void destroyed() {
         prefabManager.destroy(gameObject);
+        super.destroyed();
     }
 }

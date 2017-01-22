@@ -1,31 +1,41 @@
 package nl.civcraft.core.gamecomponents;
 
-import nl.civcraft.core.model.GameObject;
-
 /**
  * Created by Bob on 9-9-2016.
  * <p>
  * This is probably not worth documenting
  */
 public class ItemComponent extends AbstractGameComponent {
-    private GameObject item;
+    private final String type;
+    private boolean inInventory;
 
-    public ItemComponent(GameObject item) {
-        this.item = item;
+    public ItemComponent(String type) {
+        this.type = type;
     }
 
-    public GameObject getItem() {
-        return item;
+    public String getType() {
+        return type;
     }
 
-    public void setItem(GameObject item) {
-        this.item = item;
+    public boolean isInInventory() {
+        return inInventory;
+    }
+
+    public void setInInventory(boolean inInventory) {
+        this.inInventory = inInventory;
     }
 
     public static class Factory implements GameComponentFactory<ItemComponent> {
+        private final String type;
+
+        @SuppressWarnings("SameParameterValue")
+        public Factory(String type) {
+            this.type = type;
+        }
+
         @Override
         public ItemComponent build() {
-            return new ItemComponent(null);
+            return new ItemComponent(type);
         }
 
         @Override

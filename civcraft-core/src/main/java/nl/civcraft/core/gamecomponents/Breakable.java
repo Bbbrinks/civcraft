@@ -9,5 +9,6 @@ import nl.civcraft.core.model.GameObject;
  */
 public interface Breakable extends GameComponent {
 
+    @SuppressWarnings("SameReturnValue")
     boolean damageMe(GameObject civvy);
 }

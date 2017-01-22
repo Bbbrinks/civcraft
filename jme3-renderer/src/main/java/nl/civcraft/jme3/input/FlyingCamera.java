@@ -44,22 +44,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FlyingCamera implements AnalogListener, ActionListener {
+class FlyingCamera implements AnalogListener, ActionListener {
 
-    protected static final String FLYCAM_LEFT = "FLYCAM_Left";
-    protected static final String FLYCAM_RIGHT = "FLYCAM_Right";
-    protected static final String FLYCAM_UP = "FLYCAM_Up";
-    protected static final String FLYCAM_DOWN = "FLYCAM_Down";
-    protected static final String FLYCAM_STRAFE_LEFT = "FLYCAM_StrafeLeft";
-    protected static final String FLYCAM_STRAFE_RIGHT = "FLYCAM_StrafeRight";
-    protected static final String FLYCAM_FORWARD = "FLYCAM_Forward";
-    protected static final String FLYCAM_BACKWARD = "FLYCAM_Backward";
-    protected static final String FLYCAM_ZOOM_IN = "FLYCAM_ZoomIn";
-    protected static final String FLYCAM_ZOOM_OUT = "FLYCAM_ZoomOut";
-    protected static final String FLYCAM_ROTATE_DRAG = "FLYCAM_RotateDrag";
-    protected static final String FLYCAM_RISE = "FLYCAM_Rise";
-    protected static final String FLYCAM_LOWER = "FLYCAM_Lower";
-    protected static final String[] MAPPINGS = new String[]{
+    static final String FLYCAM_LEFT = "FLYCAM_Left";
+    static final String FLYCAM_RIGHT = "FLYCAM_Right";
+    static final String FLYCAM_UP = "FLYCAM_Up";
+    static final String FLYCAM_DOWN = "FLYCAM_Down";
+    static final String FLYCAM_STRAFE_LEFT = "FLYCAM_StrafeLeft";
+    static final String FLYCAM_STRAFE_RIGHT = "FLYCAM_StrafeRight";
+    static final String FLYCAM_FORWARD = "FLYCAM_Forward";
+    static final String FLYCAM_BACKWARD = "FLYCAM_Backward";
+    static final String FLYCAM_ZOOM_IN = "FLYCAM_ZoomIn";
+    static final String FLYCAM_ZOOM_OUT = "FLYCAM_ZoomOut";
+    static final String FLYCAM_ROTATE_DRAG = "FLYCAM_RotateDrag";
+    static final String FLYCAM_RISE = "FLYCAM_Rise";
+    static final String FLYCAM_LOWER = "FLYCAM_Lower";
+    private static final String[] MAPPINGS = new String[]{
             FLYCAM_LEFT,
             FLYCAM_RIGHT,
             FLYCAM_UP,
@@ -80,7 +80,7 @@ public class FlyingCamera implements AnalogListener, ActionListener {
     private static final float MOVE_SPEED = 10f;
     private final Camera camera;
     private final InputManager inputManager;
-    private Vector3f initialUpVec;
+    private final Vector3f initialUpVec;
     private boolean canRotate = false;
 
 

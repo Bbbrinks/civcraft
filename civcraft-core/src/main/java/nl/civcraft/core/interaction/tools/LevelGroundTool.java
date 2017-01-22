@@ -62,4 +62,9 @@ public class LevelGroundTool extends GroundRectangleSelector {
             }
         }
     }
+
+    @Override
+    public String getLabel() {
+        return "Level ground";
+    }
 }

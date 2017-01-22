@@ -4,10 +4,9 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.*;
-import com.jme3.scene.Node;
 import nl.civcraft.core.interaction.MouseTool;
-import nl.civcraft.core.interaction.selectors.SingleVoxelSelector;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,23 +17,23 @@ public class VoxelSelectionInput implements AnalogListener, ActionListener {
     private static final String SELECT_VOXEL = "SELECT_VOXEL";
     private static final String MOVE_TO = "MOVE_TO";
     private static final String HARVEST = "HARVEST";
+    private static final String UNSELECT_TOOL = "UNSELECT_TOOL";
+    private final MouseTool defaultTool;
 
 
-    private Node selectionBoxes;
     private MouseTool currentTool;
 
     @Autowired
-    public VoxelSelectionInput(Node rootNode, Node selectionBoxes, SingleVoxelSelector singleVoxelSelector, InputManager inputManager) {
-
+    public VoxelSelectionInput(@Qualifier("singleVoxelSelector") MouseTool defaultTool, InputManager inputManager) {
         registerInput(inputManager);
-        this.selectionBoxes = selectionBoxes;
-        currentTool = singleVoxelSelector;
-
+        currentTool = defaultTool;
+        this.defaultTool = defaultTool;
     }
 
     private void registerInput(InputManager inputManager) {
         inputManager.addMapping(SELECT_VOXEL, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addMapping(DELETE_VOXEL, new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
+        inputManager.addMapping(UNSELECT_TOOL, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         inputManager.addMapping(MOUSE_MOTION, new MouseAxisTrigger(MouseInput.AXIS_X, true), new MouseAxisTrigger(MouseInput.AXIS_X, false), new MouseAxisTrigger(MouseInput.AXIS_Y, true), new MouseAxisTrigger(MouseInput.AXIS_Y, false));
         inputManager.addMapping(MOVE_TO, new KeyTrigger(KeyInput.KEY_M));
         inputManager.addMapping(HARVEST, new KeyTrigger(KeyInput.KEY_H));
@@ -44,38 +43,17 @@ public class VoxelSelectionInput implements AnalogListener, ActionListener {
 
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
-        if (currentTool != null) {
-            if (name.equals(SELECT_VOXEL)) {
-                currentTool.handleLeftClick(isPressed);
-            }
-        }
 
-       /* if (isPressed) {
-            if (currentVoxel != null) {
-                if(name.equals(SELECT_VOXEL)) {
+        if (isPressed) {
+            if (currentTool != null) {
+                if (name.equals(SELECT_VOXEL)) {
                     currentTool.handleLeftClick(isPressed);
-                    currentVoxel.isVisible();
-                    currentVoxel.getNeighbour(Face.TOP);
-                    selectionBoxes.detachAllChildren();
-                    Spatial clone = selectionSpatial.clone();
-                    clone.setLocalTranslation(clone.getLocalTranslation().x + currentVoxel.getX(), clone.getLocalTranslation().y + currentVoxel.getY(), clone.getLocalTranslation().z + currentVoxel.getZ());
-                    selectionBoxes.attachChild(clone);
-                }
-                if(name.equals(DELETE_VOXEL)){
-                    selectionBoxes.detachAllChildren();
-                    hoverBoxes.detachAllChildren();
-                    currentVoxel.breakBlock();
-                }
-                if (name.equals(MOVE_TO)) {
-                    taskManger.addTask(new MoveTo(currentVoxel, pathFinder));
-                }
-                if (name.equals(HARVEST)) {
-                    taskManger.addTask(new Harvest(currentVoxel, pathFinder));
                 }
             }
-        }*/
-
-
+            if (name.equals(UNSELECT_TOOL)) {
+                currentTool = defaultTool;
+            }
+        } 
     }
 
     @Override

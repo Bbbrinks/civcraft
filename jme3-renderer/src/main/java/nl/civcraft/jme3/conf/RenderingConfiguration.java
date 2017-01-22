@@ -8,11 +8,11 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.JmeContext;
-import nl.civcraft.core.rendering.VoxelRenderer;
 import nl.civcraft.jme3.Civcraft;
-import nl.civcraft.jme3.gamecomponents.StateBasedVoxelRendererImpl;
-import nl.civcraft.jme3.gamecomponents.StaticVoxelRenderer;
-import nl.civcraft.jme3.rendering.*;
+import nl.civcraft.jme3.rendering.ChunkOptimizer;
+import nl.civcraft.jme3.rendering.CivvyControl;
+import nl.civcraft.jme3.rendering.VoxelHighlightControl;
+import nl.civcraft.jme3.rendering.VoxelRendererControl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -83,15 +83,5 @@ public class RenderingConfiguration {
     @Bean
     public ViewPort guiViewPort(Civcraft civcraft) {
         return civcraft.getGuiViewPort();
-    }
-
-    @Bean
-    public VoxelRenderer.StaticVoxelRendererFactory staticVoxelRendererFactory(VoxelMaterialManager assetManager) {
-        return new StaticVoxelRenderer.StaticVoxelRenderFactoryImpl(assetManager);
-    }
-
-    @Bean
-    public StateBasedVoxelRendererImpl.StateBasedVoxelRendererFactoryImpl stateBasedVoxelRendererFactoryImpl(VoxelMaterialManager assetManager) {
-        return new StateBasedVoxelRendererImpl.StateBasedVoxelRendererFactoryImpl(assetManager);
     }
 }

@@ -16,7 +16,7 @@ public class RandomItemGenerator extends AbstractGameComponent {
     private final int maxItems;
     private final PrefabManager itemSupplier;
 
-    public RandomItemGenerator(int maxItems, PrefabManager itemSupplier) {
+    private RandomItemGenerator(int maxItems, PrefabManager itemSupplier) {
         this.maxItems = maxItems;
         this.itemSupplier = itemSupplier;
     }
@@ -39,6 +39,7 @@ public class RandomItemGenerator extends AbstractGameComponent {
         private final int maxItems;
         private final PrefabManager itemManager;
 
+        @SuppressWarnings("SameParameterValue")
         public Factory(int maxItems, PrefabManager itemManager) {
             this.maxItems = maxItems;
             this.itemManager = itemManager;

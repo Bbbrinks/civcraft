@@ -1,12 +1,7 @@
 package nl.civcraft.core.gamecomponents;
 
 import nl.civcraft.core.managers.VoxelManager;
-import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.VoxelFace;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Bob on 25-11-2015.
@@ -16,16 +11,11 @@ import java.util.Map;
 public class Voxel extends AbstractGameComponent implements Breakable {
 
     private final String type;
-    private final Map<Face, VoxelFace> faces;
     private final VoxelManager voxelManager;
 
     public Voxel(String type, VoxelManager voxelManager) {
         this.type = type;
         this.voxelManager = voxelManager;
-        this.faces = new HashMap<>();
-        for (Face face : Face.values()) {
-            faces.put(face, new VoxelFace());
-        }
     }
 
     @Override
@@ -35,9 +25,9 @@ public class Voxel extends AbstractGameComponent implements Breakable {
     }
 
     @Override
-    public void destroyed(GameObject gameObject) {
-        super.destroyed(gameObject);
+    public void destroyed() {
         voxelManager.removeVoxel(gameObject);
+        super.destroyed();
     }
 
     public String getType() {

@@ -12,30 +12,31 @@ import java.util.Optional;
 public class LimitedInventory extends AbstractGameComponent implements Inventory, GameComponent {
     private final GameObject[] items;
 
-    public LimitedInventory(int size) {
+    private LimitedInventory(int size) {
         items = new GameObject[size];
     }
 
 
     @Override
     public Optional<GameObject> getFirstItem() {
-        GameObject firstItem = items[0];
-        items[0] = items[1];
-        if (gameObject != null) {
-            gameObject.changed();
+        for (GameObject item : items) {
+            if (item != null) {
+                remove(item);
+                return Optional.of(item);
+            }
         }
-        return Optional.ofNullable(firstItem);
+        return Optional.empty();
     }
 
     @Override
     public boolean addItem(GameObject item) {
+        ItemComponent itemComponent = item.getComponent(ItemComponent.class).map(i -> i).orElseThrow(() -> new IllegalStateException("Not an item"));
         for (int i = 0; i < items.length; i++) {
             GameObject slotItem = items[i];
             if (slotItem == null) {
                 items[i] = item;
-                if (gameObject != null) {
-                    gameObject.changed();
-                }
+                gameObject.changed();
+                itemComponent.setInInventory(true);
                 return true;
             }
         }
@@ -44,8 +45,8 @@ public class LimitedInventory extends AbstractGameComponent implements Inventory
 
     @Override
     public boolean isEmpty() {
-        for (int i = 0; i < items.length; i++) {
-            if (items[i] != null) {
+        for (GameObject item : items) {
+            if (item != null) {
                 return false;
             }
         }
@@ -54,7 +55,13 @@ public class LimitedInventory extends AbstractGameComponent implements Inventory
 
     @Override
     public void remove(GameObject item) {
-        //TODO remove item
+        for (int i = 0; i < items.length; i++) {
+            GameObject object = items[i];
+            if (object.equals(item)) {
+                item.getComponent(ItemComponent.class).ifPresent(foundItem -> foundItem.setInInventory(false));
+                items[i] = null;
+            }
+        }
     }
 
     public static class Factory implements GameComponentFactory<LimitedInventory> {

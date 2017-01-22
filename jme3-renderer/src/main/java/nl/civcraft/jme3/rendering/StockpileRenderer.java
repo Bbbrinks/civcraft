@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * This is probably not worth documenting
  */
 @Component
-public class StockpileRenderer {
+class StockpileRenderer {
 
     private final Node stockpileNode;
     private final List<Stockpile> stockpiles;

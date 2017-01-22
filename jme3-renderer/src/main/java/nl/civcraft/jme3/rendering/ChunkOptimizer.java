@@ -81,14 +81,14 @@ public class ChunkOptimizer {
          */
             RenderedVoxelFace voxelFace, voxelFace1;
 
-            /**
-             * We start with the lesser-spotted boolean for-loop (also known as the old flippy floppy).
-             *
-             * The variable backFace will be TRUE on the first iteration and FALSE on the second - this allows
-             * us to track which direction the indices should run during creation of the quad.
-             *
-             * This loop runs twice, and the inner loop 3 times - totally 6 iterations - one for each
-             * voxel face.
+            /*
+              We start with the lesser-spotted boolean for-loop (also known as the old flippy floppy).
+
+              The variable backFace will be TRUE on the first iteration and FALSE on the second - this allows
+              us to track which direction the indices should run during creation of the quad.
+
+              This loop runs twice, and the inner loop 3 times - totally 6 iterations - one for each
+              voxel face.
              */
             for (boolean backFace = true, b = false; b != backFace; backFace = backFace && b, b = !b) {
 
@@ -172,6 +172,7 @@ public class ChunkOptimizer {
                                 /*
                                  * We compute the width
                                  */
+                                    //noinspection StatementWithEmptyBody
                                     for (w = 1; i + w < Chunk.CHUNK_SIZE && mask[n + w] != null && mask[n + w].canMerge(mask[n]); w++) {
                                     }
 
@@ -343,6 +344,7 @@ public class ChunkOptimizer {
             mesh.setBuffer(VertexBuffer.Type.TexCoord, 2, BufferUtils.createFloatBuffer(texCoord));
             mesh.setBuffer(VertexBuffer.Type.Index, 3, BufferUtils.createIntBuffer(indexes));
             if (side.equals(Face.LEFT) || side.equals(Face.RIGHT)) {
+                //noinspection SuspiciousNameCombination,SuspiciousNameCombination
                 mesh.scaleTextureCoordinates(new Vector2f(height, width));
             } else {
                 mesh.scaleTextureCoordinates(new Vector2f(width, height));

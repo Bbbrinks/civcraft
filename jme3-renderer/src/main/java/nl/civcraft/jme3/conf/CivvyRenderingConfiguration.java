@@ -22,15 +22,15 @@ public class CivvyRenderingConfiguration {
         Material cobbleMaterial = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         cobbleMaterial.setColor("Color", ColorRGBA.Blue);
-        return createSingleGeometryBoxCivvy(cobbleMaterial, "civvy");
+        return createSingleGeometryBoxCivvy(cobbleMaterial);
     }
 
-    private Node createSingleGeometryBoxCivvy(Material cobbleMaterial, String name) {
+    private Node createSingleGeometryBoxCivvy(Material cobbleMaterial) {
         Box box = new Box(0.25f, 2.0f, 0.35f);
         Geometry geometry = new Geometry("box", box);
         geometry.setMaterial(cobbleMaterial);
         geometry.setLocalTranslation(0.0f, 1.0f, 0.0f);
-        Node block = new Node(name);
+        Node block = new Node("civvy");
         block.attachChild(geometry);
         block.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         return block;

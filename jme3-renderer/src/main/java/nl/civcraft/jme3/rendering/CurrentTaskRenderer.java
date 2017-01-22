@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class CurrentTaskRenderer {
+class CurrentTaskRenderer {
 
     private final Spatial moveToSpatial;
-    private List<Civvy> civvies;
-    private Node highlightNode;
+    private final List<Civvy> civvies;
+    private final Node highlightNode;
 
     @Autowired
     public CurrentTaskRenderer(Node rootNode, Spatial moveToSpatial) {

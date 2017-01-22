@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationEvent;
  * <p>
  * This is probably not worth documenting
  */
-public class VoxelRemovedEvent extends ApplicationEvent {
+class VoxelRemovedEvent extends ApplicationEvent {
     private final Voxel voxel;
 
     public VoxelRemovedEvent(Voxel voxel, Chunk chunk) {

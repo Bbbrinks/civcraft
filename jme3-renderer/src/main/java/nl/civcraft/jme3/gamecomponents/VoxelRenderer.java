@@ -16,7 +16,7 @@ import java.util.Optional;
  * This is probably not worth documenting
  */
 public abstract class VoxelRenderer extends AbstractGameComponent implements nl.civcraft.core.rendering.VoxelRenderer {
-    protected Voxel voxel;
+    Voxel voxel;
 
     @Override
     public void addTo(GameObject gameObject) {

@@ -27,8 +27,8 @@ public class TaskManager {
     private final World world;
     private final AStarPathFinder pathFinder;
     private final VoxelManager voxelManager;
-    private List<Civvy> civvies;
-    private List<Task> tasks;
+    private final List<Civvy> civvies;
+    private final List<Task> tasks;
 
     @Autowired
     public TaskManager(WorldManager worldManager, AStarPathFinder pathFinder, VoxelManager voxelManager) {
@@ -82,7 +82,6 @@ public class TaskManager {
         List<Task> continual = tasks.stream().filter(t -> t.getState().equals(Task.State.CONTINUAL)).collect(Collectors.toList());
         if (!continual.isEmpty()) {
             civvy.handleTask(continual.get((int) MathUtil.rnd(1, continual.size()) - 1));
-            return;
         }
     }
 }

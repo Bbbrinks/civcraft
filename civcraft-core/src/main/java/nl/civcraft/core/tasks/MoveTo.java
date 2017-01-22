@@ -18,7 +18,7 @@ public class MoveTo extends Task {
 
 
     private final AStarPathFinder pathFinder;
-    protected GameObject target;
+    private final GameObject target;
     private Queue<GameObject> path;
     private GameObject civvy;
 

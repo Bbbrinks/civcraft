@@ -16,8 +16,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
-public class GlobalInput implements ActionListener, AssetEventListener {
-    public static final String WIREFRAME = "WIREFRAME";
+class GlobalInput implements ActionListener, AssetEventListener {
+    private static final String WIREFRAME = "WIREFRAME";
     private static final String EXIT = "EXIT";
     private final Set<Material> materials;
     private boolean wireframe;

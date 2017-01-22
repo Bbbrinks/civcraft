@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationEvent;
  * <p>
  * This is probably not worth documenting
  */
-public class VoxelChangedEvent extends ApplicationEvent {
+class VoxelChangedEvent extends ApplicationEvent {
     private final Voxel voxel;
 
     public VoxelChangedEvent(Voxel voxel, Object source) {
