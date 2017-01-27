@@ -1,7 +1,5 @@
 package nl.civcraft.core.gamecomponents;
 
-import nl.civcraft.core.model.GameObject;
-
 /**
  * Created by Bob on 9-9-2016.
  * <p>
@@ -9,7 +7,7 @@ import nl.civcraft.core.model.GameObject;
  */
 public class ItemComponent extends AbstractGameComponent {
     private final String type;
-    private boolean inInventory;
+    private boolean inInventory = true;
 
     public ItemComponent(String type) {
         this.type = type;
@@ -25,12 +23,7 @@ public class ItemComponent extends AbstractGameComponent {
 
     public void setInInventory(boolean inInventory) {
         this.inInventory = inInventory;
-        try {
-            gameObject.changed();
-        } catch (NullPointerException e) {
-            //TODO fix this
-            gameObject = new GameObject();
-        }
+        gameObject.changed();
     }
 
     public static class Factory implements GameComponentFactory<ItemComponent> {

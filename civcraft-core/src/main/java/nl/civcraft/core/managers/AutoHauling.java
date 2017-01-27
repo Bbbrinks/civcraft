@@ -48,7 +48,9 @@ public class AutoHauling {
     }
 
     private void handleNewHaulable(Haulable haulable) {
-        Optional<Stockpile> stockPile = world.getStockPile();
-        stockPile.ifPresent(stockpile -> taskManager.addTask(haulable.getTask(stockpile, pathFinder, voxelManager)));
+        if (haulable.shouldBeHauled()) {
+            Optional<Stockpile> stockPile = world.getStockPile();
+            stockPile.ifPresent(stockpile -> taskManager.addTask(haulable.getTask(stockpile, pathFinder, voxelManager)));
+        }
     }
 }

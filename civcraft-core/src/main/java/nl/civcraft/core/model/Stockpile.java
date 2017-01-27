@@ -1,5 +1,7 @@
 package nl.civcraft.core.model;
 
+import nl.civcraft.core.gamecomponents.ItemComponent;
+
 import java.util.*;
 
 /**
@@ -31,6 +33,7 @@ public class Stockpile {
     @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     public boolean addItem(GameObject item) {
         item.getTransform().setTranslation(voxels.stream().findFirst().get().getTransform().getTranslation().clone());
+        item.getComponent(ItemComponent.class).ifPresent(i -> i.setInInventory(true));
         items.add(item);
         return true;
     }

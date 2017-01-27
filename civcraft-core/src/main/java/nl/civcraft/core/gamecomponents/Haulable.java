@@ -13,8 +13,21 @@ import nl.civcraft.core.tasks.Task;
  */
 public class Haulable extends AbstractGameComponent {
 
+    private Haul task;
+
     public Task getTask(Stockpile target, AStarPathFinder pathFinder, VoxelManager voxelManager) {
-        return new Haul(target, gameObject, pathFinder, voxelManager);
+        this.task = new Haul(target, gameObject, pathFinder, voxelManager);
+        return task;
+    }
+
+    public boolean shouldBeHauled() {
+        boolean isInInventory = gameObject.getComponent(ItemComponent.class).map(ItemComponent::isInInventory).orElse(false);
+
+        if (task != null && task.getState().equals(Task.State.DONE)) {
+            task = null;
+        }
+
+        return task == null && !isInInventory;
     }
 
     public static class Factory implements GameComponentFactory<Haulable> {
