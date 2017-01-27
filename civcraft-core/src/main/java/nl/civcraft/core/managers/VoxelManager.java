@@ -7,6 +7,7 @@ import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,7 @@ import java.util.Optional;
  * This is probably not worth documenting
  */
 @Component
-public class VoxelManager {
+public class VoxelManager implements Serializable {
 
     private final List<Chunk> chunks;
 

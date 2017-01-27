@@ -4,9 +4,7 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
-import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.World;
 import nl.civcraft.core.utils.MathUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +28,6 @@ public class WorldGenerator implements Runnable {
     private final HeightMapGenerator hillsGenerator;
 
     private final ChunkBuilder chunkBuilder;
-    private final WorldManager worldManager;
     private final TreeGenerator treeGenerator;
     private final PrefabManager civvyManager;
     private final VoxelManager voxelManager;
@@ -39,13 +36,12 @@ public class WorldGenerator implements Runnable {
 
     @Autowired
     public WorldGenerator(@Value("${height_map_width}") int heightMapWidth, @Value("${height_map_height}") int heightMapHeight,
-                          HeightMapGenerator hillsGenerator, ChunkBuilder chunkBuilder, WorldManager worldManager, TreeGenerator treeGenerator,
+                          HeightMapGenerator hillsGenerator, ChunkBuilder chunkBuilder, TreeGenerator treeGenerator,
                           @Qualifier(value = "civvy") PrefabManager civvyManager, VoxelManager voxelManager) {
         this.heightMapWidth = heightMapWidth;
         this.heightMapHeight = heightMapHeight;
         this.hillsGenerator = hillsGenerator;
         this.chunkBuilder = chunkBuilder;
-        this.worldManager = worldManager;
         this.treeGenerator = treeGenerator;
         this.civvyManager = civvyManager;
         this.voxelManager = voxelManager;
@@ -104,7 +100,4 @@ public class WorldGenerator implements Runnable {
         this.generationDone = generationDone;
     }
 
-    public World getWorld() {
-        return worldManager.getWorld();
-    }
 }

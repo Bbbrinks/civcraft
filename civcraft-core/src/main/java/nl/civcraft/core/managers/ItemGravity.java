@@ -42,7 +42,8 @@ public class ItemGravity {
                     gameObject.changed();
                 }
             } else {
-                gameObject.destroy();
+                gameObject.getTransform().setTranslation(gameObject.getTransform().getTranslation().subtract(0, 0.1f, 0));
+                gameObject.changed();
             }
         }
     }

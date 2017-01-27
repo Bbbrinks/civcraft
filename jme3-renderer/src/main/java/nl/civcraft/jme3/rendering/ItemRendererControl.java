@@ -47,7 +47,7 @@ public class ItemRendererControl extends AbstractControl {
     }
 
     @EventListener
-    public void handleItemChanged(GameObjectCreatedEvent gameObjectCreatedEvent) {
+    public void handleItemCreated(GameObjectCreatedEvent gameObjectCreatedEvent) {
         GameObject gameObject = gameObjectCreatedEvent.getGameObject();
         Optional<ItemRenderer> itemComponent = gameObject.getComponent(ItemRenderer.class);
         if (!itemComponent.isPresent()) {
@@ -77,11 +77,11 @@ public class ItemRendererControl extends AbstractControl {
         if (!itemComponent.isPresent()) {
             return;
         }
-        if (itemComponent.get().isVisible() && !renderedItems.containsKey(itemComponent.get())) {
-            addNewItem(gameObject, itemComponent);
-        }
-        if (!itemComponent.get().isVisible() && renderedItems.containsKey(itemComponent.get())) {
+        if (renderedItems.containsKey(itemComponent.get())) {
             removedItems.add(itemComponent.get());
+        }
+        if (itemComponent.get().isVisible()) {
+            addNewItem(gameObject, itemComponent);
         }
     }
 

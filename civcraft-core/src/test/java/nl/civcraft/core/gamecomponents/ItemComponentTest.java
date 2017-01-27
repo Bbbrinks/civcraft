@@ -9,9 +9,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -30,7 +31,7 @@ public class ItemComponentTest {
 
     @Before
     public void setUp() throws Exception {
-        underTest = new ItemComponent(TEST_TYPE);
+        underTest = new ItemComponent.Factory(TEST_TYPE).build();
         testGameObject.addComponent(underTest);
         verify(testGameObject).addComponent(underTest);
     }
@@ -41,16 +42,29 @@ public class ItemComponentTest {
     }
 
     @Test
-    public void gameObjectIsSet() {
+    public void construction() {
         assertThat(underTest.getGameObject(), is(testGameObject));
+        assertThat(underTest.getType(), is(TEST_TYPE));
+    }
+
+    @Test
+    public void factoryComponentType() {
+        assertThat(new ItemComponent.Factory(TEST_TYPE).getComponentType(), equalTo(ItemComponent.class));
     }
 
 
     @Test
-    public void setInInventory_gameObjectIsNotified() throws Exception {
-        underTest.setInInventory(true);
+    public void setInInventory_gameObjectIsNotifiedOnChange() throws Exception {
         underTest.setInInventory(false);
-        verify(testGameObject, times(2)).changed();
+        assertThat(underTest.isInInventory(), is(false));
+        verify(testGameObject).changed();
+    }
+
+    @Test
+    public void setInInventory_gameObjectIsNotNotifiedOnNoChange() throws Exception {
+        underTest.setInInventory(true);
+        assertThat(underTest.isInInventory(), is(true));
+        verify(testGameObject, never()).changed();
     }
 
 

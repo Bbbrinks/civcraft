@@ -4,6 +4,7 @@ import com.jme3.math.Transform;
 import nl.civcraft.core.gamecomponents.GameComponent;
 import nl.civcraft.core.rendering.VoxelRenderer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +14,7 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-public class GameObject {
+public class GameObject implements Serializable {
 
     private final Transform transform;
     private final List<GameComponent> components;
@@ -60,5 +61,9 @@ public class GameObject {
 
     public <T extends GameComponent> Optional<T> getComponent(Class<T> componentType) {
         return components.stream().filter(i -> componentType.isAssignableFrom(i.getClass())).map(componentType::cast).findFirst();
+    }
+
+    public <T extends GameComponent> boolean hasComponent(Class<T> componentClass) {
+        return getComponent(componentClass).isPresent();
     }
 }

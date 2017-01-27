@@ -71,4 +71,18 @@ public class PrefabManager {
     public void changed(GameObject gameObject) {
         applicationEventPublisher.publishEvent(new GameObjectChangedEvent(gameObject, this));
     }
+
+    public <T extends GameComponent> Optional<GameObject> getClosestGameObject(Transform transform, Class<T> stockpileClass) {
+        Optional<GameObject> closest = managedObjects.stream().
+                filter(o -> o.hasComponent(stockpileClass)).
+                sorted((first, second) -> (int) (second.getTransform().getTranslation().distance(transform.getTranslation()) - first.getTransform().getTranslation().distance(transform.getTranslation()))).
+                findFirst();
+        if (closest.isPresent()) {
+            return closest;
+        }
+        if (parent != null) {
+            return parent.getClosestGameObject(transform, GameComponent.class);
+        }
+        return Optional.empty();
+    }
 }

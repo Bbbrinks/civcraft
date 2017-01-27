@@ -1,7 +1,6 @@
 package nl.civcraft.core.managers;
 
 import nl.civcraft.core.event.SystemUpdate;
-import nl.civcraft.core.model.World;
 import nl.civcraft.core.model.events.GameObjectCreatedEvent;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,21 +18,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 @Component
-public class TaskManager {
+public class TaskManager implements Serializable {
 
-    private final World world;
     private final AStarPathFinder pathFinder;
     private final VoxelManager voxelManager;
     private final List<Civvy> civvies;
     private final List<Task> tasks;
 
     @Autowired
-    public TaskManager(WorldManager worldManager, AStarPathFinder pathFinder, VoxelManager voxelManager) {
+    public TaskManager(AStarPathFinder pathFinder, VoxelManager voxelManager) {
         this.pathFinder = pathFinder;
         this.voxelManager = voxelManager;
         civvies = new CopyOnWriteArrayList<>();
         tasks = new ArrayList<>();
-        world = worldManager.getWorld();
     }
 
     @EventListener

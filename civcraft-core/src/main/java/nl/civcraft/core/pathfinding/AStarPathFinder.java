@@ -4,11 +4,12 @@ import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.model.GameObject;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingDeque;
 
 @Component
-public class AStarPathFinder {
+public class AStarPathFinder implements Serializable {
 
     public Queue<GameObject> findPath(GameObject civvy, GameObject start, PathFindingTarget target) {
         if (start.equals(target)) {

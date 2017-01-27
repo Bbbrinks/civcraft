@@ -4,7 +4,6 @@ import com.jme3.math.Vector3f;
 import nl.civcraft.core.gamecomponents.AbstractGameComponent;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.World;
 import nl.civcraft.core.tasks.Task;
 
 /**
@@ -14,20 +13,11 @@ import nl.civcraft.core.tasks.Task;
  */
 public class Civvy extends AbstractGameComponent {
 
-    private World world;
     private TaskManager taskManager;
     private Task task;
 
 
     public Civvy() {
-    }
-
-    public World getWorld() {
-        return world;
-    }
-
-    public void setWorld(World world) {
-        this.world = world;
     }
 
     public void subscribe(TaskManager taskManager) {

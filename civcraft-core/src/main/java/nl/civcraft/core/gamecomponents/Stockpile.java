@@ -1,7 +1,9 @@
-package nl.civcraft.core.model;
+package nl.civcraft.core.gamecomponents;
 
-import nl.civcraft.core.gamecomponents.ItemComponent;
+import nl.civcraft.core.model.GameObject;
+import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -9,7 +11,7 @@ import java.util.*;
  * <p>
  * This is probably not worth documenting
  */
-public class Stockpile {
+public class Stockpile extends AbstractGameComponent implements Serializable {
     private final Set<GameObject> voxels;
     private final List<GameObject> items;
 
@@ -32,9 +34,26 @@ public class Stockpile {
 
     @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     public boolean addItem(GameObject item) {
-        item.getTransform().setTranslation(voxels.stream().findFirst().get().getTransform().getTranslation().clone());
+        item.getTransform().setTranslation(voxels.stream().
+                findFirst().
+                orElseThrow(() -> new IllegalStateException("Stockpile no voxels")).
+                getTransform().getTranslation().clone());
         item.getComponent(ItemComponent.class).ifPresent(i -> i.setInInventory(true));
         items.add(item);
         return true;
+    }
+
+    @Component
+    public static class Factory implements GameComponentFactory<Stockpile> {
+
+        @Override
+        public Stockpile build() {
+            return new Stockpile();
+        }
+
+        @Override
+        public Class<Stockpile> getComponentType() {
+            return Stockpile.class;
+        }
     }
 }

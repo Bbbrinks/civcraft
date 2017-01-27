@@ -3,9 +3,9 @@ package nl.civcraft.jme3.rendering;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import nl.civcraft.core.event.SystemUpdate;
+import nl.civcraft.core.gamecomponents.Stockpile;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Stockpile;
-import nl.civcraft.core.model.events.StockpileCreated;
+import nl.civcraft.core.model.events.GameObjectCreatedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -46,8 +46,8 @@ class StockpileRenderer {
     }
 
     @EventListener
-    public void addCivvy(StockpileCreated stockpileCreated) {
-        stockpiles.add(stockpileCreated.getStockpile());
+    public void stockpileCreated(GameObjectCreatedEvent stockpileCreated) {
+        stockpileCreated.getGameObject().getComponent(Stockpile.class).ifPresent(stockpiles::add);
     }
 
 

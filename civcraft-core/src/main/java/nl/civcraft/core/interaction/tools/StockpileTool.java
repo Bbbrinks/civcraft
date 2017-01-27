@@ -1,12 +1,13 @@
 package nl.civcraft.core.interaction.tools;
 
+import nl.civcraft.core.gamecomponents.Stockpile;
 import nl.civcraft.core.interaction.selectors.GroundRectangleSelector;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
+import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
-import nl.civcraft.core.managers.WorldManager;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Stockpile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -18,23 +19,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class StockpileTool extends GroundRectangleSelector {
 
-    private final WorldManager worldManager;
+
+    private final PrefabManager prefabManager;
     private Stockpile createdStockpile;
 
     @Autowired
-    public StockpileTool(CurrentVoxelHighlighter currentVoxelHighlighter, ApplicationEventPublisher eventPublisher, VoxelManager voxelManager, WorldManager worldManager) {
+    public StockpileTool(CurrentVoxelHighlighter currentVoxelHighlighter, ApplicationEventPublisher eventPublisher, VoxelManager voxelManager, @Qualifier("stockpile") PrefabManager prefabManager) {
         super(currentVoxelHighlighter, eventPublisher, voxelManager);
-        this.worldManager = worldManager;
+        this.prefabManager = prefabManager;
     }
 
     @Override
     protected void startSelection() {
-        createdStockpile = new Stockpile();
+        GameObject newStockpile = prefabManager.build(startingVoxel.getTransform().clone(), true);
+        createdStockpile = newStockpile.getComponent(Stockpile.class).orElseThrow(() -> new IllegalStateException("Stockpiles should be stockpiles"));
     }
 
     @Override
     protected void endSelection() {
-        worldManager.getWorld().addStockpile(createdStockpile);
         createdStockpile = null;
     }
 

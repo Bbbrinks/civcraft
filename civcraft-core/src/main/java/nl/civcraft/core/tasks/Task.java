@@ -5,12 +5,14 @@ import nl.civcraft.core.npc.Civvy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.Serializable;
+
 /**
  * Created by Bob on 31-12-2015.
  * <p>
  * This is probably not worth documenting
  */
-public abstract class Task {
+public abstract class Task implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

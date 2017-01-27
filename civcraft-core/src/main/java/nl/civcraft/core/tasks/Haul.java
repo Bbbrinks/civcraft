@@ -1,9 +1,9 @@
 package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.gamecomponents.Inventory;
+import nl.civcraft.core.gamecomponents.Stockpile;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.Stockpile;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 
@@ -19,7 +19,7 @@ public class Haul extends Task {
     private final Stockpile target;
     private final AStarPathFinder pathFinder;
     private final VoxelManager voxelManager;
-    private MoveTo moveToObject;
+    private MoveToRange moveToObject;
     private MoveTo moveToStockPile;
     private boolean itemPickedUp = false;
 
@@ -34,12 +34,7 @@ public class Haul extends Task {
     @Override
     public Result affect(GameObject civvy, float tpf) {
         if (moveToObject == null) {
-            Optional<GameObject> groundAt = voxelManager.getGroundAt(itemToHaul.getTransform().getTranslation(), 10);
-            if (!groundAt.isPresent()) {
-                return Result.FAILED;
-            } else {
-                moveToObject = new MoveTo(groundAt.get(), pathFinder);
-            }
+            moveToObject = new MoveToRange(itemToHaul, 3.0f, pathFinder);
         }
         if (!moveToObject.getState().equals(State.DONE)) {
             return moveToObject(civvy, tpf);
