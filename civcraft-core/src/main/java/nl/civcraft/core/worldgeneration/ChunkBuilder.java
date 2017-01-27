@@ -2,8 +2,10 @@ package nl.civcraft.core.worldgeneration;
 
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.Chunk;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.utils.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,15 +40,17 @@ public class ChunkBuilder {
                 for (int y = 0; y <= voxelY; y++) {
                     Transform transform = new Transform(new Vector3f(x, y, z));
                     long rnd = MathUtil.rnd(8) - 1;
+                    GameObject build;
                     if (voxelY - y - rnd > 0) {
-                        cobbleStone.build(transform, true);
+                        build = cobbleStone.build(transform, true);
                     } else {
                         if (voxelY == y) {
-                            grass.build(transform, true);
+                            build = grass.build(transform, true);
                         } else {
-                            dirt.build(transform, true);
+                            build = dirt.build(transform, true);
                         }
                     }
+                    build.getComponent(Voxel.class).ifPresent(Voxel::place);
                 }
             }
         }

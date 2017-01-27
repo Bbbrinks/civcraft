@@ -6,6 +6,7 @@ import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.jme3.model.RenderedVoxelFace;
 import nl.civcraft.jme3.rendering.VoxelMaterialManager;
+import nl.civcraft.jme3.rendering.VoxelRendererControl;
 import nl.civcraft.jme3.utils.BlockUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,19 +23,21 @@ public class StaticVoxelRenderer extends VoxelRenderer implements nl.civcraft.co
     private final VoxelMaterialManager voxelMaterialManager;
     private Map<Face, RenderedVoxelFace> block;
 
-    private StaticVoxelRenderer(VoxelMaterialManager voxelMaterialManager) {
+    private StaticVoxelRenderer(VoxelMaterialManager voxelMaterialManager, VoxelRendererControl voxelRendererControl) {
+        super(voxelRendererControl);
         this.voxelMaterialManager = voxelMaterialManager;
     }
 
 
     @Override
     public void addTo(GameObject gameObject) {
-        super.addTo(gameObject);
-        Material topMaterial = voxelMaterialManager.topMaterial(voxel);
-        Material sideMaterial = voxelMaterialManager.sideMaterial(voxel);
-        Material bottomMaterial = voxelMaterialManager.bottomMaterial(voxel);
+        this.gameObject = gameObject;
+        Material topMaterial = voxelMaterialManager.topMaterial(getVoxel());
+        Material sideMaterial = voxelMaterialManager.sideMaterial(getVoxel());
+        Material bottomMaterial = voxelMaterialManager.bottomMaterial(getVoxel());
 
         block = BlockUtil.getQuadBlock(topMaterial, sideMaterial, bottomMaterial);
+        super.addTo(gameObject);
     }
 
     @Override
@@ -45,15 +48,17 @@ public class StaticVoxelRenderer extends VoxelRenderer implements nl.civcraft.co
     @Component
     public static class StaticVoxelRenderFactoryImpl implements StaticVoxelRendererFactory<StaticVoxelRenderer> {
         private final VoxelMaterialManager voxelMaterialManager;
+        private final VoxelRendererControl voxelRenderControl;
 
         @Autowired
-        public StaticVoxelRenderFactoryImpl(VoxelMaterialManager voxelMaterialManager) {
+        public StaticVoxelRenderFactoryImpl(VoxelMaterialManager voxelMaterialManager, VoxelRendererControl voxelRenderControl) {
             this.voxelMaterialManager = voxelMaterialManager;
+            this.voxelRenderControl = voxelRenderControl;
         }
 
         @Override
         public StaticVoxelRenderer build() {
-            return new StaticVoxelRenderer(voxelMaterialManager);
+            return new StaticVoxelRenderer(voxelMaterialManager, voxelRenderControl);
         }
 
         @Override

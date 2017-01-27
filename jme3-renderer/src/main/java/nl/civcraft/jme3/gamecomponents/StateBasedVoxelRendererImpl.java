@@ -4,6 +4,7 @@ import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.jme3.model.RenderedVoxelFace;
 import nl.civcraft.jme3.rendering.VoxelMaterialManager;
+import nl.civcraft.jme3.rendering.VoxelRendererControl;
 import nl.civcraft.jme3.utils.BlockUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,14 +22,15 @@ public class StateBasedVoxelRendererImpl extends VoxelRenderer {
     private final VoxelMaterialManager voxelMaterialManager;
     private final Function<GameObject, String> stateSupplier;
 
-    private StateBasedVoxelRendererImpl(VoxelMaterialManager voxelMaterialManager, Function<GameObject, String> stateSupplier) {
+    private StateBasedVoxelRendererImpl(VoxelMaterialManager voxelMaterialManager, Function<GameObject, String> stateSupplier, VoxelRendererControl voxelRendererControl) {
+        super(voxelRendererControl);
         this.voxelMaterialManager = voxelMaterialManager;
         this.stateSupplier = stateSupplier;
     }
 
     @Override
     public Map<Face, RenderedVoxelFace> getFaces() {
-        return BlockUtil.getQuadBlock(voxelMaterialManager.loadMaterial(voxel.getType(), stateSupplier.apply(gameObject)));
+        return BlockUtil.getQuadBlock(voxelMaterialManager.loadMaterial(getVoxel().getType(), stateSupplier.apply(gameObject)));
     }
 
     @Component
@@ -36,18 +38,20 @@ public class StateBasedVoxelRendererImpl extends VoxelRenderer {
 
 
         private final VoxelMaterialManager voxelMaterialManager1;
+        private final VoxelRendererControl voxelRendererControl;
 
         @Autowired
-        public StateBasedVoxelRendererFactoryImpl(VoxelMaterialManager voxelMaterialManager1) {
+        public StateBasedVoxelRendererFactoryImpl(VoxelMaterialManager voxelMaterialManager1, VoxelRendererControl voxelRendererControl) {
             this.voxelMaterialManager1 = voxelMaterialManager1;
+            this.voxelRendererControl = voxelRendererControl;
         }
 
         @Override
-        public GameComponentFactory<StateBasedVoxelRendererImpl> build(Function<GameObject, String> stateSupplier) {
-            return new GameComponentFactory<StateBasedVoxelRendererImpl>() {
+        public StaticVoxelRendererFactory<StateBasedVoxelRendererImpl> build(Function<GameObject, String> stateSupplier) {
+            return new StaticVoxelRendererFactory<StateBasedVoxelRendererImpl>() {
                 @Override
                 public StateBasedVoxelRendererImpl build() {
-                    return new StateBasedVoxelRendererImpl(voxelMaterialManager1, stateSupplier);
+                    return new StateBasedVoxelRendererImpl(voxelMaterialManager1, stateSupplier, voxelRendererControl);
                 }
 
                 @Override

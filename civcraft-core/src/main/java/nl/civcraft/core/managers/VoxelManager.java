@@ -5,6 +5,7 @@ import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
+@Component
 public class VoxelManager {
 
     private final List<Chunk> chunks;

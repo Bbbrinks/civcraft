@@ -1,6 +1,5 @@
 package nl.civcraft.core.conf;
 
-import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.worldgeneration.HillsGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,11 +24,6 @@ public class WorldGeneration {
     @Bean
     public HillsGenerator rollingHillsGenerator() {
         return new HillsGenerator(maxHillHeight, minHillRadius, maxHillRadius, minHills, maxHills);
-    }
-
-    @Bean
-    public VoxelManager voxelManager() {
-        return new VoxelManager();
     }
 
 }

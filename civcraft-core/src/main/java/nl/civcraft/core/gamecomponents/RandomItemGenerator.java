@@ -31,7 +31,7 @@ public class RandomItemGenerator extends AbstractGameComponent {
         Inventory limitedInventory = inventory.get();
         int nextInt = RandomUtil.getNextInt(maxItems);
         for (int i = 0; i < nextInt; i++) {
-            limitedInventory.addItem(itemSupplier.build(gameObject.getTransform(), true));
+            limitedInventory.addItem(itemSupplier.build(gameObject.getTransform().clone(), true));
         }
     }
 

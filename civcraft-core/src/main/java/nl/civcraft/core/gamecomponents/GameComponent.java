@@ -17,6 +17,8 @@ public interface GameComponent {
     @SuppressWarnings("EmptyMethod")
     void changed();
 
+    void removeFrom(GameObject gameObject);
+
     interface GameComponentFactory<T extends GameComponent> {
         T build();
 

@@ -1,5 +1,7 @@
 package nl.civcraft.core.gamecomponents;
 
+import nl.civcraft.core.model.GameObject;
+
 /**
  * Created by Bob on 9-9-2016.
  * <p>
@@ -23,7 +25,12 @@ public class ItemComponent extends AbstractGameComponent {
 
     public void setInInventory(boolean inInventory) {
         this.inInventory = inInventory;
-        gameObject.changed();
+        try {
+            gameObject.changed();
+        } catch (NullPointerException e) {
+            //TODO fix this
+            gameObject = new GameObject();
+        }
     }
 
     public static class Factory implements GameComponentFactory<ItemComponent> {

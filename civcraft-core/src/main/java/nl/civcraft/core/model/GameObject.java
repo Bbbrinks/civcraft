@@ -2,6 +2,7 @@ package nl.civcraft.core.model;
 
 import com.jme3.math.Transform;
 import nl.civcraft.core.gamecomponents.GameComponent;
+import nl.civcraft.core.rendering.VoxelRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +28,6 @@ public class GameObject {
         components = new ArrayList<>();
     }
 
-    public <T extends GameComponent> Optional<T> getComponent(Class<T> componentType) {
-        return components.stream().filter(i -> componentType.isAssignableFrom(i.getClass())).map(componentType::cast).findFirst();
-    }
-
     public void addComponent(GameComponent component) {
         components.add(component);
         component.addTo(this);
@@ -49,10 +46,19 @@ public class GameObject {
     }
 
     public void removeComponent(GameComponent gameComponent) {
+        gameComponent.removeFrom(this);
         components.remove(gameComponent);
     }
 
     public Transform getTransform() {
         return transform;
+    }
+
+    public void removeComponent(Class<VoxelRenderer> voxelRendererClass) {
+        getComponent(voxelRendererClass).ifPresent(this::removeComponent);
+    }
+
+    public <T extends GameComponent> Optional<T> getComponent(Class<T> componentType) {
+        return components.stream().filter(i -> componentType.isAssignableFrom(i.getClass())).map(componentType::cast).findFirst();
     }
 }

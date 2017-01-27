@@ -99,16 +99,18 @@ public class ItemRendererControl extends AbstractControl {
     protected void controlUpdate(float tpf) {
         while (!newItems.isEmpty()) {
             Pair<ItemRenderer, Geometry> poll = newItems.poll();
-            itemNode.attachChild(poll.getValue());
             renderedItems.put(poll.getKey(), poll.getValue());
         }
 
         while (!removedItems.isEmpty()) {
             ItemRenderer poll = removedItems.poll();
             if (renderedItems.containsKey(poll)) {
-                itemNode.detachChild(renderedItems.get(poll));
                 renderedItems.remove(poll);
             }
+        }
+        itemNode.detachAllChildren();
+        for (Geometry geometry : renderedItems.values()) {
+            itemNode.attachChild(geometry);
         }
     }
 

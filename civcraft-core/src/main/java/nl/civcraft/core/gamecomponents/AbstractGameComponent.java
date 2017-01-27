@@ -29,4 +29,9 @@ public abstract class AbstractGameComponent implements GameComponent {
     public void changed() {
         //Noop
     }
+
+    @Override
+    public void removeFrom(GameObject gameObject) {
+        this.gameObject = null;
+    }
 }

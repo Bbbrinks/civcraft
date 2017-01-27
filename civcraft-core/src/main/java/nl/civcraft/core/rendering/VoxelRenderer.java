@@ -17,6 +17,6 @@ public interface VoxelRenderer extends GameComponent {
 
     @FunctionalInterface
     interface StateBasedVoxelRendererFactoryFactory<T extends VoxelRenderer> {
-        GameComponentFactory<T> build(Function<GameObject, String> stateSupplier);
+        StaticVoxelRendererFactory<T> build(Function<GameObject, String> stateSupplier);
     }
 }

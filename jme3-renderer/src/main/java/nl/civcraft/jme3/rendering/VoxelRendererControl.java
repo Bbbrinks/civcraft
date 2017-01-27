@@ -8,13 +8,9 @@ import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.Chunk;
-import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.events.GameObjectCreatedEvent;
-import nl.civcraft.core.model.events.GameObjectDestroyedEvent;
 import nl.civcraft.jme3.gamecomponents.VoxelRenderer;
 import nl.civcraft.jme3.utils.BlockUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -42,15 +38,9 @@ public class VoxelRendererControl extends AbstractControl {
     }
 
 
-    @EventListener
-    public void handleVoxelAdded(GameObjectCreatedEvent gameObjectCreatedEvent) {
-        GameObject voxelGameObject = gameObjectCreatedEvent.getGameObject();
-        Optional<VoxelRenderer> component = voxelGameObject.getComponent(VoxelRenderer.class);
-        if (!component.isPresent()) {
-            return;
-        }
-        voxelManager.addVoxel(voxelGameObject);
-        Chunk chunk = voxelManager.getChunkAt(voxelGameObject).map(c -> c).orElseThrow(() -> new IllegalStateException("Chunk not foudn"));
+    public void handleVoxelAdded(VoxelRenderer component) {
+        voxelManager.addVoxel(component.getGameObject());
+        Chunk chunk = voxelManager.getChunkAt(component.getGameObject()).map(c -> c).orElseThrow(() -> new IllegalStateException("Chunk not foudn"));
         if (optimizerThreadMap.containsKey(chunk)) {
             optimizerThreadMap.get(chunk).cancel(true);
             newOptimizedChunks.remove(optimizerThreadMap.get(chunk));
@@ -60,15 +50,9 @@ public class VoxelRendererControl extends AbstractControl {
         optimizerThreadMap.put(chunk, submit);
     }
 
-    @EventListener
-    public void handleVoxelRemoved(GameObjectDestroyedEvent gameObjectDestroyedEvent) {
-        GameObject voxelGameObject = gameObjectDestroyedEvent.getGameObject();
-        Optional<VoxelRenderer> component = voxelGameObject.getComponent(VoxelRenderer.class);
-        if (!component.isPresent()) {
-            return;
-        }
-        voxelManager.removeVoxel(voxelGameObject);
-        Chunk chunk = voxelManager.getChunkAt(voxelGameObject).map(c -> c).orElseThrow(() -> new IllegalStateException("Chunk not foudn"));
+    public void handleVoxelRemoved(VoxelRenderer component) {
+        voxelManager.removeVoxel(component.getGameObject());
+        Chunk chunk = voxelManager.getChunkAt(component.getGameObject()).map(c -> c).orElseThrow(() -> new IllegalStateException("Chunk not foudn"));
         if (optimizerThreadMap.containsKey(chunk)) {
             optimizerThreadMap.get(chunk).cancel(true);
             newOptimizedChunks.remove(optimizerThreadMap.get(chunk));
