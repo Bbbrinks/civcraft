@@ -14,7 +14,7 @@ public class HarvestFromInventory extends AbstractGameComponent implements Harve
 
     @Override
     public Optional<GameObject> harvest(GameObject harvester) {
-        Optional<Inventory> component = gameObject.getComponent(Inventory.class);
+        Optional<InventoryComponent> component = gameObject.getComponent(InventoryComponent.class);
         if (!component.isPresent()) {
             throw new IllegalStateException("HarvestFromInventory can only be added to GameObjects with an Inventory component");
         }
@@ -24,7 +24,7 @@ public class HarvestFromInventory extends AbstractGameComponent implements Harve
 
     @Override
     public void addTo(GameObject gameObject) {
-        Optional<Inventory> component = gameObject.getComponent(Inventory.class);
+        Optional<InventoryComponent> component = gameObject.getComponent(InventoryComponent.class);
         if (!component.isPresent()) {
             throw new IllegalStateException("HarvestFromInventory can only be added to GameObjects with an Inventory component");
         }

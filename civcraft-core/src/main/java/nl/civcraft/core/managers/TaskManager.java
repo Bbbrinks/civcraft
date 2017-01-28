@@ -3,7 +3,6 @@ package nl.civcraft.core.managers;
 import nl.civcraft.core.event.SystemUpdate;
 import nl.civcraft.core.model.events.GameObjectCreatedEvent;
 import nl.civcraft.core.npc.Civvy;
-import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.tasks.Task;
 import nl.civcraft.core.utils.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +19,19 @@ import java.util.stream.Collectors;
 @Component
 public class TaskManager implements Serializable {
 
-    private final AStarPathFinder pathFinder;
-    private final VoxelManager voxelManager;
+
     private final List<Civvy> civvies;
     private final List<Task> tasks;
 
     @Autowired
-    public TaskManager(AStarPathFinder pathFinder, VoxelManager voxelManager) {
-        this.pathFinder = pathFinder;
-        this.voxelManager = voxelManager;
+    public TaskManager(List<Task> defaultTasks) {
         civvies = new CopyOnWriteArrayList<>();
         tasks = new ArrayList<>();
+        for (Task defaultTask : defaultTasks) {
+            if (defaultTask.getState().equals(Task.State.CONTINUAL)) {
+                tasks.add(defaultTask);
+            }
+        }
     }
 
     @EventListener
@@ -60,12 +61,12 @@ public class TaskManager implements Serializable {
     public void requestTask(Civvy civvy) {
         List<Task> todo = tasks.stream().filter(t -> t.getState().equals(Task.State.TODO) && t.canBeHandledBy(civvy)).collect(Collectors.toList());
         if (!todo.isEmpty()) {
-            civvy.handleTask(todo.get((int) MathUtil.rnd(1, todo.size()) - 1));
+            civvy.handleTask(todo.get(MathUtil.rnd(1, todo.size()) - 1));
             return;
         }
         List<Task> continual = tasks.stream().filter(t -> t.getState().equals(Task.State.CONTINUAL)).collect(Collectors.toList());
         if (!continual.isEmpty()) {
-            civvy.handleTask(continual.get((int) MathUtil.rnd(1, continual.size()) - 1));
+            civvy.handleTask(continual.get(MathUtil.rnd(1, continual.size()) - 1));
         }
     }
 }

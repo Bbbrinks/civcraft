@@ -1,6 +1,9 @@
 package nl.civcraft.core.conf;
 
-import nl.civcraft.core.gamecomponents.*;
+import nl.civcraft.core.gamecomponents.HarvestFromInventory;
+import nl.civcraft.core.gamecomponents.InventoryComponent;
+import nl.civcraft.core.gamecomponents.RandomItemGenerator;
+import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
@@ -58,14 +61,11 @@ public class Blocks {
     @Qualifier("treeLeaf")
     public PrefabManager treeLeafManager(ApplicationEventPublisher applicationEventPublisher, @Qualifier("block") PrefabManager blockManager, VoxelManager voxelManager, @Qualifier("apple") PrefabManager itemManager, VoxelRenderer.StateBasedVoxelRendererFactoryFactory voxelRenderer) {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, blockManager);
-        Voxel.Factory voxel = new Voxel.Factory("treeLeaf", voxelManager, voxelRenderer.build(new Function<GameObject, String>() {
-            @Override
-            public String apply(GameObject gameObject) {
-                return gameObject.getComponent(Inventory.class).map(i -> i.isEmpty() ? "empty" : "not-empty").orElse("empty");
-            }
-        }));
+        Function<GameObject, String> stateSupplier = (GameObject gameObject) -> gameObject.getComponent(InventoryComponent.class).map(i -> i.isEmpty() ? "empty" :
+                "not-empty").orElse("empty");
+        Voxel.Factory voxel = new Voxel.Factory("treeLeaf", voxelManager, voxelRenderer.build(stateSupplier));
         prefabManager.registerComponent(voxel);
-        prefabManager.registerComponent(new LimitedInventory.Factory(4));
+        prefabManager.registerComponent(new InventoryComponent.Factory(4));
         prefabManager.registerComponent(new HarvestFromInventory.Factory());
         prefabManager.registerComponent(new RandomItemGenerator.Factory(4, itemManager));
         return prefabManager;

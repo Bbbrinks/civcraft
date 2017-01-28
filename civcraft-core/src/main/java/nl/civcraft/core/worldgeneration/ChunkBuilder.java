@@ -39,7 +39,7 @@ public class ChunkBuilder {
                 int voxelY = (int) heightMap.getHeight(x, z);
                 for (int y = 0; y <= voxelY; y++) {
                     Transform transform = new Transform(new Vector3f(x, y, z));
-                    long rnd = MathUtil.rnd(8) - 1;
+                    int rnd = MathUtil.rnd(8) - 1;
                     GameObject build;
                     if (voxelY - y - rnd > 0) {
                         build = cobbleStone.build(transform, true);

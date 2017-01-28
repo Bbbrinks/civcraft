@@ -3,8 +3,11 @@ package nl.civcraft.core.gamecomponents;
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.pathfinding.AStarPathFinder;
+import nl.civcraft.core.pathfinding.PathFindingTarget;
 
 import java.util.Optional;
+import java.util.Queue;
 
 /**
  * Created by Bob on 18-11-2016.
@@ -14,11 +17,13 @@ import java.util.Optional;
 public class GroundMovement extends AbstractGameComponent {
     private final float speed;
     private final VoxelManager voxelManager;
+    private final AStarPathFinder aStarPathFinder;
     private GameObject currentVoxel;
 
-    public GroundMovement(float speed, VoxelManager voxelManager) {
+    public GroundMovement(float speed, VoxelManager voxelManager, AStarPathFinder aStarPathFinder) {
         this.speed = speed;
         this.voxelManager = voxelManager;
+        this.aStarPathFinder = aStarPathFinder;
     }
 
     public GameObject currentVoxel() {
@@ -59,6 +64,10 @@ public class GroundMovement extends AbstractGameComponent {
         setCurrentVoxel(groundVoxel);
     }
 
+    public Queue<GameObject> findPath(PathFindingTarget moveToVoxelTarget) {
+        return aStarPathFinder.findPath(gameObject, getCurrentVoxel(), moveToVoxelTarget);
+    }
+
     public GameObject getCurrentVoxel() {
         return currentVoxel;
     }
@@ -70,16 +79,18 @@ public class GroundMovement extends AbstractGameComponent {
     public static class Factory implements GameComponentFactory<GroundMovement> {
         private final float speed;
         private final VoxelManager voxelManager;
+        private final AStarPathFinder aStarPathFinder;
 
         @SuppressWarnings("SameParameterValue")
-        public Factory(float speed, VoxelManager voxelManager) {
+        public Factory(float speed, VoxelManager voxelManager, AStarPathFinder aStarPathFinder) {
             this.speed = speed;
             this.voxelManager = voxelManager;
+            this.aStarPathFinder = aStarPathFinder;
         }
 
         @Override
         public GroundMovement build() {
-            return new GroundMovement(speed, voxelManager);
+            return new GroundMovement(speed, voxelManager, aStarPathFinder);
         }
 
         @Override

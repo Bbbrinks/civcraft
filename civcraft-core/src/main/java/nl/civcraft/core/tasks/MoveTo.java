@@ -3,7 +3,6 @@ package nl.civcraft.core.tasks;
 import nl.civcraft.core.gamecomponents.GroundMovement;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
-import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.pathfinding.MoveToVoxelTarget;
 
 import java.util.Optional;
@@ -16,16 +15,13 @@ import java.util.Queue;
  */
 public class MoveTo extends Task {
 
-
-    private final AStarPathFinder pathFinder;
     private final GameObject target;
     private Queue<GameObject> path;
     private GameObject civvy;
 
-    public MoveTo(GameObject target, AStarPathFinder pathFinder) {
+    public MoveTo(GameObject target) {
         super(State.TODO);
         this.target = target;
-        this.pathFinder = pathFinder;
     }
 
     @Override
@@ -43,7 +39,7 @@ public class MoveTo extends Task {
             if (groundMovement.getCurrentVoxel().equals(target)) {
                 return Result.COMPLETED;
             }
-            path = pathFinder.findPath(civvy, groundMovement.getCurrentVoxel(), new MoveToVoxelTarget(target));
+            path = groundMovement.findPath(new MoveToVoxelTarget(target));
             if (path == null) {
                 return Result.FAILED;
             }

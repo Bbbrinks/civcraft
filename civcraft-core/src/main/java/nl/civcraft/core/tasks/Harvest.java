@@ -3,7 +3,6 @@ package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.gamecomponents.Harvestable;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.pathfinding.AStarPathFinder;
 
 import java.util.Optional;
 
@@ -13,8 +12,8 @@ import static nl.civcraft.core.tasks.Task.Result.FAILED;
 public class Harvest extends MoveToRange {
 
 
-    public Harvest(GameObject target, AStarPathFinder pathFinder) {
-        super(target, 3.0f, pathFinder);
+    public Harvest(GameObject target) {
+        super(target, 3.0f);
     }
 
     @Override

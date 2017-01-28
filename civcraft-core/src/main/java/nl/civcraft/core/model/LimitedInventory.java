@@ -1,6 +1,8 @@
-package nl.civcraft.core.gamecomponents;
+package nl.civcraft.core.model;
 
-import nl.civcraft.core.model.GameObject;
+import com.jme3.math.Vector3f;
+import nl.civcraft.core.gamecomponents.Inventory;
+import nl.civcraft.core.gamecomponents.ItemComponent;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -10,13 +12,14 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-public class LimitedInventory extends AbstractGameComponent implements Inventory, GameComponent {
+public class LimitedInventory implements Inventory {
     private final GameObject[] items;
+    private Vector3f location;
 
-    private LimitedInventory(int size) {
+    public LimitedInventory(int size, Vector3f location) {
         items = new GameObject[size];
+        this.location = location;
     }
-
 
     @Override
     public Optional<GameObject> getFirstItem() {
@@ -32,7 +35,7 @@ public class LimitedInventory extends AbstractGameComponent implements Inventory
     @Override
     public boolean addItem(GameObject item) {
         ItemComponent itemComponent = item.getComponent(ItemComponent.class).map(i -> i).orElseThrow(() -> new IllegalStateException("Not an item"));
-        item.getTransform().setTranslation(getGameObject().getTransform().getTranslation().clone());
+        item.getTransform().setTranslation(location);
         for (int i = 0; i < items.length; i++) {
             GameObject slotItem = items[i];
             if (slotItem == null) {
@@ -65,23 +68,21 @@ public class LimitedInventory extends AbstractGameComponent implements Inventory
         }
     }
 
-    public static class Factory implements GameComponentFactory<LimitedInventory> {
-        private final int size;
-
-        public Factory(int size) {
-            this.size = size;
+    @Override
+    public boolean hasRoom(GameObject item) {
+        for (GameObject spot : items) {
+            if (spot == null) {
+                return true;
+            }
         }
+        return false;
+    }
 
-        @Override
-        public LimitedInventory build() {
-            return new LimitedInventory(size);
-        }
+    public Vector3f getLocation() {
+        return location;
+    }
 
-        @Override
-        public Class<LimitedInventory> getComponentType() {
-            return LimitedInventory.class;
-        }
-
-
+    public void setLocation(Vector3f location) {
+        this.location = location;
     }
 }

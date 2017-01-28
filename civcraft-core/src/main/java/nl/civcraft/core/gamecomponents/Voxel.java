@@ -23,11 +23,6 @@ public class Voxel extends AbstractGameComponent implements Breakable, Renderabl
     }
 
     @Override
-    public void addTo(GameObject gameObject) {
-        super.addTo(gameObject);
-    }
-
-    @Override
     public void destroyed() {
         voxelManager.removeVoxel(gameObject);
         super.destroyed();
@@ -35,6 +30,7 @@ public class Voxel extends AbstractGameComponent implements Breakable, Renderabl
 
     public void place() {
         if (!placed) {
+            placed = true;
             gameObject.addComponent(voxelRenderer.build());
             voxelManager.addVoxel(gameObject);
         } else {

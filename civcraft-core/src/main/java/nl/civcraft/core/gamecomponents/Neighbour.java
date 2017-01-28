@@ -83,11 +83,11 @@ public class Neighbour extends AbstractGameComponent {
     }
 
     private List<GameObject> getNeighbours(Face... faces) {
-        List<GameObject> neighbours = new ArrayList<>();
+        List<GameObject> foundNeighbours = new ArrayList<>();
         for (Face face : faces) {
-            getNeighbour(face).ifPresent(neighbours::add);
+            getNeighbour(face).ifPresent(foundNeighbours::add);
         }
-        return neighbours;
+        return foundNeighbours;
     }
 
     public static Optional<GameObject> getNeighbour(GameObject gameObject, Face face) {

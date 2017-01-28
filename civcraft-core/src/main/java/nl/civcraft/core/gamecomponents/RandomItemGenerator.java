@@ -24,11 +24,11 @@ public class RandomItemGenerator extends AbstractGameComponent {
     @Override
     public void addTo(GameObject gameObject) {
         super.addTo(gameObject);
-        Optional<Inventory> inventory = gameObject.getComponent(Inventory.class);
+        Optional<InventoryComponent> inventory = gameObject.getComponent(InventoryComponent.class);
         if (!inventory.isPresent()) {
             throw new IllegalStateException("Random item generator can only be added to inventories");
         }
-        Inventory limitedInventory = inventory.get();
+        InventoryComponent limitedInventory = inventory.get();
         int nextInt = RandomUtil.getNextInt(maxItems);
         for (int i = 0; i < nextInt; i++) {
             limitedInventory.addItem(itemSupplier.build(gameObject.getTransform().clone(), true));

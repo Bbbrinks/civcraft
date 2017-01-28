@@ -4,8 +4,8 @@ import nl.civcraft.core.gamecomponents.GroundMovement;
 import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
-import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.utils.RandomUtil;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,12 +16,11 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
+@Component
 public class Wander extends Task {
-    private final AStarPathFinder pathFinder;
 
-    public Wander(AStarPathFinder pathFinder) {
+    public Wander() {
         super(State.CONTINUAL);
-        this.pathFinder = pathFinder;
     }
 
     @Override
@@ -36,7 +35,7 @@ public class Wander extends Task {
             List<GameObject> possibleNextVoxels = currentVoxel.getComponent(Neighbour.class).map(Neighbour::getEnterableNeighbours).orElse(Collections.emptyList());
             if (!possibleNextVoxels.isEmpty()) {
                 GameObject target = possibleNextVoxels.get(RandomUtil.getNextInt(possibleNextVoxels.size()));
-                MoveTo task = new MoveTo(target, pathFinder);
+                MoveTo task = new MoveTo(target);
                 task.setState(State.DOING);
 
                 Optional<Civvy> civvyOptional = civvy.getComponent(Civvy.class);

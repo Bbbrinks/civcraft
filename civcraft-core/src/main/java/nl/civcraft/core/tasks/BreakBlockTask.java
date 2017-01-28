@@ -4,7 +4,6 @@ import nl.civcraft.core.gamecomponents.Breakable;
 import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
-import nl.civcraft.core.pathfinding.AStarPathFinder;
 
 import java.util.Optional;
 
@@ -17,8 +16,8 @@ import static nl.civcraft.core.tasks.Task.Result.*;
  */
 public class BreakBlockTask extends MoveToRange {
 
-    public BreakBlockTask(GameObject target, AStarPathFinder pathFinder) {
-        super(target, 3.0f, pathFinder);
+    public BreakBlockTask(GameObject target) {
+        super(target, 3.0f);
     }
 
     @Override

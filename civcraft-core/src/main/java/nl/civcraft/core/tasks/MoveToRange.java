@@ -3,7 +3,6 @@ package nl.civcraft.core.tasks;
 import nl.civcraft.core.gamecomponents.GroundMovement;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
-import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.pathfinding.MoveInRangeOfVoxelTarget;
 
 import java.util.Optional;
@@ -16,16 +15,14 @@ import java.util.Queue;
  */
 public class MoveToRange extends Task {
     final GameObject target;
-    private final AStarPathFinder pathFinder;
     private final float range;
     private Queue<GameObject> path;
     private GameObject currentGameObject;
 
     @SuppressWarnings("SameParameterValue")
-    MoveToRange(GameObject target, float range, AStarPathFinder pathFinder) {
+    MoveToRange(GameObject target, float range) {
         super(Task.State.TODO);
         this.target = target;
-        this.pathFinder = pathFinder;
         this.range = range;
     }
 
@@ -41,7 +38,7 @@ public class MoveToRange extends Task {
         }
         this.currentGameObject = target;
         if (path == null) {
-            path = pathFinder.findPath(currentGameObject, groundMovement.getCurrentVoxel(), new MoveInRangeOfVoxelTarget(range, this.target));
+            path = groundMovement.findPath(new MoveInRangeOfVoxelTarget(range, this.target));
             if (path == null) {
                 return Result.FAILED;
             }

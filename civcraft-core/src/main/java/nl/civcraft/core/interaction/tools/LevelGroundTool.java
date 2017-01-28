@@ -7,7 +7,6 @@ import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.tasks.BreakBlockTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,14 +25,12 @@ import java.util.Optional;
 public class LevelGroundTool extends GroundRectangleSelector {
 
     private final TaskManager taskManager;
-    private final AStarPathFinder pathFinder;
     private List<BreakBlockTask> tasks;
 
     @Autowired
-    public LevelGroundTool(CurrentVoxelHighlighter currentVoxelHighlighter, ApplicationEventPublisher eventPublisher, VoxelManager voxelManager, TaskManager taskManager, AStarPathFinder pathFinder) {
+    public LevelGroundTool(CurrentVoxelHighlighter currentVoxelHighlighter, ApplicationEventPublisher eventPublisher, VoxelManager voxelManager, TaskManager taskManager) {
         super(currentVoxelHighlighter, eventPublisher, voxelManager);
         this.taskManager = taskManager;
-        this.pathFinder = pathFinder;
     }
 
     @Override
@@ -53,7 +50,7 @@ public class LevelGroundTool extends GroundRectangleSelector {
     protected void handleSelection(GameObject voxel) {
         GameObject currentGround = voxel;
         while (Neighbour.hasNeighbour(currentGround, Face.BOTTOM) && currentGround.getTransform().getTranslation().getY() > startingVoxel.getTransform().getTranslation().getY()) {
-            tasks.add(new BreakBlockTask(currentGround, pathFinder));
+            tasks.add(new BreakBlockTask(currentGround));
             Optional<GameObject> neighbour = Neighbour.getNeighbour(currentGround, Face.BOTTOM);
             if (neighbour.isPresent()) {
                 currentGround = neighbour.get();

@@ -4,7 +4,6 @@ import nl.civcraft.core.gamecomponents.Harvestable;
 import nl.civcraft.core.interaction.selectors.SingleVoxelSelector;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.TaskManager;
-import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.tasks.Harvest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,19 +19,17 @@ import java.util.Optional;
 public class HarvestTool extends SingleVoxelSelector {
 
     private final TaskManager taskManager;
-    private final AStarPathFinder pathFinder;
 
     @Autowired
-    public HarvestTool(CurrentVoxelHighlighter currentVoxelHighlighter, TaskManager taskManager, AStarPathFinder pathFinder) {
+    public HarvestTool(CurrentVoxelHighlighter currentVoxelHighlighter, TaskManager taskManager) {
         super(currentVoxelHighlighter);
         this.taskManager = taskManager;
-        this.pathFinder = pathFinder;
     }
 
     @Override
     public void handleLeftClick(boolean isPressed) {
         Optional<Harvestable> component = currentVoxel.getComponent(Harvestable.class);
-        component.ifPresent(harvestable -> taskManager.addTask(new Harvest(currentVoxel, pathFinder)));
+        component.ifPresent(harvestable -> taskManager.addTask(new Harvest(currentVoxel)));
     }
 
     @Override

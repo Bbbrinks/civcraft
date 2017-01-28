@@ -11,12 +11,12 @@ public class MathUtil {
 
     }
 
-    public static long rnd(int max) {
+    public static int rnd(int max) {
         return rnd(0, max);
     }
 
-    public static long rnd(int min, int max) {
-        return min + (int) Math.floor(Math.random() * max);
+    public static int rnd(int min, int max) {
+        return min + RandomUtil.getNextInt(max);
     }
 
     @SuppressWarnings("unused")

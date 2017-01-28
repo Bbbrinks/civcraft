@@ -63,7 +63,7 @@ public class VoxelManager implements Serializable {
         if (voxelAt.isPresent()) {
             GameObject voxel = voxelAt.get();
             for (int i = 0; i < maxHeightDifference; i++) {
-                Optional<GameObject> neighbour = voxel.getComponent(Neighbour.class).get().getNeighbour(Face.TOP);
+                Optional<GameObject> neighbour = voxel.getComponent(Neighbour.class).map(n -> n.getNeighbour(Face.TOP)).orElse(Optional.empty());
                 if (!neighbour.isPresent()) {
                     return Optional.of(voxel);
                 }

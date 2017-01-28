@@ -69,7 +69,8 @@ public class AStarPathFinder implements Serializable {
 
     }
 
-    private Queue<GameObject> buildPath(AStarNode current) {
+    private Queue<GameObject> buildPath(AStarNode endNode) {
+        AStarNode current = endNode;
         List<GameObject> path = new ArrayList<>();
         path.add(current.getGameObject());
         while (current.getPrevious() != null) {

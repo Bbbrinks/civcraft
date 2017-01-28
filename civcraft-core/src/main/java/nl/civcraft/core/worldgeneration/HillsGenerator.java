@@ -28,7 +28,7 @@ public class HillsGenerator implements HeightMapGenerator {
 
     public HeightMap generateRandomHeightMap(int width, int length) {
         HeightMap heightMap = new HeightMap(width, length);
-        int iterations = (int) MathUtil.rnd(minHills, maxHills);
+        int iterations = MathUtil.rnd(minHills, maxHills);
 
         for (; iterations > 0; iterations--) {
             LOGGER.trace("Adding random hill to height map. (" + iterations + " hills left to add)");
@@ -39,8 +39,8 @@ public class HillsGenerator implements HeightMapGenerator {
     }
 
     private void addRandomHill(HeightMap heightMap) {
-        int peakX = (int) MathUtil.rnd(heightMap.getLength());
-        int peakZ = (int) MathUtil.rnd(heightMap.getWidth());
+        int peakX = MathUtil.rnd(heightMap.getLength());
+        int peakZ = MathUtil.rnd(heightMap.getWidth());
 
         float hillRadius = MathUtil.rnd(minHillRadius, maxHillRadius);
         handlePeak(peakX, peakZ, hillRadius, heightMap);
@@ -59,7 +59,7 @@ public class HillsGenerator implements HeightMapGenerator {
     private void handlePeak(int peakX, int peakZ, float hillRadius, HeightMap heightMap) {
         for (int x = 0; x < heightMap.getWidth(); x++) {
             for (int z = 0; z < heightMap.getLength(); z++) {
-                long height = Math.round((Math.pow(hillRadius, 2) - (Math.pow(x - peakX, 2) + Math.pow(z - peakZ, 2))));
+                long height = Math.round(Math.pow(hillRadius, 2) - (Math.pow((double) x - peakX, 2) + Math.pow((double) z - peakZ, 2)));
                 heightMap.addToHeight(x, z, height > 0 ? height : 0);
             }
         }

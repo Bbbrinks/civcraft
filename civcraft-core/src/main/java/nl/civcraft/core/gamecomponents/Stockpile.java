@@ -1,10 +1,14 @@
 package nl.civcraft.core.gamecomponents;
 
 import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.model.LimitedInventory;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Created by Bob on 14-8-2016.
@@ -12,35 +16,34 @@ import java.util.*;
  * This is probably not worth documenting
  */
 public class Stockpile extends AbstractGameComponent implements Serializable {
-    private final Set<GameObject> voxels;
-    private final List<GameObject> items;
+    private final Map<GameObject, Inventory> voxels;
+    private final InventoryComponent.Factory inventoryFactory;
 
     public Stockpile() {
-        this.items = new ArrayList<>();
-        voxels = new HashSet<>();
+        voxels = new HashMap<>();
+        inventoryFactory = new InventoryComponent.Factory(5);
     }
 
     public void addVoxel(GameObject voxelAt) {
-        this.voxels.add(voxelAt);
+        this.voxels.put(voxelAt, new LimitedInventory(5, voxelAt.getTransform().getTranslation().add(0, 1, 0)));
     }
 
     public Set<GameObject> getVoxels() {
-        return voxels;
-    }
-
-    public Optional<GameObject> getAvailableSpot(GameObject item) {
-        return voxels.stream().findFirst();
+        return voxels.keySet();
     }
 
     @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     public boolean addItem(GameObject item) {
-        item.getTransform().setTranslation(voxels.stream().
-                findFirst().
-                orElseThrow(() -> new IllegalStateException("Stockpile no voxels")).
-                getTransform().getTranslation().clone());
-        item.getComponent(ItemComponent.class).ifPresent(i -> i.setInInventory(true));
-        items.add(item);
-        return true;
+        return getAvailableSpot(item).
+                map(spot -> voxels.get(spot).addItem(item)).
+                orElse(false);
+    }
+
+    public Optional<GameObject> getAvailableSpot(GameObject item) {
+        return voxels.entrySet().stream().
+                filter(e -> e.getValue().hasRoom(item)).
+                map(Map.Entry::getKey).
+                findFirst();
     }
 
     @Component

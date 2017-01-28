@@ -4,6 +4,7 @@ import nl.civcraft.core.gamecomponents.*;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.npc.Civvy;
+import nl.civcraft.core.pathfinding.AStarPathFinder;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,11 +23,11 @@ public class Prefabs {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     @Qualifier("civvy")
-    public PrefabManager civvyManager(ApplicationEventPublisher applicationEventPublisher, VoxelManager voxelManager) {
+    public PrefabManager civvyManager(ApplicationEventPublisher applicationEventPublisher, VoxelManager voxelManager, AStarPathFinder aStarPathFinder) {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, null);
-        prefabManager.registerComponent(new LimitedInventory.Factory(2));
+        prefabManager.registerComponent(new InventoryComponent.Factory(2));
         prefabManager.registerComponent(new Civvy.Factory());
-        prefabManager.registerComponent(new GroundMovement.Factory(2f, voxelManager));
+        prefabManager.registerComponent(new GroundMovement.Factory(2f, voxelManager, aStarPathFinder));
         return prefabManager;
     }
 
