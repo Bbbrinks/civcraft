@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
@@ -233,6 +234,25 @@ public class NeighbourTest {
         assertThat(Neighbour.hasNeighbour(testGameObject, NeighbourDirection.LEFT), is(false));
     }
     //</editor-fold>
+
+    @Test
+    public void testGetNeighbours() {
+        GameObject right = addTestNeighbour(Vector3f.UNIT_X);
+        GameObject left = addTestNeighbour(Vector3f.UNIT_X.mult(-1));
+        testGameObject.addComponent(underTest);
+        Map<NeighbourDirection, GameObject> neighbours = underTest.getNeighbours(NeighbourDirection.RIGHT, NeighbourDirection.TOP);
+        assertThat(neighbours, hasEntry(NeighbourDirection.RIGHT, right));
+        assertThat(neighbours, not(hasKey(NeighbourDirection.LEFT)));
+        assertThat(neighbours, not(hasKey(NeighbourDirection.TOP)));
+    }
+
+    @Test
+    public void testGetDirectNeighbours() {
+        GameObject right = addTestNeighbour(Vector3f.UNIT_X);
+        testGameObject.addComponent(underTest);
+        Map<NeighbourDirection, GameObject> directNeighbours = underTest.getDirectNeighbours();
+        assertThat(directNeighbours, hasEntry(NeighbourDirection.RIGHT, right));
+    }
 
     @Test
     public void testFactory() {

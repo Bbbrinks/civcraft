@@ -11,7 +11,9 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Created by Bob on 25-11-2016.
@@ -90,16 +92,12 @@ public class VoxelManager implements Serializable {
         return chunks.stream().filter(c -> c.containsCoors(x, y, z)).findFirst();
     }
 
-    public void clearChunks() {
-        for (Chunk chunk : chunks) {
-            removeChunk(chunk);
-        }
+    public void clear() {
+        Stream.of(chunks.toArray(new Chunk[0])).forEach(this::removeChunk);
     }
 
     private void removeChunk(Chunk chunk) {
-        for (GameObject gameObject : chunk.getVoxels()) {
-            removeVoxel(gameObject);
-        }
+        Stream.of(chunk.getVoxels()).filter(Objects::nonNull).forEach(this::removeVoxel);
         chunks.remove(chunk);
     }
 
@@ -108,23 +106,15 @@ public class VoxelManager implements Serializable {
         int y = Math.round(gameObject.getTransform().getTranslation().getY());
         int z = Math.round(gameObject.getTransform().getTranslation().getZ());
         Optional<Chunk> chunkAt = getChunkAt(x, y, z);
-        if (chunkAt.isPresent()) {
-            chunkAt.get().removeVoxel(gameObject);
-        } else {
-            throw new IllegalStateException("Chunk not found");
-        }
+        chunkAt.ifPresent(chunk -> chunk.removeVoxel(gameObject));
     }
 
+    /***
+     * @deprecated The usage of chunks should not leak out of the VoxelManager abstraction
+     */
+    @Deprecated
     public Optional<Chunk> getChunkAt(GameObject voxelGameObject) {
         return getChunkAt((int) voxelGameObject.getTransform().getTranslation().getX(), (int) voxelGameObject.getTransform().getTranslation().getY(), (int) voxelGameObject.getTransform().getTranslation().getZ());
-    }
-
-    public List<GameObject> getVoxelsAt(Vector3f[] neighbourLocations) {
-        List<GameObject> foundVoxels = new ArrayList<>();
-        for (Vector3f neighbourLocation : neighbourLocations) {
-            getVoxelAt(neighbourLocation).ifPresent(foundVoxels::add);
-        }
-        return foundVoxels;
     }
 
     public Optional<GameObject> getVoxelAt(Vector3f target) {

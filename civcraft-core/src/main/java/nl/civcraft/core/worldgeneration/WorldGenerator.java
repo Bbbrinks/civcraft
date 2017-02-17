@@ -53,7 +53,7 @@ public class WorldGenerator implements Runnable {
 
         generateHeightMap();
         LOGGER.trace("End generating height map");
-        voxelManager.clearChunks();
+        voxelManager.clear();
         int chunkCount = 0;
         for (int x = 0; x < 4; x++) {
             for (int z = 0; z < 4; z++) {

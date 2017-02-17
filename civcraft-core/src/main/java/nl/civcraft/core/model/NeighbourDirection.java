@@ -2,7 +2,7 @@ package nl.civcraft.core.model;
 
 import com.jme3.math.Vector3f;
 
-import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Created by Bob on 26-11-2015.
@@ -50,13 +50,11 @@ public enum NeighbourDirection {
         this.translation = translation;
     }
 
-    public static Optional<NeighbourDirection> fromFace(Face face) {
-        for (NeighbourDirection neighbourDirection : NeighbourDirection.values()) {
-            if (neighbourDirection.getTranslation().equals(face.getTranslation())) {
-                return Optional.of(neighbourDirection);
-            }
-        }
-        return Optional.empty();
+    public static NeighbourDirection fromFace(Face face) {
+        return Stream.of(NeighbourDirection.values()).
+                filter(n -> n.getTranslation().equals(face.getTranslation())).
+                findFirst().
+                orElseThrow(() -> new IllegalStateException("Unknown face" + face));
     }
 
     public Vector3f getTranslation() {
@@ -67,7 +65,7 @@ public enum NeighbourDirection {
         return opposite;
     }
 
-    public void setOpposite(NeighbourDirection opposite) {
+    private void setOpposite(NeighbourDirection opposite) {
         this.opposite = opposite;
     }
 }
