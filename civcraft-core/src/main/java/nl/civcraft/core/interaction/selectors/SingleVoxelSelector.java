@@ -26,7 +26,7 @@ public class SingleVoxelSelector implements MouseTool {
 
     @Override
     public void handleLeftClick(boolean isPressed) {
-
+        //noop
     }
 
     @Override

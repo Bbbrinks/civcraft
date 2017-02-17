@@ -2,6 +2,7 @@ package nl.civcraft.core.model;
 
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import nl.civcraft.core.utils.MathUtil;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -90,12 +91,12 @@ public class Chunk implements Serializable {
     }
 
     public boolean containsCoors(int x, int y, int z) {
-        int chunkX = Math.round(transform.getTranslation().getX());
-        int chunkY = Math.round(transform.getTranslation().getY());
-        int chunkZ = Math.round(transform.getTranslation().getZ());
-        return chunkX <= x && chunkX + CHUNK_SIZE > x &&
-                chunkY <= y && chunkY + CHUNK_SIZE > y &&
-                chunkZ <= z && chunkZ + CHUNK_SIZE > z;
+        int roundedX = Math.round(transform.getTranslation().getX());
+        int roundedY = Math.round(transform.getTranslation().getY());
+        int roundZ = Math.round(transform.getTranslation().getZ());
+        return MathUtil.between(roundedX, x, roundedX + CHUNK_SIZE) &&
+                MathUtil.between(roundedY, y, roundedY + CHUNK_SIZE) &&
+                MathUtil.between(roundZ, z, roundZ + CHUNK_SIZE);
     }
 
     public String getName() {

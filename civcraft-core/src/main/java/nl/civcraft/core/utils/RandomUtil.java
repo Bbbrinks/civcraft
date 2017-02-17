@@ -11,6 +11,10 @@ public class RandomUtil {
 
     private static final Random randomGenerator = new Random();
 
+    private RandomUtil() {
+        //Hide default constructor
+    }
+
     public static int getNextInt(int max) {
         return randomGenerator.nextInt(max);
     }

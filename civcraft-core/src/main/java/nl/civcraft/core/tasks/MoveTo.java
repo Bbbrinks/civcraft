@@ -39,9 +39,11 @@ public class MoveTo extends Task {
             if (groundMovement.getCurrentVoxel().equals(target)) {
                 return Result.COMPLETED;
             }
-            path = groundMovement.findPath(new MoveToVoxelTarget(target));
-            if (path == null) {
+            Optional<Queue<GameObject>> pathOptional = groundMovement.findPath(new MoveToVoxelTarget(target));
+            if (!pathOptional.isPresent()) {
                 return Result.FAILED;
+            } else {
+                this.path = pathOptional.get();
             }
         }
         GameObject peek = path.peek();

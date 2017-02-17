@@ -31,6 +31,10 @@ public class MathUtil {
     public static float valueOrMin(float value, @SuppressWarnings("SameParameterValue") float min) {
         return value > min ? value : min;
     }
+
+    public static boolean between(int min, int value, int max) {
+        return min < value && max > value;
+    }
 }
 
 

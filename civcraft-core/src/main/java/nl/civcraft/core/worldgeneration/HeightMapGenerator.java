@@ -5,6 +5,7 @@ package nl.civcraft.core.worldgeneration;
  * <p>
  * This is probably not worth documenting
  */
+@FunctionalInterface
 public interface HeightMapGenerator {
 
     HeightMap generateRandomHeightMap(int width, int length);

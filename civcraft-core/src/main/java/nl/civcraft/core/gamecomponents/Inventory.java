@@ -3,6 +3,7 @@ package nl.civcraft.core.gamecomponents;
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.model.GameObject;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-public interface Inventory {
+public interface Inventory extends Serializable {
     Optional<GameObject> getFirstItem();
 
     boolean addItem(GameObject item);

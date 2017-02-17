@@ -17,11 +17,9 @@ import java.util.Set;
  */
 public class Stockpile extends AbstractGameComponent implements Serializable {
     private final Map<GameObject, Inventory> voxels;
-    private final InventoryComponent.Factory inventoryFactory;
 
     public Stockpile() {
         voxels = new HashMap<>();
-        inventoryFactory = new InventoryComponent.Factory(5);
     }
 
     public void addVoxel(GameObject voxelAt) {

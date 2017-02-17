@@ -36,11 +36,9 @@ public class ItemGravity {
     private void itemGravity(GameObject gameObject) {
         if (gameObject.getComponent(ItemComponent.class).map(i -> !i.isInInventory()).orElse(false)) {
             Optional<GameObject> groundAt = voxelManager.getGroundAt(gameObject.getTransform().getTranslation(), 30);
-            if (groundAt.isPresent()) {
-                if (groundAt.get().getTransform().getTranslation().distance(gameObject.getTransform().getTranslation()) > 0.5f) {
-                    gameObject.getTransform().setTranslation(gameObject.getTransform().getTranslation().subtract(0, 0.1f, 0));
-                    gameObject.changed();
-                }
+            if (groundAt.isPresent() && groundAt.get().getTransform().getTranslation().distance(gameObject.getTransform().getTranslation()) > 0.5f) {
+                gameObject.getTransform().setTranslation(gameObject.getTransform().getTranslation().subtract(0, 0.1f, 0));
+                gameObject.changed();
             }
         }
     }

@@ -11,9 +11,9 @@ import java.util.concurrent.LinkedBlockingDeque;
 @Component
 public class AStarPathFinder implements Serializable {
 
-    public Queue<GameObject> findPath(GameObject civvy, GameObject start, PathFindingTarget target) {
+    public Optional<Queue<GameObject>> findPath(GameObject civvy, GameObject start, PathFindingTarget target) {
         if (start.equals(target)) {
-            return new LinkedBlockingDeque<>();
+            return Optional.of(new LinkedBlockingDeque<>());
         }
 
         Set<AStarNode> openList = new HashSet<>();
@@ -49,14 +49,14 @@ public class AStarPathFinder implements Serializable {
             }
 
             if (openList.isEmpty()) {
-                return new LinkedBlockingDeque<>();
+                return Optional.of(new LinkedBlockingDeque<>());
             }
             done = target.isReached(civvy, current);
         }
         if (done) {
-            return buildPath(current);
+            return Optional.of(buildPath(current));
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 

@@ -49,7 +49,6 @@ public class Neighbour extends AbstractGameComponent {
         return neighbours;
     }
 
-    //TODO move this out of Neighbour class
     public List<GameObject> getEnterableNeighbours() {
         List<GameObject> enterableNeighbours = neighbours.entrySet().stream().
                 filter(v -> !hasNeighbour(v.getValue(), Face.TOP)).

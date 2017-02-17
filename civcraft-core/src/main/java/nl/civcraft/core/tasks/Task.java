@@ -2,8 +2,6 @@ package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.Serializable;
 
@@ -13,8 +11,6 @@ import java.io.Serializable;
  * This is probably not worth documenting
  */
 public abstract class Task implements Serializable {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private State state;
 

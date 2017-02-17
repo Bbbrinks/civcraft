@@ -19,8 +19,6 @@ public class TickManager {
 
     @Scheduled(fixedRate = 100)
     public void tick() {
-        //TODO: implement pause mechanic
-            publisher.publishEvent(new Tick(this));
-
+        publisher.publishEvent(new Tick(this));
     }
 }

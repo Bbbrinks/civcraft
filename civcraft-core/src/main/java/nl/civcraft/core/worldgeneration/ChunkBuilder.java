@@ -37,22 +37,26 @@ public class ChunkBuilder {
         for (int x = chunkMinX; x < chunkMinX + Chunk.CHUNK_SIZE; x++) {
             for (int z = chunkMinZ; z < chunkMinZ + Chunk.CHUNK_SIZE; z++) {
                 int voxelY = (int) heightMap.getHeight(x, z);
-                for (int y = 0; y <= voxelY; y++) {
-                    Transform transform = new Transform(new Vector3f(x, y, z));
-                    int rnd = MathUtil.rnd(8) - 1;
-                    GameObject build;
-                    if (voxelY - y - rnd > 0) {
-                        build = cobbleStone.build(transform, true);
-                    } else {
-                        if (voxelY == y) {
-                            build = grass.build(transform, true);
-                        } else {
-                            build = dirt.build(transform, true);
-                        }
-                    }
-                    build.getComponent(Voxel.class).ifPresent(Voxel::place);
+                fillToBedrock(x, z, voxelY);
+            }
+        }
+    }
+
+    private void fillToBedrock(int x, int z, int voxelY) {
+        for (int y = 0; y <= voxelY; y++) {
+            Transform transform = new Transform(new Vector3f(x, y, z));
+            int rnd = MathUtil.rnd(8) - 1;
+            GameObject build;
+            if (voxelY - y - rnd > 0) {
+                build = cobbleStone.build(transform, true);
+            } else {
+                if (voxelY == y) {
+                    build = grass.build(transform, true);
+                } else {
+                    build = dirt.build(transform, true);
                 }
             }
+            build.getComponent(Voxel.class).ifPresent(Voxel::place);
         }
     }
 }

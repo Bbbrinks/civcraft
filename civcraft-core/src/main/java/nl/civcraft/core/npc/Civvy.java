@@ -16,10 +16,6 @@ public class Civvy extends AbstractGameComponent {
     private TaskManager taskManager;
     private Task task;
 
-
-    public Civvy() {
-    }
-
     public void subscribe(TaskManager taskManager) {
         this.taskManager = taskManager;
         taskManager.addSubscriber(this);

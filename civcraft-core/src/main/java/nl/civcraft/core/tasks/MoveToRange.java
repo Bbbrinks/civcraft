@@ -38,9 +38,11 @@ public class MoveToRange extends Task {
         }
         this.currentGameObject = target;
         if (path == null) {
-            path = groundMovement.findPath(new MoveInRangeOfVoxelTarget(range, this.target));
-            if (path == null) {
+            Optional<Queue<GameObject>> pathOptional = groundMovement.findPath(new MoveInRangeOfVoxelTarget(range, this.target));
+            if (!pathOptional.isPresent()) {
                 return Result.FAILED;
+            } else {
+                this.path = pathOptional.get();
             }
         }
         GameObject peek = path.peek();

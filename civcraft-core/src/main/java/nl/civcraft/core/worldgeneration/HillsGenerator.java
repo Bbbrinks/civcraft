@@ -26,6 +26,7 @@ public class HillsGenerator implements HeightMapGenerator {
         this.maxHills = maxHills;
     }
 
+    @Override
     public HeightMap generateRandomHeightMap(int width, int length) {
         HeightMap heightMap = new HeightMap(width, length);
         int iterations = MathUtil.rnd(minHills, maxHills);

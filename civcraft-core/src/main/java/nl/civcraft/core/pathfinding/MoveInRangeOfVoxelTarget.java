@@ -3,8 +3,6 @@ package nl.civcraft.core.pathfinding;
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Created by Bob on 22-3-2016.
@@ -13,7 +11,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class MoveInRangeOfVoxelTarget implements PathFindingTarget {
 
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final float range;
     private final GameObject target;

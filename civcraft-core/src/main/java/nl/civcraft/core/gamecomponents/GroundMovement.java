@@ -64,7 +64,7 @@ public class GroundMovement extends AbstractGameComponent {
         setCurrentVoxel(groundVoxel);
     }
 
-    public Queue<GameObject> findPath(PathFindingTarget moveToVoxelTarget) {
+    public Optional<Queue<GameObject>> findPath(PathFindingTarget moveToVoxelTarget) {
         return aStarPathFinder.findPath(gameObject, getCurrentVoxel(), moveToVoxelTarget);
     }
 

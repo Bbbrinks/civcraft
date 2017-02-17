@@ -78,10 +78,12 @@ public class LimitedInventory implements Inventory {
         return false;
     }
 
+    @Override
     public Vector3f getLocation() {
         return location;
     }
 
+    @Override
     public void setLocation(Vector3f location) {
         this.location = location;
     }
