@@ -46,9 +46,7 @@ public class Prefabs {
     @Qualifier("block")
     public PrefabManager blockManager(ApplicationEventPublisher applicationEventPublisher, Neighbour.Factory
             neighbourComponent) {
-        PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, null);
-        prefabManager.registerComponent(neighbourComponent);
-        return prefabManager;
+        return new PrefabManager(applicationEventPublisher, null);
     }
 
     @Bean

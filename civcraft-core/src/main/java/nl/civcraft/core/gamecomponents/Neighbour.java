@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 //TODO: maybe merge this with voxels as they are the only objects that have neighbours now?.. Consider that neighbour is used by AStar
 public class Neighbour extends AbstractGameComponent {
 
+    protected final VoxelManager voxelManager;
     private final Map<NeighbourDirection, GameObject> neighbours;
-    private final VoxelManager voxelManager;
     public Neighbour(VoxelManager voxelManager) {
         this.voxelManager = voxelManager;
         neighbours = new EnumMap<>(NeighbourDirection.class);
@@ -34,6 +34,10 @@ public class Neighbour extends AbstractGameComponent {
         return gameObject.getComponent(Neighbour.class).
                 map(n -> n.getNeighbour(neighbourDirection)).
                 orElse(Optional.empty());
+    }
+
+    public Optional<GameObject> getNeighbour(NeighbourDirection neighbourDirection) {
+        return Optional.ofNullable(neighbours.get(neighbourDirection));
     }
 
     @Override
@@ -70,17 +74,6 @@ public class Neighbour extends AbstractGameComponent {
                 orElse(false);
     }
 
-    public Optional<GameObject> getNeighbour(NeighbourDirection neighbourDirection) {
-        return Optional.ofNullable(neighbours.get(neighbourDirection));
-    }
-
-    public Map<NeighbourDirection, GameObject> getNeighbours(NeighbourDirection... neighbourDirections) {
-        List<NeighbourDirection> neighbourDirections1 = Arrays.asList(neighbourDirections);
-        return neighbours.entrySet().stream().
-                filter(e -> neighbourDirections1.contains(e.getKey())).
-                collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
     private void addNeighbour(NeighbourDirection neighbourDirection, GameObject gameObject) {
         boolean isNew = !neighbours.containsValue(gameObject);
         neighbours.put(neighbourDirection, gameObject);
@@ -96,6 +89,17 @@ public class Neighbour extends AbstractGameComponent {
         }
     }
 
+    public Map<NeighbourDirection, GameObject> getDirectNeighbours() {
+        return getNeighbours(NeighbourDirection.BACK, NeighbourDirection.FRONT, NeighbourDirection.LEFT, NeighbourDirection.RIGHT,
+                NeighbourDirection.TOP, NeighbourDirection.BOTTOM);
+    }
+
+    public Map<NeighbourDirection, GameObject> getNeighbours(NeighbourDirection... neighbourDirections) {
+        List<NeighbourDirection> neighbourDirections1 = Arrays.asList(neighbourDirections);
+        return neighbours.entrySet().stream().
+                filter(e -> neighbourDirections1.contains(e.getKey())).
+                collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
 
     @Component
     public static class Factory implements GameComponentFactory<Neighbour> {

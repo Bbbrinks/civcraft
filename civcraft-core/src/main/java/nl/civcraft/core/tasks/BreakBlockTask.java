@@ -41,6 +41,6 @@ public class BreakBlockTask extends MoveToRange {
 
     @Override
     public boolean canBeHandledBy(Civvy civvy) {
-        return target.getComponent(Neighbour.class).map(n -> n.getNeighbours().size() < 6).orElse(false);
+        return target.getComponent(Neighbour.class).map(n -> n.getDirectNeighbours().size() < 6).orElse(false);
     }
 }

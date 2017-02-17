@@ -2,6 +2,7 @@ package nl.civcraft.core.managers;
 
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.gamecomponents.Neighbour;
+import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.NeighbourDirection;
@@ -27,6 +28,9 @@ public class VoxelManager implements Serializable {
     }
 
     public void addVoxel(GameObject voxel) {
+        if (!voxel.hasComponent(Voxel.class)) {
+            throw new IllegalStateException("Gameobject was not a voxel");
+        }
         Optional<GameObject> voxelAt = getVoxelAt(voxel.getTransform().getTranslation());
         if (!voxelAt.isPresent()) {
             int x = Math.round(voxel.getTransform().getTranslation().getX());
@@ -41,10 +45,6 @@ public class VoxelManager implements Serializable {
             addVoxel(voxel);
         }
 
-    }
-
-    public List<Chunk> getChunks() {
-        return chunks;
     }
 
     private Chunk addChunkAt(int x, int y, int z) {
@@ -62,7 +62,7 @@ public class VoxelManager implements Serializable {
         Optional<GameObject> voxelAt = getVoxelAt(x, y, z);
         if (voxelAt.isPresent()) {
             GameObject voxel = voxelAt.get();
-            for (int i = 0; i < maxHeightDifference; i++) {
+            for (int i = 0; i <= maxHeightDifference; i++) {
                 Optional<GameObject> neighbour = voxel.getComponent(Neighbour.class).map(n -> n.getNeighbour(NeighbourDirection.TOP)).orElse(Optional.empty());
                 if (!neighbour.isPresent()) {
                     return Optional.of(voxel);
@@ -70,7 +70,7 @@ public class VoxelManager implements Serializable {
                 voxel = neighbour.get();
             }
         } else {
-            for (int i = 1; i < maxHeightDifference; i++) {
+            for (int i = 1; i <= maxHeightDifference; i++) {
                 Optional<GameObject> voxelAt1 = getVoxelAt(x, y - i, z);
                 if (voxelAt1.isPresent()) {
                     return voxelAt1;

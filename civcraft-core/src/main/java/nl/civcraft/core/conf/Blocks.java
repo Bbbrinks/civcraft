@@ -31,8 +31,9 @@ public class Blocks {
     public PrefabManager grassManager(ApplicationEventPublisher applicationEventPublisher, @Qualifier("block") PrefabManager blockManager, VoxelManager
             voxelManager, VoxelRenderer.StaticVoxelRendererFactory voxelRenderer) {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, blockManager);
-        Voxel.Factory voxel = new Voxel.Factory("grass", voxelManager, voxelRenderer);
+        Voxel.Factory voxel = new Voxel.Factory("grass", voxelManager);
         prefabManager.registerComponent(voxel);
+        prefabManager.registerComponent(voxelRenderer);
         return prefabManager;
     }
 
@@ -41,8 +42,9 @@ public class Blocks {
     @Qualifier("cobbleStone")
     public PrefabManager cobbleStoneManager(ApplicationEventPublisher applicationEventPublisher, @Qualifier("block") PrefabManager blockManager, VoxelManager voxelManager, VoxelRenderer.StaticVoxelRendererFactory voxelRenderer) {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, blockManager);
-        Voxel.Factory voxel = new Voxel.Factory("cobbleStone", voxelManager, voxelRenderer);
+        Voxel.Factory voxel = new Voxel.Factory("cobbleStone", voxelManager);
         prefabManager.registerComponent(voxel);
+        prefabManager.registerComponent(voxelRenderer);
         return prefabManager;
     }
 
@@ -51,8 +53,9 @@ public class Blocks {
     @Qualifier("dirt")
     public PrefabManager dirtManager(ApplicationEventPublisher applicationEventPublisher, @Qualifier("block") PrefabManager blockManager, VoxelManager voxelManager, VoxelRenderer.StaticVoxelRendererFactory voxelRenderer) {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, blockManager);
-        Voxel.Factory voxel = new Voxel.Factory("dirt", voxelManager, voxelRenderer);
+        Voxel.Factory voxel = new Voxel.Factory("dirt", voxelManager);
         prefabManager.registerComponent(voxel);
+        prefabManager.registerComponent(voxelRenderer);
         return prefabManager;
     }
 
@@ -63,8 +66,9 @@ public class Blocks {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, blockManager);
         Function<GameObject, String> stateSupplier = (GameObject gameObject) -> gameObject.getComponent(InventoryComponent.class).map(i -> i.isEmpty() ? "empty" :
                 "not-empty").orElse("empty");
-        Voxel.Factory voxel = new Voxel.Factory("treeLeaf", voxelManager, voxelRenderer.build(stateSupplier));
+        Voxel.Factory voxel = new Voxel.Factory("treeLeaf", voxelManager);
         prefabManager.registerComponent(voxel);
+        prefabManager.registerComponent(voxelRenderer.build(stateSupplier));
         prefabManager.registerComponent(new InventoryComponent.Factory(4));
         prefabManager.registerComponent(new HarvestFromInventory.Factory());
         prefabManager.registerComponent(new RandomItemGenerator.Factory(4, itemManager));
@@ -76,9 +80,9 @@ public class Blocks {
     @Qualifier("treeTrunk")
     public PrefabManager treeTrunkManager(ApplicationEventPublisher applicationEventPublisher, @Qualifier("block") PrefabManager blockManager, VoxelManager voxelManager, VoxelRenderer.StaticVoxelRendererFactory voxelRenderer) {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, blockManager);
-        Voxel.Factory voxel = new Voxel.Factory("treeTrunk", voxelManager, voxelRenderer);
+        Voxel.Factory voxel = new Voxel.Factory("treeTrunk", voxelManager);
         prefabManager.registerComponent(voxel);
-
+        prefabManager.registerComponent(voxelRenderer);
         return prefabManager;
     }
 }

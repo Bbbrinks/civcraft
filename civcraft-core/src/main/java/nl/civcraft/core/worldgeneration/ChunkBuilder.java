@@ -56,7 +56,7 @@ public class ChunkBuilder {
                     build = dirt.build(transform, true);
                 }
             }
-            build.getComponent(Voxel.class).ifPresent(Voxel::place);
+            build.getComponent(Voxel.class);
         }
     }
 }

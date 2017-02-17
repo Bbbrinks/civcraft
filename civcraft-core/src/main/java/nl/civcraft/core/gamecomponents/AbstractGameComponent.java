@@ -22,7 +22,7 @@ public abstract class AbstractGameComponent implements GameComponent {
 
     @Override
     public void destroyed() {
-        this.gameObject = null;
+        this.removeFrom(gameObject);
     }
 
     @Override
