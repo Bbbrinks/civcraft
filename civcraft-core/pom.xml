@@ -50,6 +50,11 @@
             <version>${jmonkey-version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.spotify</groupId>
+            <artifactId>hamcrest-optional</artifactId>
+        </dependency>
+
 
     </dependencies>
 </project>

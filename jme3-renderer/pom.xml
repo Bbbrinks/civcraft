@@ -14,31 +14,6 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.jmonkeyengine</groupId>
-                <artifactId>jme3-core</artifactId>
-                <version>${jmonkey-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jmonkeyengine</groupId>
-                <artifactId>jme3-desktop</artifactId>
-                <version>${jmonkey-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jmonkeyengine</groupId>
-                <artifactId>jme3-lwjgl</artifactId>
-                <version>${jmonkey-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jmonkeyengine</groupId>
-                <artifactId>jme3-effects</artifactId>
-                <version>${jmonkey-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jmonkeyengine</groupId>
-                <artifactId>jme3-terrain</artifactId>
-                <version>${jmonkey-version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.simsilica</groupId>
                 <artifactId>lemur</artifactId>
                 <version>1.8.1</version>

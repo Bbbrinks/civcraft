@@ -5,6 +5,7 @@ import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.model.NeighbourDirection;
 import nl.civcraft.jme3.model.RenderedVoxelFace;
 import nl.civcraft.jme3.rendering.VoxelRendererControl;
 
@@ -51,6 +52,8 @@ public abstract class VoxelRenderer extends AbstractGameComponent implements nl.
     }
 
     public boolean isVisible() {
-        return gameObject.getComponent(Neighbour.class).map(n -> n.getNeighbours().size() < 6).orElse(true);
+        return gameObject.getComponent(Neighbour.class).map(n -> n.getNeighbours(NeighbourDirection.BACK, NeighbourDirection.FRONT, NeighbourDirection.LEFT, NeighbourDirection.RIGHT,
+                NeighbourDirection.TOP, NeighbourDirection.BOTTOM).size() < 6)
+                .orElse(true);
     }
 }

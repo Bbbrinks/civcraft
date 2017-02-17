@@ -1,8 +1,8 @@
 package nl.civcraft.core.gamecomponents;
 
 import nl.civcraft.core.managers.VoxelManager;
-import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.model.NeighbourDirection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,99 +17,75 @@ import java.util.stream.Collectors;
 //TODO: maybe merge this with voxels as they are the only objects that have neighbours now?.. Consider that neighbour is used by AStar
 public class Neighbour extends AbstractGameComponent {
 
-    private final Map<Face, GameObject> neighbours;
+    private final Map<NeighbourDirection, GameObject> neighbours;
     private final VoxelManager voxelManager;
-
     public Neighbour(VoxelManager voxelManager) {
         this.voxelManager = voxelManager;
-        neighbours = new EnumMap<>(Face.class);
+        neighbours = new EnumMap<>(NeighbourDirection.class);
     }
 
-    public static Map<Face, GameObject> getNeighbours(GameObject gameObject) {
+    public static Map<NeighbourDirection, GameObject> getNeighbours(GameObject gameObject) {
         return gameObject.getComponent(Neighbour.class).
                 map(Neighbour::getNeighbours).
                 orElse(Collections.emptyMap());
     }
 
+    public static Optional<GameObject> getNeighbour(GameObject gameObject, NeighbourDirection neighbourDirection) {
+        return gameObject.getComponent(Neighbour.class).
+                map(n -> n.getNeighbour(neighbourDirection)).
+                orElse(Optional.empty());
+    }
+
     @Override
     public void addTo(GameObject gameObject) {
         super.addTo(gameObject);
-        for (Face face : Face.values()) {
-            voxelManager.getVoxelAt(getGameObject().getTransform().getTranslation().add(face.getTranslation())).ifPresent(v -> addNeighbour(face, v));
+        for (NeighbourDirection neighbourDirection : NeighbourDirection.values()) {
+            voxelManager.getVoxelAt(getGameObject().getTransform().getTranslation().add(neighbourDirection.getTranslation())).ifPresent(v -> addNeighbour(neighbourDirection, v));
         }
     }
 
     @Override
     public void destroyed() {
-        neighbours.values().stream().filter(Objects::nonNull).forEach(n -> n.getComponent(Neighbour.class).ifPresent(on -> on.removeNeighbour(getGameObject())));
+        neighbours.values().
+                forEach(n -> n.getComponent(Neighbour.class).
+                        ifPresent(on -> on.removeNeighbour(getGameObject()))
+                );
         super.destroyed();
     }
 
-    public Map<Face, GameObject> getNeighbours() {
+    public Map<NeighbourDirection, GameObject> getNeighbours() {
         return neighbours;
     }
 
     public List<GameObject> getEnterableNeighbours() {
-        List<GameObject> enterableNeighbours = neighbours.entrySet().stream().
-                filter(v -> !hasNeighbour(v.getValue(), Face.TOP)).
+        return neighbours.entrySet().stream().
+                filter(v -> !hasNeighbour(v.getValue(), NeighbourDirection.TOP)).
                 map(Map.Entry::getValue).collect(Collectors.toList());
-        List<GameObject> verticalDiagonals = new ArrayList<>();
-        for (GameObject enterableNeighbour : getNeighbours(Face.BACK, Face.FRONT, Face.LEFT, Face.RIGHT)) {
-            if (enterableNeighbour != null) {
-                Optional<GameObject> neighbour = getNeighbour(enterableNeighbour, Face.TOP);
-                if (neighbour.isPresent() && !hasNeighbour(neighbour.get(), Face.TOP)) {
-                    verticalDiagonals.add(neighbour.get());
-                }
-            }
-        }
-        Optional<GameObject> bottom = getNeighbour(Face.BOTTOM);
-        if (bottom.isPresent()) {
-            for (GameObject neighbour : getNeighbours(bottom.get(), Face.BACK, Face.FRONT, Face.LEFT, Face.RIGHT)) {
-                if (neighbour != null && !getNeighbour(neighbour, Face.TOP).isPresent()) {
-                    verticalDiagonals.add(neighbour);
-                }
-            }
-        }
-        enterableNeighbours.addAll(verticalDiagonals);
-        return enterableNeighbours;
     }
 
-    public static Boolean hasNeighbour(GameObject gameObject, Face face) {
+    public static Boolean hasNeighbour(GameObject gameObject, NeighbourDirection neighbourDirection) {
         return gameObject.
                 getComponent(Neighbour.class).
-                map(neighbourComponent -> neighbourComponent.getNeighbour(face).isPresent()).
+                map(neighbourComponent -> neighbourComponent.getNeighbour(neighbourDirection).isPresent()).
                 orElse(false);
     }
 
-    private List<GameObject> getNeighbours(Face... faces) {
-        List<GameObject> foundNeighbours = new ArrayList<>();
-        for (Face face : faces) {
-            getNeighbour(face).ifPresent(foundNeighbours::add);
-        }
-        return foundNeighbours;
+    public Optional<GameObject> getNeighbour(NeighbourDirection neighbourDirection) {
+        return Optional.ofNullable(neighbours.get(neighbourDirection));
     }
 
-    public static Optional<GameObject> getNeighbour(GameObject gameObject, Face face) {
-        return gameObject.getComponent(Neighbour.class).
-                map(n -> n.getNeighbour(face)).
-                orElse(Optional.empty());
+    public Map<NeighbourDirection, GameObject> getNeighbours(NeighbourDirection... neighbourDirections) {
+        List<NeighbourDirection> neighbourDirections1 = Arrays.asList(neighbourDirections);
+        return neighbours.entrySet().stream().
+                filter(e -> neighbourDirections1.contains(e.getKey())).
+                collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    public Optional<GameObject> getNeighbour(Face face) {
-        return Optional.ofNullable(neighbours.get(face));
-    }
-
-    private static List<GameObject> getNeighbours(GameObject gameObject, Face... faces) {
-        return gameObject.getComponent(Neighbour.class).
-                map(n -> n.getNeighbours(faces)).
-                orElse(Collections.emptyList());
-    }
-
-    private void addNeighbour(Face face, GameObject gameObject) {
+    private void addNeighbour(NeighbourDirection neighbourDirection, GameObject gameObject) {
         boolean isNew = !neighbours.containsValue(gameObject);
-        neighbours.put(face, gameObject);
+        neighbours.put(neighbourDirection, gameObject);
         if (isNew) {
-            gameObject.getComponent(Neighbour.class).ifPresent(n -> n.addNeighbour(face.getOpposite(), this.getGameObject()));
+            gameObject.getComponent(Neighbour.class).ifPresent(n -> n.addNeighbour(neighbourDirection.getOpposite(), this.getGameObject()));
         }
     }
 
@@ -120,11 +96,6 @@ public class Neighbour extends AbstractGameComponent {
         }
     }
 
-    public void remove() {
-        for (GameObject neighbour : neighbours.values()) {
-            neighbour.getComponent(Neighbour.class).ifPresent(n -> removeNeighbour(this.getGameObject()));
-        }
-    }
 
     @Component
     public static class Factory implements GameComponentFactory<Neighbour> {

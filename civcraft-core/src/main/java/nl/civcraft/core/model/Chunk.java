@@ -93,10 +93,10 @@ public class Chunk implements Serializable {
     public boolean containsCoors(int x, int y, int z) {
         int roundedX = Math.round(transform.getTranslation().getX());
         int roundedY = Math.round(transform.getTranslation().getY());
-        int roundZ = Math.round(transform.getTranslation().getZ());
+        int roundedZ = Math.round(transform.getTranslation().getZ());
         return MathUtil.between(roundedX, x, roundedX + CHUNK_SIZE) &&
                 MathUtil.between(roundedY, y, roundedY + CHUNK_SIZE) &&
-                MathUtil.between(roundZ, z, roundZ + CHUNK_SIZE);
+                MathUtil.between(roundedZ, z, roundedZ + CHUNK_SIZE);
     }
 
     public String getName() {

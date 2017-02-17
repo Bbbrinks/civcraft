@@ -3,8 +3,8 @@ package nl.civcraft.core.managers;
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.model.Chunk;
-import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.model.NeighbourDirection;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -63,7 +63,7 @@ public class VoxelManager implements Serializable {
         if (voxelAt.isPresent()) {
             GameObject voxel = voxelAt.get();
             for (int i = 0; i < maxHeightDifference; i++) {
-                Optional<GameObject> neighbour = voxel.getComponent(Neighbour.class).map(n -> n.getNeighbour(Face.TOP)).orElse(Optional.empty());
+                Optional<GameObject> neighbour = voxel.getComponent(Neighbour.class).map(n -> n.getNeighbour(NeighbourDirection.TOP)).orElse(Optional.empty());
                 if (!neighbour.isPresent()) {
                     return Optional.of(voxel);
                 }

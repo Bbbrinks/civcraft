@@ -33,7 +33,7 @@ public class MathUtil {
     }
 
     public static boolean between(int min, int value, int max) {
-        return min < value && max > value;
+        return min <= value && max > value;
     }
 }
 

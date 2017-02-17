@@ -22,6 +22,10 @@
             <version>1.10.19</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jmonkeyengine</groupId>
+            <artifactId>jme3-core</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

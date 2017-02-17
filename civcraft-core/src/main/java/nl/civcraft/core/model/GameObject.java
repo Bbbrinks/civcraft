@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by Bob on 25-3-2016.
@@ -65,5 +66,13 @@ public class GameObject implements Serializable {
 
     public <T extends GameComponent> boolean hasComponent(Class<T> componentClass) {
         return getComponent(componentClass).isPresent();
+    }
+
+    @Override
+    public String toString() {
+        return "GameObject{" +
+                "transform=" + transform +
+                ", components=" + components.stream().map(c -> c.getClass().getSimpleName()).collect(Collectors.joining()) +
+                '}';
     }
 }

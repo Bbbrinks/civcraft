@@ -5,8 +5,8 @@ import nl.civcraft.core.interaction.selectors.GroundRectangleSelector;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.managers.VoxelManager;
-import nl.civcraft.core.model.Face;
 import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.model.NeighbourDirection;
 import nl.civcraft.core.tasks.BreakBlockTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -49,9 +49,9 @@ public class LevelGroundTool extends GroundRectangleSelector {
     @Override
     protected void handleSelection(GameObject voxel) {
         GameObject currentGround = voxel;
-        while (Neighbour.hasNeighbour(currentGround, Face.BOTTOM) && currentGround.getTransform().getTranslation().getY() > startingVoxel.getTransform().getTranslation().getY()) {
+        while (Neighbour.hasNeighbour(currentGround, NeighbourDirection.BOTTOM) && currentGround.getTransform().getTranslation().getY() > startingVoxel.getTransform().getTranslation().getY()) {
             tasks.add(new BreakBlockTask(currentGround));
-            Optional<GameObject> neighbour = Neighbour.getNeighbour(currentGround, Face.BOTTOM);
+            Optional<GameObject> neighbour = Neighbour.getNeighbour(currentGround, NeighbourDirection.BOTTOM);
             if (neighbour.isPresent()) {
                 currentGround = neighbour.get();
             } else {
