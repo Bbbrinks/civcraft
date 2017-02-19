@@ -12,12 +12,16 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class AStarPathFinder implements Serializable {
 
     public Optional<Queue<GameObject>> findPath(GameObject civvy, GameObject start, PathFindingTarget target) {
-        if (start.equals(target)) {
-            return Optional.of(new LinkedBlockingDeque<>());
+        AStarNode startNode = new AStarNode(start);
+        if (target.isReached(civvy, startNode)) {
+            LinkedBlockingDeque<GameObject> path = new LinkedBlockingDeque<>();
+            path.add(start);
+            return Optional.of(path);
         }
 
         Set<AStarNode> openList = new HashSet<>();
-        openList.add(new AStarNode(start));
+
+        openList.add(startNode);
         Set<AStarNode> closedList = new HashSet<>();
         AStarNode current = null;
         boolean done = false;
@@ -47,11 +51,11 @@ public class AStarPathFinder implements Serializable {
                     }
                 }
             }
-
-            if (openList.isEmpty()) {
-                return Optional.of(new LinkedBlockingDeque<>());
-            }
             done = target.isReached(civvy, current);
+            if (openList.isEmpty() && !done) {
+                return Optional.empty();
+            }
+
         }
         if (done) {
             return Optional.of(buildPath(current));
@@ -81,16 +85,5 @@ public class AStarPathFinder implements Serializable {
         Queue<GameObject> reversed = new LinkedBlockingDeque<>();
         reversed.addAll(path);
         return reversed;
-    }
-
-    private void expandSearchArea(Set<GameObject> openList, Set<GameObject> closedList) {
-        List<GameObject> newNeighbours = new ArrayList<>();
-        for (GameObject voxel : openList) {
-            if (!closedList.contains(voxel)) {
-                newNeighbours.addAll(voxel.getComponent(Neighbour.class).map(Neighbour::getEnterableNeighbours).orElse(Collections.emptyList()));
-                closedList.add(voxel);
-            }
-        }
-        openList.addAll(newNeighbours);
     }
 }
