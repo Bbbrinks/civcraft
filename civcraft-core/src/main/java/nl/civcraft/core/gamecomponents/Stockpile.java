@@ -1,5 +1,6 @@
 package nl.civcraft.core.gamecomponents;
 
+import com.jme3.math.Vector3f;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.LimitedInventory;
 import org.springframework.stereotype.Component;
@@ -23,17 +24,22 @@ public class Stockpile extends AbstractGameComponent implements Serializable {
     }
 
     public void addVoxel(GameObject voxelAt) {
-        this.voxels.put(voxelAt, new LimitedInventory(5, voxelAt.getTransform().getTranslation().add(0, 1, 0)));
+        this.voxels.put(voxelAt, new LimitedInventory(5));
     }
 
     public Set<GameObject> getVoxels() {
         return voxels.keySet();
     }
 
-    @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     public boolean addItem(GameObject item) {
         return getAvailableSpot(item).
-                map(spot -> voxels.get(spot).addItem(item)).
+                map(spot -> {
+                    if (voxels.get(spot).addItem(item)) {
+                        item.getTransform().setTranslation(spot.getTransform().getTranslation().add(Vector3f.UNIT_Y));
+                        return true;
+                    }
+                    return false;
+                }).
                 orElse(false);
     }
 

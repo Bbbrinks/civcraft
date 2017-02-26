@@ -1,6 +1,5 @@
 package nl.civcraft.core.model;
 
-import com.jme3.math.Vector3f;
 import nl.civcraft.core.gamecomponents.Inventory;
 import nl.civcraft.core.gamecomponents.ItemComponent;
 
@@ -14,11 +13,9 @@ import java.util.Optional;
  */
 public class LimitedInventory implements Inventory {
     private final GameObject[] items;
-    private Vector3f location;
 
-    public LimitedInventory(int size, Vector3f location) {
+    public LimitedInventory(int size) {
         items = new GameObject[size];
-        this.location = location;
     }
 
     @Override
@@ -35,7 +32,6 @@ public class LimitedInventory implements Inventory {
     @Override
     public boolean addItem(GameObject item) {
         ItemComponent itemComponent = item.getComponent(ItemComponent.class).map(i -> i).orElseThrow(() -> new IllegalStateException("Not an item"));
-        item.getTransform().setTranslation(location);
         for (int i = 0; i < items.length; i++) {
             GameObject slotItem = items[i];
             if (slotItem == null) {
@@ -76,15 +72,5 @@ public class LimitedInventory implements Inventory {
             }
         }
         return false;
-    }
-
-    @Override
-    public Vector3f getLocation() {
-        return location;
-    }
-
-    @Override
-    public void setLocation(Vector3f location) {
-        this.location = location;
     }
 }

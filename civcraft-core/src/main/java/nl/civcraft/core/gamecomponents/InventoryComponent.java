@@ -24,6 +24,7 @@ public class InventoryComponent extends AbstractGameComponent implements GameCom
     }
 
     public boolean addItem(GameObject item) {
+        item.getTransform().setTranslation(getGameObject().getTransform().getTranslation().clone());
         return inventory.addItem(item);
     }
 
@@ -32,6 +33,7 @@ public class InventoryComponent extends AbstractGameComponent implements GameCom
     }
 
     public void remove(GameObject item) {
+        item.getTransform().setTranslation(getGameObject().getTransform().getTranslation().add(Vector3f.UNIT_Y));
         inventory.remove(item);
     }
 
@@ -42,13 +44,11 @@ public class InventoryComponent extends AbstractGameComponent implements GameCom
     @Override
     public void addTo(GameObject gameObject) {
         super.addTo(gameObject);
-        inventory.setLocation(gameObject.getTransform().getTranslation());
     }
 
     @Override
     public void changed() {
         super.changed();
-        inventory.setLocation(gameObject.getTransform().getTranslation());
     }
 
     public static class Factory implements GameComponentFactory<InventoryComponent> {
@@ -60,7 +60,7 @@ public class InventoryComponent extends AbstractGameComponent implements GameCom
 
         @Override
         public InventoryComponent build() {
-            return new InventoryComponent(new LimitedInventory(size, Vector3f.UNIT_XYZ));
+            return new InventoryComponent(new LimitedInventory(size));
         }
 
         @Override
