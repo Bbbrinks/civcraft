@@ -1,9 +1,6 @@
 package nl.civcraft.core.conf;
 
-import nl.civcraft.core.gamecomponents.HarvestFromInventory;
-import nl.civcraft.core.gamecomponents.InventoryComponent;
-import nl.civcraft.core.gamecomponents.RandomItemGenerator;
-import nl.civcraft.core.gamecomponents.Voxel;
+import nl.civcraft.core.gamecomponents.*;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
@@ -15,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -28,12 +27,18 @@ public class Blocks {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     @Qualifier("grass")
-    public PrefabManager grassManager(ApplicationEventPublisher applicationEventPublisher, @Qualifier("block") PrefabManager blockManager, VoxelManager
-            voxelManager, VoxelRenderer.StaticVoxelRendererFactory voxelRenderer) {
+    public PrefabManager grassManager(ApplicationEventPublisher applicationEventPublisher,
+                                      @Qualifier("block") PrefabManager blockManager,
+                                      @Qualifier("grassItem") PrefabManager itemManager,
+                                      VoxelManager voxelManager,
+                                      VoxelRenderer.StaticVoxelRendererFactory voxelRenderer) {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, blockManager);
         Voxel.Factory voxel = new Voxel.Factory("grass", voxelManager);
         prefabManager.registerComponent(voxel);
         prefabManager.registerComponent(voxelRenderer);
+        Map<PrefabManager, Integer> drops = new HashMap<>();
+        drops.put(itemManager, 1);
+        prefabManager.registerComponent(new DropOnDestoyed.Factory(drops));
         return prefabManager;
     }
 

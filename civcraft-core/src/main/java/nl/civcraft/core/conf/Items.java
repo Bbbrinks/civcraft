@@ -28,4 +28,14 @@ public class Items {
         appleManager.registerComponent(itemRenderer);
         return appleManager;
     }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+    @Qualifier("grassItem")
+    public PrefabManager grassItem(@Qualifier("item") PrefabManager itemManager, ApplicationEventPublisher applicationEventPublisher, GameComponent.GameComponentFactory<ItemRenderer> itemRenderer) {
+        PrefabManager grassItemPrefabManager = new PrefabManager(applicationEventPublisher, itemManager);
+        grassItemPrefabManager.registerComponent(new ItemComponent.Factory("grassItem"));
+        grassItemPrefabManager.registerComponent(itemRenderer);
+        return grassItemPrefabManager;
+    }
 }

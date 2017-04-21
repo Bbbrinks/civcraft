@@ -7,7 +7,7 @@ package nl.civcraft.core.gamecomponents;
  */
 public class ItemComponent extends AbstractGameComponent {
     private final String type;
-    private boolean inInventory = true;
+    private boolean inInventory = false;
 
     public ItemComponent(String type) {
         this.type = type;
