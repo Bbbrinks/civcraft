@@ -43,4 +43,13 @@ public class GuiConfiguration {
         return selectionBoxes;
     }
 
+    @Bean
+    public Node otherSelection(Civcraft civcraft) {
+        Node selectionBoxes = new Node("otherSelection");
+
+        civcraft.getRootNode().attachChild(selectionBoxes);
+        return selectionBoxes;
+    }
+
+
 }

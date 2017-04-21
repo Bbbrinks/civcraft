@@ -20,6 +20,7 @@ import java.util.stream.Stream;
  * <p>
  * This is probably not worth documenting
  */
+//TODO: Move this to jme3-renderer and use PrefabManager in civcraft-core instead
 @Component
 public class VoxelManager implements Serializable {
 

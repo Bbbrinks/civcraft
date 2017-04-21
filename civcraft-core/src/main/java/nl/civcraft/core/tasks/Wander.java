@@ -48,9 +48,4 @@ public class Wander extends Task {
         }
         return Result.IN_PROGRESS;
     }
-
-    @Override
-    public boolean canBeHandledBy(Civvy civvy) {
-        return true;
-    }
 }

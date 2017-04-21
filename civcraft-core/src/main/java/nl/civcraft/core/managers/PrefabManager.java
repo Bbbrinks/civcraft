@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Created by Bob on 18-11-2016.
@@ -75,9 +76,14 @@ public class PrefabManager {
     }
 
     public <T extends GameComponent> Optional<GameObject> getClosestGameObject(Transform transform,
-                                                                               Class<T> stockpileClass) {
+                                                                               Class<T> withComponent) {
+        return getClosestGameObject(transform, o -> o.hasComponent(withComponent));
+    }
+
+    public <T extends GameComponent> Optional<GameObject> getClosestGameObject(Transform transform,
+                                                                               Predicate<GameObject> predicate) {
         Optional<GameObject> closest = managedObjects.stream().
-                filter(o -> o.hasComponent(stockpileClass)).
+                filter(predicate).
                 sorted((first, second) -> (int) (second.getTransform().getTranslation().distance(transform.getTranslation()) - first.getTransform().getTranslation().distance(transform.getTranslation()))).
                 findFirst();
         if (closest.isPresent()) {
@@ -88,6 +94,7 @@ public class PrefabManager {
         }
         return Optional.empty();
     }
+
 
     public <T extends GameComponent.GameComponentFactory> Optional<T> getComponentFactory(Class<T> componentFactoryClass) {
         Optional<T> first = gameComponents.stream()
@@ -100,5 +107,9 @@ public class PrefabManager {
             return parent.getComponentFactory(componentFactoryClass);
         }
         return Optional.empty();
+    }
+
+    public List<GameObject> getManagedObjects() {
+        return managedObjects;
     }
 }

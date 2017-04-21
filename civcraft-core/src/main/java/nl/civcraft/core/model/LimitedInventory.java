@@ -5,6 +5,7 @@ import nl.civcraft.core.gamecomponents.ItemComponent;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Created by Bob on 25-3-2016.
@@ -72,5 +73,30 @@ public class LimitedInventory implements Inventory {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean hasItem(String itemType) {
+        return Stream.of(items).anyMatch(gameObject -> {
+            if (gameObject == null) {
+                return false;
+            }
+            return gameObject.getComponent(ItemComponent.class).map(itemComponent1 -> itemComponent1.getType().equals(itemType)).orElse(false);
+        });
+    }
+
+    @Override
+    public Optional<GameObject> removeItem(String itemType) {
+        for (int i = 0; i < items.length; i++) {
+            GameObject item = items[i];
+            if (item != null) {
+                Optional<ItemComponent> component = item.getComponent(ItemComponent.class);
+                if (component.isPresent() && component.get().getType().equals(itemType)) {
+                    items[i] = null;
+                    return Optional.of(item);
+                }
+            }
+        }
+        return Optional.empty();
     }
 }

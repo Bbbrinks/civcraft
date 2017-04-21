@@ -12,8 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
-import java.util.HashMap;
-
 /**
  * Created by Bob on 25-11-2016.
  * <p>
@@ -51,7 +49,6 @@ public class Prefabs {
     public PrefabManager blockManager(ApplicationEventPublisher applicationEventPublisher,
                                       Neighbour.Factory neighbourComponent) {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, null);
-        prefabManager.registerComponent(new DropOnDestoyed.Factory(new HashMap<>()));
         return prefabManager;
     }
 

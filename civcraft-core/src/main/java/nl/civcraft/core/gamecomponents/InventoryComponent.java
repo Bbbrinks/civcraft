@@ -37,6 +37,13 @@ public class InventoryComponent extends AbstractGameComponent implements GameCom
         inventory.remove(item);
     }
 
+    public Optional<GameObject> removeItem(String itemType) {
+        return inventory.removeItem(itemType).map(gameObject1 -> {
+            gameObject1.getTransform().setTranslation(getGameObject().getTransform().getTranslation().add(Vector3f.UNIT_Y));
+            return gameObject1;
+        });
+    }
+
     public boolean hasRoom(GameObject item) {
         return inventory.hasRoom(item);
     }

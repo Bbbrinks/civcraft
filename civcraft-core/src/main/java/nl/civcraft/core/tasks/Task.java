@@ -42,7 +42,6 @@ public abstract class Task implements Serializable {
         this.state = state;
     }
 
-    public abstract boolean canBeHandledBy(Civvy civvy);
 
     public enum Result {
         COMPLETED, FAILED, IN_PROGRESS

@@ -2,7 +2,6 @@ package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.gamecomponents.GroundMovement;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.pathfinding.MoveInRangeOfVoxelTarget;
 
 import java.util.Optional;
@@ -54,11 +53,6 @@ public class MoveToRange extends Task {
             path.poll();
         }
         return Result.IN_PROGRESS;
-    }
-
-    @Override
-    public boolean canBeHandledBy(Civvy civvy) {
-        return true;
     }
 
     public GameObject getTarget() {

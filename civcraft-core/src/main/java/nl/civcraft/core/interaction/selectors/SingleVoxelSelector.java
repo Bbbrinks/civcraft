@@ -30,7 +30,8 @@ public class SingleVoxelSelector implements MouseTool {
     }
 
     @Override
-    public void handleMouseMotion() {
+    public void handleMouseMotion(float xDiff,
+                                  float yDiff) {
         this.currentVoxel = currentVoxelHighlighter.highLight();
     }
 

@@ -26,32 +26,47 @@ public class RenderingConfiguration {
 
 
     @Bean
-    public VoxelRendererControl voxelRendererControl(Node chunks, ChunkOptimizer chunkOptimizer) {
+    public VoxelRendererControl voxelRendererControl(Node chunks,
+                                                     ChunkOptimizer chunkOptimizer) {
         VoxelRendererControl voxelRendererControl = new VoxelRendererControl(chunks, chunkOptimizer);
         chunks.addControl(voxelRendererControl);
         return voxelRendererControl;
     }
 
     @Bean
-    public ItemRendererControl itemRendererControl(Node rootNode, AssetManager assetManager) {
+    public ItemRendererControl itemRendererControl(Node rootNode,
+                                                   AssetManager assetManager) {
         ItemRendererControl itemRendererControl = new ItemRendererControl(assetManager, rootNode);
         rootNode.addControl(itemRendererControl);
         return itemRendererControl;
     }
 
     @Bean
-    public CivvyControl civvyControl(Node rootNode, Node civvy) {
+    public CivvyControl civvyControl(Node rootNode,
+                                     Node civvy) {
         CivvyControl control = new CivvyControl(rootNode, civvy);
         rootNode.addControl(control);
         return control;
     }
 
     @Bean
-    public VoxelHighlightControl voxelHighlightControl(Spatial hoverSpatial, Node selectionBoxes, Spatial rootNode) {
+    public VoxelHighlightControl voxelHighlightControl(Spatial hoverSpatial,
+                                                       Node selectionBoxes,
+                                                       Spatial rootNode) {
         VoxelHighlightControl voxelHighlightControl = new VoxelHighlightControl(selectionBoxes, hoverSpatial);
         rootNode.addControl(voxelHighlightControl);
         return voxelHighlightControl;
     }
+
+    @Bean
+    public SelectionControl selectionControl(Spatial hoverSpatial,
+                                             Node otherSelection,
+                                             Spatial rootNode) {
+        SelectionControl selectionControl = new SelectionControl(otherSelection, hoverSpatial);
+        rootNode.addControl(selectionControl);
+        return selectionControl;
+    }
+
 
     @Bean
     public Node rootNode(Civcraft civcraft) {

@@ -2,7 +2,6 @@ package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.gamecomponents.GroundMovement;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.pathfinding.MoveToVoxelTarget;
 
 import java.util.Optional;
@@ -57,10 +56,6 @@ public class MoveTo extends Task {
         return Result.IN_PROGRESS;
     }
 
-    @Override
-    public boolean canBeHandledBy(Civvy civvy) {
-        return true;
-    }
 
     public GameObject getTarget() {
         return target;

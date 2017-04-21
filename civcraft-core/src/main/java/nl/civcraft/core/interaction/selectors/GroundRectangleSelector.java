@@ -80,7 +80,8 @@ public abstract class GroundRectangleSelector implements MouseTool {
     protected abstract void endSelection();
 
     @Override
-    public void handleMouseMotion() {
+    public void handleMouseMotion(float xDiff,
+                                  float yDiff) {
         if (startingVoxel == null) {
             currentVoxel = currentVoxelHighlighter.highLight();
         } else {

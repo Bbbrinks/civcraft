@@ -21,4 +21,7 @@ public interface Inventory extends Serializable {
 
     boolean hasRoom(GameObject item);
 
+    boolean hasItem(String itemComponent);
+
+    Optional<GameObject> removeItem(String itemComponent);
 }

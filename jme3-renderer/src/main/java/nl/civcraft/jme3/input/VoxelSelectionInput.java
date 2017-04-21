@@ -12,7 +12,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class VoxelSelectionInput implements AnalogListener, ActionListener {
 
-    private static final String MOUSE_MOTION = "MOUSE_MOTION";
+    private static final String MOUSE_MOTION_X = "MOUSE_MOTION_X";
+    private static final String MOUSE_MOTION_Y = "MOUSE_MOTION_Y";
+    private static final String MOUSE_MOTION_X_NEG = "MOUSE_MOTION_X_NEG";
+    private static final String MOUSE_MOTION_Y_NEG = "MOUSE_MOTION_Y_NEG";
     private static final String DELETE_VOXEL = "DELETE_VOXEL";
     private static final String SELECT_VOXEL = "SELECT_VOXEL";
     private static final String MOVE_TO = "MOVE_TO";
@@ -24,7 +27,8 @@ public class VoxelSelectionInput implements AnalogListener, ActionListener {
     private MouseTool currentTool;
 
     @Autowired
-    public VoxelSelectionInput(@Qualifier("singleVoxelSelector") MouseTool defaultTool, InputManager inputManager) {
+    public VoxelSelectionInput(@Qualifier("singleVoxelSelector") MouseTool defaultTool,
+                               InputManager inputManager) {
         registerInput(inputManager);
         currentTool = defaultTool;
         this.defaultTool = defaultTool;
@@ -34,15 +38,20 @@ public class VoxelSelectionInput implements AnalogListener, ActionListener {
         inputManager.addMapping(SELECT_VOXEL, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addMapping(DELETE_VOXEL, new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
         inputManager.addMapping(UNSELECT_TOOL, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-        inputManager.addMapping(MOUSE_MOTION, new MouseAxisTrigger(MouseInput.AXIS_X, true), new MouseAxisTrigger(MouseInput.AXIS_X, false), new MouseAxisTrigger(MouseInput.AXIS_Y, true), new MouseAxisTrigger(MouseInput.AXIS_Y, false));
+        inputManager.addMapping(MOUSE_MOTION_X, new MouseAxisTrigger(MouseInput.AXIS_X, false));
+        inputManager.addMapping(MOUSE_MOTION_Y, new MouseAxisTrigger(MouseInput.AXIS_Y, false));
+        inputManager.addMapping(MOUSE_MOTION_X_NEG, new MouseAxisTrigger(MouseInput.AXIS_X, true));
+        inputManager.addMapping(MOUSE_MOTION_Y_NEG, new MouseAxisTrigger(MouseInput.AXIS_Y, true));
         inputManager.addMapping(MOVE_TO, new KeyTrigger(KeyInput.KEY_M));
         inputManager.addMapping(HARVEST, new KeyTrigger(KeyInput.KEY_H));
-        inputManager.addListener(this, SELECT_VOXEL, MOUSE_MOTION, DELETE_VOXEL, MOVE_TO, HARVEST);
+        inputManager.addListener(this, SELECT_VOXEL, MOUSE_MOTION_Y, MOUSE_MOTION_X, MOUSE_MOTION_X_NEG, MOUSE_MOTION_Y_NEG, DELETE_VOXEL, MOVE_TO, HARVEST);
     }
 
 
     @Override
-    public void onAction(String name, boolean isPressed, float tpf) {
+    public void onAction(String name,
+                         boolean isPressed,
+                         float tpf) {
 
         if (isPressed) {
             if (currentTool != null) {
@@ -53,13 +62,26 @@ public class VoxelSelectionInput implements AnalogListener, ActionListener {
             if (name.equals(UNSELECT_TOOL)) {
                 currentTool = defaultTool;
             }
-        } 
+        }
     }
 
     @Override
-    public void onAnalog(String name, float value, float tpf) {
+    public void onAnalog(String name,
+                         float value,
+                         float tpf) {
         if (currentTool != null) {
-            currentTool.handleMouseMotion();
+            if (name.equals(MOUSE_MOTION_X)) {
+                currentTool.handleMouseMotion(value, 0.0f);
+            }
+            if (name.equals(MOUSE_MOTION_Y)) {
+                currentTool.handleMouseMotion(0.0f, value);
+            }
+            if (name.equals(MOUSE_MOTION_X_NEG)) {
+                currentTool.handleMouseMotion(-1f * value, 0.0f);
+            }
+            if (name.equals(MOUSE_MOTION_Y_NEG)) {
+                currentTool.handleMouseMotion(0.0f, -1f * value);
+            }
         }
     }
 

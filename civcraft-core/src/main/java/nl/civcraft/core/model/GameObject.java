@@ -2,6 +2,7 @@ package nl.civcraft.core.model;
 
 import com.jme3.math.Transform;
 import nl.civcraft.core.gamecomponents.GameComponent;
+import nl.civcraft.core.gamecomponents.ItemComponent;
 import nl.civcraft.core.rendering.VoxelRenderer;
 
 import java.io.Serializable;
@@ -74,5 +75,9 @@ public class GameObject implements Serializable {
                 "transform=" + transform +
                 ", components=" + components.stream().map(c -> c.getClass().getSimpleName()).collect(Collectors.joining()) +
                 '}';
+    }
+
+    public boolean hasComponent(ItemComponent component) {
+        return components.contains(component);
     }
 }

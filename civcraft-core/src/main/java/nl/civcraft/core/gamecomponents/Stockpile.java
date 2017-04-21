@@ -50,6 +50,24 @@ public class Stockpile extends AbstractGameComponent implements Serializable {
                 findFirst();
     }
 
+    public boolean hasItem(String itemComponent) {
+        return voxels.values().stream().anyMatch(inventory -> inventory.hasItem(itemComponent));
+    }
+
+    public Optional<GameObject> getSpotWithItem(String itemComponent) {
+        return voxels.entrySet().stream()
+                .filter(gameObjectInventoryEntry -> gameObjectInventoryEntry.getValue().hasItem(itemComponent))
+                .map(Map.Entry::getKey)
+                .findFirst();
+    }
+
+    public Optional<GameObject> removeItem(String itemComponent) {
+        Optional<Inventory> first = voxels.values().stream()
+                .filter(inventory -> inventory.hasItem(itemComponent))
+                .findFirst();
+        return first.flatMap(inventory -> inventory.removeItem(itemComponent));
+    }
+
     @Component
     public static class Factory implements GameComponentFactory<Stockpile> {
 

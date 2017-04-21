@@ -41,6 +41,11 @@ public class MaterialUtil {
         material.setColor("Diffuse", ColorRGBA.White); // with Lighting.j3md
         material.setColor("Ambient", ColorRGBA.White); // with Lighting.j3md
         material.setBoolean("UseMaterialColors", true);
+        if (name.equals("textures/grass-top.png")) {
+            material.setColor("Diffuse", ColorRGBA.Green);
+            material.setColor("Ambient", ColorRGBA.Green);
+            material.setColor("Specular", ColorRGBA.Green);
+        }
         return material;
     }
 

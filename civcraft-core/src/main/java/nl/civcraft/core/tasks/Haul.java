@@ -3,7 +3,6 @@ package nl.civcraft.core.tasks;
 import nl.civcraft.core.gamecomponents.InventoryComponent;
 import nl.civcraft.core.gamecomponents.Stockpile;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.npc.Civvy;
 
 import java.util.Optional;
 
@@ -46,11 +45,6 @@ public class Haul extends Task {
             target.addItem(itemToHaul);
             return Result.COMPLETED;
         }
-    }
-
-    @Override
-    public boolean canBeHandledBy(Civvy civvy) {
-        return true;
     }
 
     private Result moveToObject(GameObject civvy, float tpf) {

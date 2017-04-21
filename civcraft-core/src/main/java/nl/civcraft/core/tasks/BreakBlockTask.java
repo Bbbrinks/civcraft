@@ -3,7 +3,7 @@ package nl.civcraft.core.tasks;
 import nl.civcraft.core.gamecomponents.Breakable;
 import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.npc.Civvy;
+import nl.civcraft.core.model.NeighbourDirection;
 
 import java.util.Optional;
 
@@ -22,6 +22,11 @@ public class BreakBlockTask extends MoveToRange {
 
     @Override
     public Result affect(GameObject civvy, float tpf) {
+        if (target.getComponent(Neighbour.class).map(n -> n.getNeighbours(NeighbourDirection.BACK, NeighbourDirection.FRONT, NeighbourDirection.LEFT, NeighbourDirection.RIGHT, NeighbourDirection
+                .TOP, NeighbourDirection.BOTTOM).size() == 6).orElse(false)) {
+            return FAILED;
+        }
+
         Result inRange = super.affect(civvy, tpf);
         if (inRange.equals(COMPLETED)) {
             Optional<Breakable> component = this.target.getComponent(Breakable.class);
@@ -39,8 +44,4 @@ public class BreakBlockTask extends MoveToRange {
         return inRange;
     }
 
-    @Override
-    public boolean canBeHandledBy(Civvy civvy) {
-        return target.getComponent(Neighbour.class).map(n -> n.getDirectNeighbours().size() < 6).orElse(false);
-    }
 }

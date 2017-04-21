@@ -8,7 +8,8 @@ package nl.civcraft.core.interaction;
 public interface MouseTool {
     void handleLeftClick(boolean isPressed);
 
-    void handleMouseMotion();
+    void handleMouseMotion(float xDiff,
+                           float yDiff);
 
     String getLabel();
 }
