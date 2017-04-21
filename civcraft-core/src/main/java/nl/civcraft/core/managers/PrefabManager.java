@@ -24,14 +24,16 @@ public class PrefabManager {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final PrefabManager parent;
 
-    public PrefabManager(ApplicationEventPublisher applicationEventPublisher, PrefabManager parent) {
+    public PrefabManager(ApplicationEventPublisher applicationEventPublisher,
+                         PrefabManager parent) {
         this.parent = parent;
         managedObjects = new ArrayList<>();
         gameComponents = new ArrayList<>();
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public GameObject build(Transform transform, boolean publish) {
+    public GameObject build(Transform transform,
+                            boolean publish) {
         GameObject gameObject;
         if (parent != null) {
             gameObject = parent.build(transform, false);
@@ -72,7 +74,8 @@ public class PrefabManager {
         applicationEventPublisher.publishEvent(new GameObjectChangedEvent(gameObject, this));
     }
 
-    public <T extends GameComponent> Optional<GameObject> getClosestGameObject(Transform transform, Class<T> stockpileClass) {
+    public <T extends GameComponent> Optional<GameObject> getClosestGameObject(Transform transform,
+                                                                               Class<T> stockpileClass) {
         Optional<GameObject> closest = managedObjects.stream().
                 filter(o -> o.hasComponent(stockpileClass)).
                 sorted((first, second) -> (int) (second.getTransform().getTranslation().distance(transform.getTranslation()) - first.getTransform().getTranslation().distance(transform.getTranslation()))).
@@ -82,6 +85,19 @@ public class PrefabManager {
         }
         if (parent != null) {
             return parent.getClosestGameObject(transform, GameComponent.class);
+        }
+        return Optional.empty();
+    }
+
+    public <T extends GameComponent.GameComponentFactory> Optional<T> getComponentFactory(Class<T> componentFactoryClass) {
+        Optional<T> first = gameComponents.stream()
+                .filter(gameComponentFactory -> componentFactoryClass.isAssignableFrom(gameComponentFactory.getClass()))
+                .map(componentFactoryClass::cast)
+                .findFirst();
+        if (first.isPresent()) {
+            return first;
+        } else if (parent != null) {
+            return parent.getComponentFactory(componentFactoryClass);
         }
         return Optional.empty();
     }

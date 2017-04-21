@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import java.util.HashMap;
+
 /**
  * Created by Bob on 25-11-2016.
  * <p>
@@ -23,7 +25,9 @@ public class Prefabs {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     @Qualifier("civvy")
-    public PrefabManager civvyManager(ApplicationEventPublisher applicationEventPublisher, VoxelManager voxelManager, AStarPathFinder aStarPathFinder) {
+    public PrefabManager civvyManager(ApplicationEventPublisher applicationEventPublisher,
+                                      VoxelManager voxelManager,
+                                      AStarPathFinder aStarPathFinder) {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, null);
         prefabManager.registerComponent(new InventoryComponent.Factory(2));
         prefabManager.registerComponent(new Civvy.Factory());
@@ -44,16 +48,19 @@ public class Prefabs {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     @Qualifier("block")
-    public PrefabManager blockManager(ApplicationEventPublisher applicationEventPublisher, Neighbour.Factory
-            neighbourComponent) {
-        return new PrefabManager(applicationEventPublisher, null);
+    public PrefabManager blockManager(ApplicationEventPublisher applicationEventPublisher,
+                                      Neighbour.Factory neighbourComponent) {
+        PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, null);
+        prefabManager.registerComponent(new DropOnDestoyed.Factory(new HashMap<>()));
+        return prefabManager;
     }
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     @Qualifier("stockpile")
-    public PrefabManager stockpile(ApplicationEventPublisher applicationEventPublisher, Stockpile.Factory
-            stockpileComponent) {
+    public PrefabManager stockpile(ApplicationEventPublisher applicationEventPublisher,
+                                   Stockpile.Factory
+                                           stockpileComponent) {
         PrefabManager prefabManager = new PrefabManager(applicationEventPublisher, null);
         prefabManager.registerComponent(stockpileComponent);
         return prefabManager;

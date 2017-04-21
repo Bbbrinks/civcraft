@@ -29,6 +29,7 @@ public class DropOnDestoyed extends AbstractGameComponent {
 
     public static class Factory implements GameComponentFactory<DropOnDestoyed> {
 
+
         private final Map<PrefabManager, Integer> drops;
 
         public Factory(Map<PrefabManager, Integer> drops) {
@@ -43,6 +44,10 @@ public class DropOnDestoyed extends AbstractGameComponent {
         @Override
         public Class<DropOnDestoyed> getComponentType() {
             return DropOnDestoyed.class;
+        }
+
+        public Map<PrefabManager, Integer> getDrops() {
+            return drops;
         }
     }
 
