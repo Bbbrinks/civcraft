@@ -2,16 +2,15 @@ package nl.civcraft.core.interaction.tools;
 
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import nl.civcraft.core.gamecomponents.PlanningGhost;
 import nl.civcraft.core.interaction.MouseTool;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.events.SelectionEvent;
 import nl.civcraft.core.tasks.PlaceBlock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -33,23 +32,25 @@ public class BuildWallTool implements MouseTool {
     private final TaskManager taskManager;
     private final PrefabManager stockpileManager;
     private final PrefabManager blockManager;
-    private final ApplicationEventPublisher eventPublisher;
+    private final PrefabManager planningGhostManager;
     private Transform start;
     private Transform end;
     private boolean horizontalBoundaryLockedIn = false;
     private boolean startLockedIn = false;
+    private GameObject planningGhostObject;
+    private PlanningGhost planningGhostComponent;
 
     @Autowired
     public BuildWallTool(CurrentVoxelHighlighter currentVoxelHighlighter,
                          TaskManager taskManager,
                          @Qualifier("stockpile") PrefabManager stockpileManager,
                          @Qualifier("block") PrefabManager blockManager,
-                         ApplicationEventPublisher eventPublisher) {
+                         @Qualifier("planningGhost") PrefabManager planningGhostManager) {
         this.currentVoxelHighlighter = currentVoxelHighlighter;
         this.taskManager = taskManager;
         this.stockpileManager = stockpileManager;
         this.blockManager = blockManager;
-        this.eventPublisher = eventPublisher;
+        this.planningGhostManager = planningGhostManager;
     }
 
     @Override
@@ -62,11 +63,16 @@ public class BuildWallTool implements MouseTool {
         } else if (!horizontalBoundaryLockedIn) {
             horizontalBoundaryLockedIn = true;
         } else {
+            planningGhostObject.destroy();
             loopThroughSelection(transform -> taskManager.addTask(new PlaceBlock(stockpileManager, blockManager, "grassItem", transform)));
             start = null;
             startLockedIn = false;
             horizontalBoundaryLockedIn = false;
             end = null;
+
+
+            planningGhostObject = null;
+            planningGhostComponent = null;
         }
     }
 
@@ -92,11 +98,13 @@ public class BuildWallTool implements MouseTool {
             end.setTranslation(end.getTranslation().add(0, yDiff * 10f, 0));
         }
         if (start != null && end == null) {
-            eventPublisher.publishEvent(new SelectionEvent(Collections.singletonList(start), this));
+            planningGhostObject = planningGhostManager.build(Transform.IDENTITY, true);
+            planningGhostComponent = planningGhostObject.getComponent(PlanningGhost.class).orElseThrow(() -> new IllegalStateException("PlanningGhosts are not planning ghosts"));
+            planningGhostComponent.setPlannedVoxels(Collections.singletonList(start));
         } else if (start != null) {
             List<Transform> selection = new ArrayList<>();
             loopThroughSelection(transform -> selection.add(transform));
-            eventPublisher.publishEvent(new SelectionEvent(selection, this));
+            planningGhostComponent.setPlannedVoxels(selection);
         }
 
     }

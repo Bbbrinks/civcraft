@@ -11,10 +11,9 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
-import nl.civcraft.core.model.events.Tick;
+import nl.civcraft.core.managers.TickManager;
 import nl.civcraft.core.utils.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,7 +25,12 @@ class SunLighting {
     private float sunCount = 90f;
 
     @Autowired
-    public SunLighting(Spatial rootNode, AssetManager assetManager, ViewPort mainViewPort) {
+    public SunLighting(Spatial rootNode,
+                       AssetManager assetManager,
+                       ViewPort mainViewPort,
+                       TickManager tickManager) {
+        tickManager.getTick().subscribe(this::handleTick);
+
         sunLight = new DirectionalLight();
         sunLight.setColor(ColorRGBA.White);
         rootNode.addLight(sunLight);
@@ -48,8 +52,7 @@ class SunLighting {
         mainViewPort.addProcessor(fpp);
     }
 
-    @EventListener
-    public void handleTick(Tick tick) {
+    public void handleTick(Long tick) {
         sunCount += SUN_SPEED;
         Vector3f sunPosition = new Vector3f();
         sunPosition.setX(FastMath.sin(sunCount));

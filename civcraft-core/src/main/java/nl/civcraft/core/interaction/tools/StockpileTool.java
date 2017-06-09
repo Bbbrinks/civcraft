@@ -8,7 +8,6 @@ import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,8 +23,11 @@ public class StockpileTool extends GroundRectangleSelector {
     private Stockpile createdStockpile;
 
     @Autowired
-    public StockpileTool(CurrentVoxelHighlighter currentVoxelHighlighter, ApplicationEventPublisher eventPublisher, VoxelManager voxelManager, @Qualifier("stockpile") PrefabManager prefabManager) {
-        super(currentVoxelHighlighter, eventPublisher, voxelManager);
+    public StockpileTool(CurrentVoxelHighlighter currentVoxelHighlighter,
+                         VoxelManager voxelManager,
+                         @Qualifier("stockpile") PrefabManager prefabManager,
+                         @Qualifier("voxelHighlight") PrefabManager voxelHighlightManager) {
+        super(currentVoxelHighlighter, voxelManager, voxelHighlightManager);
         this.prefabManager = prefabManager;
     }
 

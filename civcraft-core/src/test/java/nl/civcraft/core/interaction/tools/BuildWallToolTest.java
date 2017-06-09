@@ -15,7 +15,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.context.ApplicationEventPublisher;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
@@ -37,15 +36,16 @@ public class BuildWallToolTest {
     private PrefabManager stockpileManager;
     @Mock
     private PrefabManager blockManager;
-    @Mock
-    private ApplicationEventPublisher eventPuslisher;
+
     @Captor
     private ArgumentCaptor<Task> taskCaptor;
+    @Mock
+    private PrefabManager planningGhostManager;
 
 
     @Before
     public void setUp() throws Exception {
-        underTest = new BuildWallTool(currentVoxelHighlighter, taskManager, stockpileManager, blockManager, eventPuslisher);
+        underTest = new BuildWallTool(currentVoxelHighlighter, taskManager, stockpileManager, blockManager, planningGhostManager);
     }
 
     @Test

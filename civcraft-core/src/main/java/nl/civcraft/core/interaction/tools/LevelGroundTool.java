@@ -3,13 +3,14 @@ package nl.civcraft.core.interaction.tools;
 import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.interaction.selectors.GroundRectangleSelector;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
+import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.NeighbourDirection;
 import nl.civcraft.core.tasks.BreakBlockTask;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -28,8 +29,11 @@ public class LevelGroundTool extends GroundRectangleSelector {
     private List<BreakBlockTask> tasks;
 
     @Autowired
-    public LevelGroundTool(CurrentVoxelHighlighter currentVoxelHighlighter, ApplicationEventPublisher eventPublisher, VoxelManager voxelManager, TaskManager taskManager) {
-        super(currentVoxelHighlighter, eventPublisher, voxelManager);
+    public LevelGroundTool(CurrentVoxelHighlighter currentVoxelHighlighter,
+                           VoxelManager voxelManager,
+                           TaskManager taskManager,
+                           @Qualifier("voxelHighlight") PrefabManager voxelHighlightManager) {
+        super(currentVoxelHighlighter, voxelManager, voxelHighlightManager);
         this.taskManager = taskManager;
     }
 

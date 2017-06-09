@@ -5,10 +5,11 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import nl.civcraft.core.model.events.CivvyRemoved;
-import nl.civcraft.core.model.events.GameObjectCreatedEvent;
+import nl.civcraft.core.managers.PrefabManager;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,11 @@ public class CivvyControl extends AbstractControl {
     private final List<Civvy> civvies;
 
     @Autowired
-    public CivvyControl(Node rootNode, Node civvy) {
+    public CivvyControl(Node rootNode,
+                        Node civvy,
+                        @Qualifier("civvy") PrefabManager civvyManager) {
+        civvyManager.getGameObjectCreated().subscribe(this::addCivvy);
+        civvyManager.getGameObjectDestroyed().subscribe(this::removeCivvy);
         civviesNode = new Node("civvies");
         rootNode.attachChild(civviesNode);
         civvies = new CopyOnWriteArrayList<>();
@@ -32,8 +37,8 @@ public class CivvyControl extends AbstractControl {
     }
 
     @EventListener
-    public void addCivvy(GameObjectCreatedEvent civvyCreated) {
-        Optional<Civvy> component = civvyCreated.getGameObject().getComponent(Civvy.class);
+    public void addCivvy(GameObject civvyCreated) {
+        Optional<Civvy> component = civvyCreated.getComponent(Civvy.class);
         if (!component.isPresent()) {
             return;
         }
@@ -41,8 +46,12 @@ public class CivvyControl extends AbstractControl {
     }
 
     @EventListener
-    public void removeCivvy(CivvyRemoved civvyRemoved) {
-        civvies.remove(civvyRemoved.getCivvy());
+    public void removeCivvy(GameObject civvyRemoved) {
+        Optional<Civvy> component = civvyRemoved.getComponent(Civvy.class);
+        if (!component.isPresent()) {
+            return;
+        }
+        civvies.remove(component);
     }
 
     @Override

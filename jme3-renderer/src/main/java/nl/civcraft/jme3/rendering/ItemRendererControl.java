@@ -11,12 +11,11 @@ import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Quad;
 import javafx.util.Pair;
+import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.events.GameObjectChangedEvent;
-import nl.civcraft.core.model.events.GameObjectCreatedEvent;
-import nl.civcraft.core.model.events.GameObjectDestroyedEvent;
 import nl.civcraft.core.rendering.ItemRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +36,13 @@ public class ItemRendererControl extends AbstractControl {
     private final Node itemNode;
 
     @Autowired
-    public ItemRendererControl(AssetManager assetManager, Node rootNode) {
+    public ItemRendererControl(AssetManager assetManager,
+                               Node rootNode,
+                               @Qualifier("item") PrefabManager prefabManager) {
+        prefabManager.getGameObjectCreated().subscribe(this::handleItemCreated);
+        prefabManager.getGameObjectChangedEvent().subscribe(this::handleItemChanged);
+        prefabManager.getGameObjectDestroyed().subscribe(this::handleItemRemoved);
+
         this.assetManager = assetManager;
         renderedItems = new HashMap<>();
         newItems = new LinkedBlockingQueue<>();
@@ -47,8 +52,7 @@ public class ItemRendererControl extends AbstractControl {
     }
 
     @EventListener
-    public void handleItemCreated(GameObjectCreatedEvent gameObjectCreatedEvent) {
-        GameObject gameObject = gameObjectCreatedEvent.getGameObject();
+    public void handleItemCreated(GameObject gameObject) {
         Optional<ItemRenderer> itemComponent = gameObject.getComponent(ItemRenderer.class);
         if (!itemComponent.isPresent()) {
             return;
@@ -58,7 +62,8 @@ public class ItemRendererControl extends AbstractControl {
         }
     }
 
-    private void addNewItem(GameObject gameObject, Optional<ItemRenderer> itemComponent) {
+    private void addNewItem(GameObject gameObject,
+                            Optional<ItemRenderer> itemComponent) {
         Quad quad = new Quad(0.5f, 0.5f);
         Geometry item = new Geometry("item", quad);
         Material mat = new Material(assetManager,  // Create new material and...
@@ -70,9 +75,7 @@ public class ItemRendererControl extends AbstractControl {
         newItems.add(new Pair<>(itemComponent.get(), item));
     }
 
-    @EventListener
-    public void handleItemChanged(GameObjectChangedEvent gameObjectChangedEvent) {
-        GameObject gameObject = gameObjectChangedEvent.getGameObject();
+    public void handleItemChanged(GameObject gameObject) {
         Optional<ItemRenderer> itemComponent = gameObject.getComponent(ItemRenderer.class);
         if (!itemComponent.isPresent()) {
             return;
@@ -86,8 +89,7 @@ public class ItemRendererControl extends AbstractControl {
     }
 
     @EventListener
-    public void handleItemRemoved(GameObjectDestroyedEvent gameObjectDestroyedEvent) {
-        GameObject gameObject = gameObjectDestroyedEvent.getGameObject();
+    public void handleItemRemoved(GameObject gameObject) {
         Optional<ItemRenderer> itemComponent = gameObject.getComponent(ItemRenderer.class);
         if (!itemComponent.isPresent()) {
             return;
@@ -115,7 +117,8 @@ public class ItemRendererControl extends AbstractControl {
     }
 
     @Override
-    protected void controlRender(RenderManager rm, ViewPort vp) {
+    protected void controlRender(RenderManager rm,
+                                 ViewPort vp) {
 
     }
 }

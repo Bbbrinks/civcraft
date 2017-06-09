@@ -1,13 +1,11 @@
 package nl.civcraft.core.managers;
 
 import com.jme3.math.Transform;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 import nl.civcraft.core.gamecomponents.GameComponent;
 import nl.civcraft.core.gamecomponents.ManagedObject;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.events.GameObjectChangedEvent;
-import nl.civcraft.core.model.events.GameObjectCreatedEvent;
-import nl.civcraft.core.model.events.GameObjectDestroyedEvent;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +20,24 @@ import java.util.function.Predicate;
 public class PrefabManager {
     private final List<GameObject> managedObjects;
     private final List<GameComponent.GameComponentFactory> gameComponents;
-    private final ApplicationEventPublisher applicationEventPublisher;
     private final PrefabManager parent;
 
-    public PrefabManager(ApplicationEventPublisher applicationEventPublisher,
-                         PrefabManager parent) {
+
+    private final Subject<GameObject> gameObjectCreated;
+    private final Subject<GameObject> gameObjectDestroyed;
+    private final Subject<GameObject> gameObjectChangedEvent;
+
+    public PrefabManager() {
+        this(null);
+    }
+
+    public PrefabManager(PrefabManager parent) {
         this.parent = parent;
         managedObjects = new ArrayList<>();
         gameComponents = new ArrayList<>();
-        this.applicationEventPublisher = applicationEventPublisher;
+        gameObjectCreated = PublishSubject.create();
+        gameObjectDestroyed = PublishSubject.create();
+        gameObjectChangedEvent = PublishSubject.create();
     }
 
     public GameObject build(Transform transform,
@@ -47,7 +54,7 @@ public class PrefabManager {
         gameObject.addComponent(new ManagedObject(this));
         managedObjects.add(gameObject);
         if (publish) {
-            applicationEventPublisher.publishEvent(new GameObjectCreatedEvent(gameObject, this));
+            gameObjectCreated.onNext(gameObject);
         }
         return gameObject;
     }
@@ -68,11 +75,11 @@ public class PrefabManager {
     }
 
     public void destroy(GameObject gameObject) {
-        applicationEventPublisher.publishEvent(new GameObjectDestroyedEvent(gameObject, this));
+        gameObjectDestroyed.onNext(gameObject);
     }
 
     public void changed(GameObject gameObject) {
-        applicationEventPublisher.publishEvent(new GameObjectChangedEvent(gameObject, this));
+        gameObjectChangedEvent.onNext(gameObject);
     }
 
     public <T extends GameComponent> Optional<GameObject> getClosestGameObject(Transform transform,
@@ -95,6 +102,17 @@ public class PrefabManager {
         return Optional.empty();
     }
 
+    public Subject<GameObject> getGameObjectCreated() {
+        return gameObjectCreated;
+    }
+
+    public Subject<GameObject> getGameObjectDestroyed() {
+        return gameObjectDestroyed;
+    }
+
+    public Subject<GameObject> getGameObjectChangedEvent() {
+        return gameObjectChangedEvent;
+    }
 
     public <T extends GameComponent.GameComponentFactory> Optional<T> getComponentFactory(Class<T> componentFactoryClass) {
         Optional<T> first = gameComponents.stream()

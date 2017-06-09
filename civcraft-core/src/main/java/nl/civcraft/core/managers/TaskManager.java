@@ -1,18 +1,17 @@
 package nl.civcraft.core.managers;
 
-import nl.civcraft.core.event.SystemUpdate;
-import nl.civcraft.core.model.events.GameObjectCreatedEvent;
+import nl.civcraft.core.SystemEventPublisher;
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.tasks.Task;
 import nl.civcraft.core.utils.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -23,8 +22,13 @@ public class TaskManager implements Serializable {
     private final List<Civvy> civvies;
     private final List<Task> tasks;
 
+
     @Autowired
-    public TaskManager(List<Task> defaultTasks) {
+    public TaskManager(List<Task> defaultTasks,
+                       SystemEventPublisher systemEventPublisher,
+                       @Qualifier("civvy") PrefabManager prefabManager) {
+        systemEventPublisher.getPublisher().subscribe(this::update);
+        prefabManager.getGameObjectCreated().subscribe(this::addCivvy);
         civvies = new CopyOnWriteArrayList<>();
         tasks = new ArrayList<>();
         for (Task defaultTask : defaultTasks) {
@@ -34,20 +38,15 @@ public class TaskManager implements Serializable {
         }
     }
 
-    @EventListener
-    public void update(SystemUpdate systemUpdate) {
+    public void update(float tpf) {
         for (Civvy civvy : civvies) {
-            civvy.update(systemUpdate.getTpf());
+            civvy.update(tpf);
         }
     }
 
-    @EventListener
-    public void addCivvy(GameObjectCreatedEvent civvyCreated) {
-        Optional<Civvy> component = civvyCreated.getGameObject().getComponent(Civvy.class);
-        if (!component.isPresent()) {
-            return;
-        }
-        component.get().subscribe(this);
+    public void addCivvy(GameObject civvyCreated) {
+        Civvy component = civvyCreated.getComponent(Civvy.class).orElseThrow(() -> new IllegalStateException("Civvy component not registered in Civvy prefabManager"));
+        component.subscribe(this);
     }
 
     public void addTask(Task task) {

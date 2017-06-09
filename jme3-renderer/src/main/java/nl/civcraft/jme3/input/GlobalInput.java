@@ -9,7 +9,6 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -23,7 +22,8 @@ class GlobalInput implements ActionListener, AssetEventListener {
     private boolean wireframe;
 
     @Autowired
-    public GlobalInput(AssetManager assetManager, InputManager inputManager, ApplicationEventPublisher publisher) {
+    public GlobalInput(AssetManager assetManager,
+                       InputManager inputManager) {
         assetManager.addAssetEventListener(this);
         materials = new HashSet<>();
         registerInput(inputManager);

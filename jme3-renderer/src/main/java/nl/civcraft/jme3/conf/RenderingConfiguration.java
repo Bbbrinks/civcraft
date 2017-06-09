@@ -9,8 +9,10 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.JmeContext;
+import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.jme3.Civcraft;
 import nl.civcraft.jme3.rendering.*;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -35,16 +37,18 @@ public class RenderingConfiguration {
 
     @Bean
     public ItemRendererControl itemRendererControl(Node rootNode,
-                                                   AssetManager assetManager) {
-        ItemRendererControl itemRendererControl = new ItemRendererControl(assetManager, rootNode);
+                                                   AssetManager assetManager,
+                                                   @Qualifier("item") PrefabManager prefabManager) {
+        ItemRendererControl itemRendererControl = new ItemRendererControl(assetManager, rootNode, prefabManager);
         rootNode.addControl(itemRendererControl);
         return itemRendererControl;
     }
 
     @Bean
     public CivvyControl civvyControl(Node rootNode,
-                                     Node civvy) {
-        CivvyControl control = new CivvyControl(rootNode, civvy);
+                                     Node civvy,
+                                     @Qualifier("civvy") PrefabManager civvyManager) {
+        CivvyControl control = new CivvyControl(rootNode, civvy, civvyManager);
         rootNode.addControl(control);
         return control;
     }
@@ -52,8 +56,9 @@ public class RenderingConfiguration {
     @Bean
     public VoxelHighlightControl voxelHighlightControl(Spatial hoverSpatial,
                                                        Node selectionBoxes,
-                                                       Spatial rootNode) {
-        VoxelHighlightControl voxelHighlightControl = new VoxelHighlightControl(selectionBoxes, hoverSpatial);
+                                                       Spatial rootNode,
+                                                       @Qualifier("voxelHighlight") PrefabManager voxelHighlightManager) {
+        VoxelHighlightControl voxelHighlightControl = new VoxelHighlightControl(selectionBoxes, hoverSpatial, voxelHighlightManager);
         rootNode.addControl(voxelHighlightControl);
         return voxelHighlightControl;
     }
@@ -61,8 +66,9 @@ public class RenderingConfiguration {
     @Bean
     public SelectionControl selectionControl(Spatial hoverSpatial,
                                              Node otherSelection,
-                                             Spatial rootNode) {
-        SelectionControl selectionControl = new SelectionControl(otherSelection, hoverSpatial);
+                                             Spatial rootNode,
+                                             @Qualifier("planningGhost") PrefabManager planningGhostManager) {
+        SelectionControl selectionControl = new SelectionControl(otherSelection, hoverSpatial, planningGhostManager);
         rootNode.addControl(selectionControl);
         return selectionControl;
     }

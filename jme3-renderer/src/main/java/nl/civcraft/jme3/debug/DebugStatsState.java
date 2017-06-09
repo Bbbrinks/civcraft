@@ -7,9 +7,8 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.scene.Node;
-import nl.civcraft.core.event.SystemUpdate;
+import nl.civcraft.core.SystemEventPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,7 +25,12 @@ class DebugStatsState implements ActionListener {
     private boolean show = false;
 
     @Autowired
-    public DebugStatsState(Node guiNode, BitmapText fpsText, BitmapText logMessageText, InputManager inputManager) {
+    public DebugStatsState(Node guiNode,
+                           BitmapText fpsText,
+                           BitmapText logMessageText,
+                           InputManager inputManager,
+                           SystemEventPublisher systemEventPublisher) {
+        systemEventPublisher.getPublisher().subscribe(this::update);
         this.fpsText = fpsText;
         this.logMessageText = logMessageText;
         debugNode = new Node("debugNode");
@@ -55,8 +59,7 @@ class DebugStatsState implements ActionListener {
         inputManager.addListener(this, TOGGLE_DEBUG_INFO);
     }
 
-    @EventListener
-    public void update(SystemUpdate systemUpdate) {
+    public void update(float tpf) {
         if (!show) {
             debugNode.detachAllChildren();
         } else {
@@ -64,7 +67,7 @@ class DebugStatsState implements ActionListener {
             debugNode.attachChild(logMessageText);
         }
 
-        secondCounter += systemUpdate.getTpf();
+        secondCounter += tpf;
         frameCounter++;
         if (secondCounter >= 1.0f) {
             int fps = (int) (frameCounter / secondCounter);

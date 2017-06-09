@@ -1,24 +1,24 @@
 package nl.civcraft.core.managers;
 
-import nl.civcraft.core.model.events.Tick;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
+
 
 @Component
 public class TickManager {
 
-    private final ApplicationEventPublisher publisher;
+    private final Observable<Long> tick;
 
     @Autowired
-    public TickManager(ApplicationEventPublisher publisher) {
-
-        this.publisher = publisher;
+    public TickManager(Scheduler scheduler) {
+        tick = Observable.interval(50, TimeUnit.MILLISECONDS, scheduler);
     }
 
-    @Scheduled(fixedRate = 100)
-    public void tick() {
-        publisher.publishEvent(new Tick(this));
+    public Observable<Long> getTick() {
+        return tick;
     }
 }

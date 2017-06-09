@@ -2,9 +2,8 @@ package nl.civcraft.core.managers;
 
 import nl.civcraft.core.gamecomponents.ItemComponent;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.events.GameObjectChangedEvent;
-import nl.civcraft.core.model.events.GameObjectCreatedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -15,21 +14,24 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
+//TODO: refactor this to be a GameComponent
 @Component
 public class ItemGravity {
 
     private final VoxelManager voxelManager;
 
     @Autowired
-    public ItemGravity(VoxelManager voxelManager) {
+    public ItemGravity(VoxelManager voxelManager,
+                       @Qualifier("item") PrefabManager prefabManager) {
         this.voxelManager = voxelManager;
+        prefabManager.getGameObjectCreated().subscribe(this::handleEntityCreated);
+        prefabManager.getGameObjectChangedEvent().subscribe(this::handleEntityUpdated);
     }
 
-    @EventListener
-    public void handleEntityCreated(GameObjectCreatedEvent gameObjectCreatedEvent) {
-        Optional<ItemComponent> itemComponent = gameObjectCreatedEvent.getGameObject().getComponent(ItemComponent.class);
+    public void handleEntityCreated(GameObject gameObject) {
+        Optional<ItemComponent> itemComponent = gameObject.getComponent(ItemComponent.class);
         if (itemComponent.isPresent()) {
-            itemGravity(gameObjectCreatedEvent.getGameObject());
+            itemGravity(gameObject);
         }
     }
 
@@ -44,10 +46,10 @@ public class ItemGravity {
     }
 
     @EventListener
-    public void handleEntityUpdated(GameObjectChangedEvent gameObjectChangedEvent) {
-        Optional<ItemComponent> itemComponent = gameObjectChangedEvent.getGameObject().getComponent(ItemComponent.class);
+    public void handleEntityUpdated(GameObject gameObject) {
+        Optional<ItemComponent> itemComponent = gameObject.getComponent(ItemComponent.class);
         if (itemComponent.isPresent()) {
-            itemGravity(gameObjectChangedEvent.getGameObject());
+            itemGravity(gameObject);
         }
     }
 }

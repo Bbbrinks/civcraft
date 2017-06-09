@@ -4,10 +4,9 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.renderer.RenderManager;
-import nl.civcraft.core.SystemEventHandler;
+import io.reactivex.subjects.Subject;
+import nl.civcraft.core.SystemEventPublisher;
 import nl.civcraft.core.conf.InitialConfiguration;
-import nl.civcraft.core.event.SystemUpdate;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -16,7 +15,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * This is probably not worth documenting
  */
 class CivCraftAppState implements AppState {
-    private ApplicationEventPublisher applicationEventPublisher;
+    private Subject<Float> eventPublisher;
     private boolean initialized;
     private boolean enabled;
     private AnnotationConfigApplicationContext appContext;
@@ -24,7 +23,7 @@ class CivCraftAppState implements AppState {
     @Override
     public void initialize(AppStateManager appStateManager, Application application) {
         appContext = new AnnotationConfigApplicationContext(InitialConfiguration.class);
-        applicationEventPublisher = appContext.getBean(SystemEventHandler.class).getPublisher();
+        eventPublisher = appContext.getBean(SystemEventPublisher.class).getPublisher();
         initialized = true;
         enabled = true;
     }
@@ -56,7 +55,7 @@ class CivCraftAppState implements AppState {
 
     @Override
     public void update(float tpf) {
-        applicationEventPublisher.publishEvent(new SystemUpdate(tpf, this));
+        eventPublisher.onNext(tpf);
     }
 
     @Override

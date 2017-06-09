@@ -5,15 +5,14 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.events.RemoveVoxelHighlights;
-import nl.civcraft.core.model.events.VoxelHighlighted;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Bob on 11-11-2016.
@@ -24,33 +23,34 @@ import java.util.List;
 public class VoxelHighlightControl extends AbstractControl {
     private final Node selectionBoxes;
     private final Spatial hoverSpatial;
-    private final List<Spatial> spatials;
+    private final Map<GameObject, Spatial> spatials;
 
     @Autowired
-    public VoxelHighlightControl(Node selectionBoxes, Spatial hoverSpatial) {
+    public VoxelHighlightControl(Node selectionBoxes,
+                                 Spatial hoverSpatial,
+                                 @Qualifier("voxelHighlight") PrefabManager voxelHighlightManager) {
         this.selectionBoxes = selectionBoxes;
         this.hoverSpatial = hoverSpatial;
-        spatials = new ArrayList<>();
+        spatials = new HashMap<>();
+        voxelHighlightManager.getGameObjectDestroyed().subscribe(this::clearHighlight);
+        voxelHighlightManager.getGameObjectCreated().subscribe(this::handleAddVoxelHighlight);
     }
 
-    @EventListener
-    public void handleClearHighlights(RemoveVoxelHighlights removeVoxelHighlights) {
-        spatials.clear();
+    public void clearHighlight(GameObject removedHighlight) {
+        spatials.remove(removedHighlight);
     }
 
-    @EventListener
-    public void handleAddVoxelHighlight(VoxelHighlighted voxelHighlighted) {
-        GameObject voxel = voxelHighlighted.getVoxel();
+    public void handleAddVoxelHighlight(GameObject voxel) {
         Spatial clone = hoverSpatial.clone();
         clone.setLocalTranslation(clone.getLocalTranslation().x + voxel.getTransform().getTranslation().getX(), clone.getLocalTranslation().y + voxel.getTransform().getTranslation().getY(), clone.getLocalTranslation().z + voxel.getTransform().getTranslation().getZ());
-        spatials.add(clone);
+        spatials.put(voxel, clone);
     }
 
 
     @Override
     protected void controlUpdate(float tpf) {
         selectionBoxes.detachAllChildren();
-        for (Spatial spatial : spatials) {
+        for (Spatial spatial : spatials.values()) {
             selectionBoxes.attachChild(spatial);
         }
     }
