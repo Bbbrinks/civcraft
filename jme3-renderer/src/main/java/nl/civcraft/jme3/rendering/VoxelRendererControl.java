@@ -10,13 +10,12 @@ import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.jme3.gamecomponents.VoxelRenderer;
 import nl.civcraft.jme3.utils.BlockUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.*;
 import java.util.concurrent.*;
 
-@Component
 public class VoxelRendererControl extends AbstractControl {
 
     private static final int MAX_CHUNKS_PER_CYCLE = 2;
@@ -27,12 +26,14 @@ public class VoxelRendererControl extends AbstractControl {
     private final Map<Chunk, Future<ChunkOptimizer.ChunkOptimizerThread>> optimizerThreadMap;
     private final VoxelManager voxelManager;
 
-    @Autowired
-    public VoxelRendererControl(Node chunks, ChunkOptimizer chunkOptimizer) {
+    @Inject
+    public VoxelRendererControl(@Named("chunks") Node chunks,
+                                ChunkOptimizer chunkOptimizer) {
         optimizerThreadMap = new HashMap<>();
         newOptimizedChunks = new LinkedBlockingQueue<>();
         this.chunkOptimizer = chunkOptimizer;
         this.chunks = chunks;
+        chunks.addControl(this);
         executorService = Executors.newFixedThreadPool(4);
         voxelManager = new VoxelManager();
     }
@@ -106,5 +107,9 @@ public class VoxelRendererControl extends AbstractControl {
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
 
+    }
+
+    public interface Factory {
+        VoxelRendererControl build();
     }
 }

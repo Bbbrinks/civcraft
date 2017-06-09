@@ -17,7 +17,6 @@ import nl.civcraft.core.model.GameObject;
 import nl.civcraft.jme3.gamecomponents.VoxelRenderer;
 import nl.civcraft.jme3.model.RenderedVoxelFace;
 import nl.civcraft.jme3.utils.BlockUtil;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -27,7 +26,6 @@ import java.util.concurrent.Callable;
  * <p>
  * This is probably not worth documenting
  */
-@Component
 public class ChunkOptimizer {
 
     public ChunkOptimizerThread optimizeChunk(Chunk chunk) {

@@ -4,6 +4,9 @@ import nl.civcraft.core.utils.MathUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 /**
  * Created by Bob on 25-11-2015.
  * <p>
@@ -18,7 +21,12 @@ public class HillsGenerator implements HeightMapGenerator {
     private final int minHills;
     private final int maxHills;
 
-    public HillsGenerator(float maxHillHeight, float minHillRadius, float maxHillRadius, int minHills, int maxHills) {
+    @Inject
+    public HillsGenerator(@Named("maxHillHeight") float maxHillHeight,
+                          @Named("minHillRadius") float minHillRadius,
+                          @Named("maxHillRadius") float maxHillRadius,
+                          @Named("minHills") int minHills,
+                          @Named("maxHills") int maxHills) {
         this.maxHillHeight = maxHillHeight;
         this.minHillRadius = minHillRadius;
         this.maxHillRadius = maxHillRadius;
@@ -27,7 +35,8 @@ public class HillsGenerator implements HeightMapGenerator {
     }
 
     @Override
-    public HeightMap generateRandomHeightMap(int width, int length) {
+    public HeightMap generateRandomHeightMap(int width,
+                                             int length) {
         HeightMap heightMap = new HeightMap(width, length);
         int iterations = MathUtil.rnd(minHills, maxHills);
 
@@ -47,7 +56,8 @@ public class HillsGenerator implements HeightMapGenerator {
         handlePeak(peakX, peakZ, hillRadius, heightMap);
     }
 
-    private void normalize(float maxHillHeight, HeightMap heightMap) {
+    private void normalize(float maxHillHeight,
+                           HeightMap heightMap) {
         long highestPoint = heightMap.findHighestPoint();
         float normalizer = maxHillHeight / highestPoint;
         for (int x = 0; x < heightMap.getWidth(); x++) {
@@ -57,7 +67,10 @@ public class HillsGenerator implements HeightMapGenerator {
         }
     }
 
-    private void handlePeak(int peakX, int peakZ, float hillRadius, HeightMap heightMap) {
+    private void handlePeak(int peakX,
+                            int peakZ,
+                            float hillRadius,
+                            HeightMap heightMap) {
         for (int x = 0; x < heightMap.getWidth(); x++) {
             for (int z = 0; z < heightMap.getLength(); z++) {
                 long height = Math.round(Math.pow(hillRadius, 2) - (Math.pow((double) x - peakX, 2) + Math.pow((double) z - peakZ, 2)));

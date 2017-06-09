@@ -3,7 +3,6 @@ package nl.civcraft.jme3.gamecomponents;
 import nl.civcraft.core.gamecomponents.AbstractGameComponent;
 import nl.civcraft.core.gamecomponents.ItemComponent;
 import nl.civcraft.core.rendering.ItemRenderer;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by Bob on 9-9-2016.
@@ -20,7 +19,6 @@ public class ItemRendererImpl extends AbstractGameComponent implements ItemRende
         return gameObject.getComponent(ItemComponent.class).map(i -> !i.isInInventory()).orElse(false);
     }
 
-    @Component
     public static class ItemRendererFactory implements GameComponentFactory<ItemRenderer> {
 
         @Override

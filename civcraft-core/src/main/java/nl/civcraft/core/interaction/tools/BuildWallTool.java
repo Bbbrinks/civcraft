@@ -9,10 +9,9 @@ import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.tasks.PlaceBlock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +23,6 @@ import java.util.logging.Logger;
  * <p>
  * This is probably not worth documenting
  */
-@Component
 public class BuildWallTool implements MouseTool {
 
     private static final Logger LOGGER = Logger.getLogger(BuildWallTool.class.getName());
@@ -40,12 +38,12 @@ public class BuildWallTool implements MouseTool {
     private GameObject planningGhostObject;
     private PlanningGhost planningGhostComponent;
 
-    @Autowired
+    @Inject
     public BuildWallTool(CurrentVoxelHighlighter currentVoxelHighlighter,
                          TaskManager taskManager,
-                         @Qualifier("stockpile") PrefabManager stockpileManager,
-                         @Qualifier("block") PrefabManager blockManager,
-                         @Qualifier("planningGhost") PrefabManager planningGhostManager) {
+                         @Named("stockpile") PrefabManager stockpileManager,
+                         @Named("block") PrefabManager blockManager,
+                         @Named("planningGhost") PrefabManager planningGhostManager) {
         this.currentVoxelHighlighter = currentVoxelHighlighter;
         this.taskManager = taskManager;
         this.stockpileManager = stockpileManager;
@@ -63,7 +61,9 @@ public class BuildWallTool implements MouseTool {
         } else if (!horizontalBoundaryLockedIn) {
             horizontalBoundaryLockedIn = true;
         } else {
-            planningGhostObject.destroy();
+            if (planningGhostObject != null) {
+                planningGhostObject.destroy();
+            }
             loopThroughSelection(transform -> taskManager.addTask(new PlaceBlock(stockpileManager, blockManager, "grassItem", transform)));
             start = null;
             startLockedIn = false;

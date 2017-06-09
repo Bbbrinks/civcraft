@@ -6,9 +6,8 @@ import nl.civcraft.jme3.model.RenderedVoxelFace;
 import nl.civcraft.jme3.rendering.VoxelMaterialManager;
 import nl.civcraft.jme3.rendering.VoxelRendererControl;
 import nl.civcraft.jme3.utils.BlockUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -33,14 +32,13 @@ public class StateBasedVoxelRendererImpl extends VoxelRenderer {
         return BlockUtil.getQuadBlock(voxelMaterialManager.loadMaterial(getVoxel().getType(), stateSupplier.apply(gameObject)));
     }
 
-    @Component
     public static class StateBasedVoxelRendererFactoryImpl implements nl.civcraft.core.rendering.VoxelRenderer.StateBasedVoxelRendererFactoryFactory<StateBasedVoxelRendererImpl> {
 
 
         private final VoxelMaterialManager voxelMaterialManager1;
         private final VoxelRendererControl voxelRendererControl;
 
-        @Autowired
+        @Inject
         public StateBasedVoxelRendererFactoryImpl(VoxelMaterialManager voxelMaterialManager1, VoxelRendererControl voxelRendererControl) {
             this.voxelMaterialManager1 = voxelMaterialManager1;
             this.voxelRendererControl = voxelRendererControl;

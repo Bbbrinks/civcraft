@@ -5,8 +5,8 @@ import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
-import org.springframework.beans.factory.annotation.Qualifier;
 
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +28,7 @@ public abstract class GroundRectangleSelector implements MouseTool {
 
     public GroundRectangleSelector(CurrentVoxelHighlighter currentVoxelHighlighter,
                                    VoxelManager voxelManager,
-                                   @Qualifier("voxelHighlight") PrefabManager voxelHighlightManager) {
+                                   @Named("voxelHighlight") PrefabManager voxelHighlightManager) {
         this.currentVoxelHighlighter = currentVoxelHighlighter;
         this.voxelManager = voxelManager;
         this.voxelHighlightManager = voxelHighlightManager;

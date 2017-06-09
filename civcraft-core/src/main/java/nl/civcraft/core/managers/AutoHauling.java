@@ -3,10 +3,9 @@ package nl.civcraft.core.managers;
 import nl.civcraft.core.gamecomponents.Haulable;
 import nl.civcraft.core.gamecomponents.Stockpile;
 import nl.civcraft.core.model.GameObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -16,16 +15,16 @@ import java.util.concurrent.LinkedBlockingQueue;
  * <p>
  * This is probably not worth documenting
  */
-@Component
+
 public class AutoHauling {
     private final TaskManager taskManager;
     private final PrefabManager stockpileManager;
     private final Queue<Haulable> notYetHauled;
 
-    @Autowired
+    @Inject
     public AutoHauling(TaskManager taskManager,
-                       @Qualifier("stockpile") PrefabManager stockpileManager,
-                       @Qualifier("item") PrefabManager itemManager) {
+                       @Named("stockpile") PrefabManager stockpileManager,
+                       @Named("item") PrefabManager itemManager) {
 
         itemManager.getGameObjectCreated().subscribe(this::handleNewItem);
         stockpileManager.getGameObjectCreated().subscribe(this::handleNewStockpile);

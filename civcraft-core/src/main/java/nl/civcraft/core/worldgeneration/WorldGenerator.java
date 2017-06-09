@@ -8,16 +8,12 @@ import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.utils.MathUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.Optional;
 
-@Component
-@PropertySource("classpath:world-generation.properties")
+
 public class WorldGenerator implements Runnable {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -34,10 +30,12 @@ public class WorldGenerator implements Runnable {
     private HeightMap heightMap;
     private boolean generationDone;
 
-    @Autowired
-    public WorldGenerator(@Value("${height_map_width}") int heightMapWidth, @Value("${height_map_height}") int heightMapHeight,
+    @Inject
+    public WorldGenerator(@Named("height_map_width") int heightMapWidth,
+                          @Named("height_map_height") int heightMapHeight,
                           HeightMapGenerator hillsGenerator, ChunkBuilder chunkBuilder, TreeGenerator treeGenerator,
-                          @Qualifier(value = "civvy") PrefabManager civvyManager, VoxelManager voxelManager) {
+                          @Named("civvy") PrefabManager civvyManager,
+                          VoxelManager voxelManager) {
         this.heightMapWidth = heightMapWidth;
         this.heightMapHeight = heightMapHeight;
         this.hillsGenerator = hillsGenerator;

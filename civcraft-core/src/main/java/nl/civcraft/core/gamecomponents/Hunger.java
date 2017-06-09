@@ -4,8 +4,8 @@ import io.reactivex.disposables.Disposable;
 import nl.civcraft.core.managers.TickManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.inject.Inject;
 import java.util.Optional;
 
 
@@ -14,7 +14,7 @@ public class Hunger extends AbstractGameComponent {
     private int calories;
     private int starvation;
 
-    @Autowired
+    @Inject
     public Hunger(TickManager tickManager) {
         subscribe = tickManager.getTick().subscribe(this::handleTick);
     }
@@ -51,7 +51,7 @@ public class Hunger extends AbstractGameComponent {
     public static class Factory implements GameComponentFactory<Hunger> {
         private final TickManager tickManager;
 
-        @Autowired
+        @Inject
         public Factory(TickManager tickManager) {
             this.tickManager = tickManager;
         }

@@ -3,9 +3,8 @@ package nl.civcraft.core.gamecomponents;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.NeighbourDirection;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -101,12 +100,11 @@ public class Neighbour extends AbstractGameComponent {
                 collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    @Component
     public static class Factory implements GameComponentFactory<Neighbour> {
 
         private final VoxelManager voxelManager;
 
-        @Autowired
+        @Inject
         public Factory(VoxelManager voxelManager) {
             this.voxelManager = voxelManager;
         }

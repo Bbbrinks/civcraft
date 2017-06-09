@@ -6,9 +6,8 @@ import com.jme3.asset.TextureKey;
 import com.jme3.material.Material;
 import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.jme3.utils.MaterialUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,13 +17,12 @@ import java.util.Map;
  * <p>
  * This is probably not worth documenting
  */
-@Component
 public class VoxelMaterialManager {
     private static final String TEXTURES = "textures/";
     private final AssetManager assetManager;
     private final Map<String, Material> loadedMaterials = new HashMap<>();
 
-    @Autowired
+    @Inject
     public VoxelMaterialManager(AssetManager assetManager) {
         this.assetManager = assetManager;
     }

@@ -1,15 +1,13 @@
 package nl.civcraft.jme3.input;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import javax.inject.Inject;
 
-@Component
-class CivCraftFlyCamState {
+public class CivCraftFlyCamState {
 
     private final FlyingCamera flyCam;
 
 
-    @Autowired
+    @Inject
     public CivCraftFlyCamState(FlyingCamera camera) {
         this.flyCam = camera;
         flyCam.registerWithInput();

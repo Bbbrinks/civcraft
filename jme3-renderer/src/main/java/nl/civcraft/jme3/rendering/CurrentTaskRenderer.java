@@ -8,27 +8,24 @@ import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.tasks.MoveTo;
 import nl.civcraft.core.tasks.MoveToRange;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Component
-class CurrentTaskRenderer {
+public class CurrentTaskRenderer {
 
     private final Spatial moveToSpatial;
     private final List<Civvy> civvies;
     private final Node highlightNode;
 
-    @Autowired
-    public CurrentTaskRenderer(Node rootNode,
-                               Spatial moveToSpatial,
+    @Inject
+    public CurrentTaskRenderer(@Named("rootNode") Node rootNode,
+                               @Named("moveToSpatial") Spatial moveToSpatial,
                                SystemEventPublisher systemEventPublisher,
-                               @Qualifier("civvy") PrefabManager civvyManager) {
+                               @Named("civvy") PrefabManager civvyManager) {
         civvyManager.getGameObjectCreated().subscribe(this::addCivvy);
         civvyManager.getGameObjectDestroyed().subscribe(this::removeCivvy);
         systemEventPublisher.getPublisher().subscribe(this::update);
@@ -38,7 +35,6 @@ class CurrentTaskRenderer {
         civvies = new ArrayList<>();
     }
 
-    @EventListener
     public void addCivvy(GameObject civvyCreated) {
         Optional<Civvy> component = civvyCreated.getComponent(Civvy.class);
         if (!component.isPresent()) {
@@ -47,7 +43,6 @@ class CurrentTaskRenderer {
         civvies.add(component.get());
     }
 
-    @EventListener
     public void removeCivvy(GameObject civvyRemoved) {
         Optional<Civvy> component = civvyRemoved.getComponent(Civvy.class);
         if (!component.isPresent()) {

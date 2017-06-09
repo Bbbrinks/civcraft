@@ -14,18 +14,15 @@ import javafx.util.Pair;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.rendering.ItemRenderer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-@Component
 public class ItemRendererControl extends AbstractControl {
 
 
@@ -35,10 +32,10 @@ public class ItemRendererControl extends AbstractControl {
     private final Queue<ItemRenderer> removedItems;
     private final Node itemNode;
 
-    @Autowired
+    @Inject
     public ItemRendererControl(AssetManager assetManager,
                                Node rootNode,
-                               @Qualifier("item") PrefabManager prefabManager) {
+                               @Named("item") PrefabManager prefabManager) {
         prefabManager.getGameObjectCreated().subscribe(this::handleItemCreated);
         prefabManager.getGameObjectChangedEvent().subscribe(this::handleItemChanged);
         prefabManager.getGameObjectDestroyed().subscribe(this::handleItemRemoved);
@@ -49,9 +46,9 @@ public class ItemRendererControl extends AbstractControl {
         removedItems = new LinkedBlockingQueue<>();
         itemNode = new Node("itemNode");
         rootNode.attachChild(itemNode);
+        rootNode.addControl(this);
     }
 
-    @EventListener
     public void handleItemCreated(GameObject gameObject) {
         Optional<ItemRenderer> itemComponent = gameObject.getComponent(ItemRenderer.class);
         if (!itemComponent.isPresent()) {
@@ -88,7 +85,6 @@ public class ItemRendererControl extends AbstractControl {
         }
     }
 
-    @EventListener
     public void handleItemRemoved(GameObject gameObject) {
         Optional<ItemRenderer> itemComponent = gameObject.getComponent(ItemRenderer.class);
         if (!itemComponent.isPresent()) {

@@ -7,11 +7,11 @@ import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.utils.MathUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
-@Component
+import javax.inject.Inject;
+import javax.inject.Named;
+
+
 public class ChunkBuilder {
 
 
@@ -19,9 +19,11 @@ public class ChunkBuilder {
     private final PrefabManager grass;
     private final PrefabManager dirt;
 
-    @Autowired
-    public ChunkBuilder(@Qualifier("cobbleStone") PrefabManager cobbleStone, @Qualifier("grass") PrefabManager
-            grass, @Qualifier("dirt") PrefabManager dirt) {
+    @Inject
+    public ChunkBuilder(@Named("cobbleStone") PrefabManager cobbleStone,
+                        @Named("grass") PrefabManager
+                                grass,
+                        @Named("dirt") PrefabManager dirt) {
         this.cobbleStone = cobbleStone;
         this.dirt = dirt;
         this.grass = grass;

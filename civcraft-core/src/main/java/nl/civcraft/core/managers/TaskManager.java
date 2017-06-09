@@ -5,17 +5,16 @@ import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.tasks.Task;
 import nl.civcraft.core.utils.MathUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-@Component
 public class TaskManager implements Serializable {
 
 
@@ -23,10 +22,10 @@ public class TaskManager implements Serializable {
     private final List<Task> tasks;
 
 
-    @Autowired
-    public TaskManager(List<Task> defaultTasks,
+    @Inject
+    public TaskManager(Set<Task> defaultTasks,
                        SystemEventPublisher systemEventPublisher,
-                       @Qualifier("civvy") PrefabManager prefabManager) {
+                       @Named("civvy") PrefabManager prefabManager) {
         systemEventPublisher.getPublisher().subscribe(this::update);
         prefabManager.getGameObjectCreated().subscribe(this::addCivvy);
         civvies = new CopyOnWriteArrayList<>();

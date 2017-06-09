@@ -5,19 +5,19 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.utils.MathUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
-@Component
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class TreeGenerator {
 
 
     private final PrefabManager treeTrunk;
     private final PrefabManager treeLeaf;
 
-    @Autowired
-    public TreeGenerator(@Qualifier("treeTrunk") PrefabManager treeTrunk, @Qualifier("treeLeaf") PrefabManager
+    @Inject
+    public TreeGenerator(@Named("treeTrunk") PrefabManager treeTrunk,
+                         @Named("treeLeaf") PrefabManager
             treeLeaf) {
         this.treeLeaf = treeLeaf;
         this.treeTrunk = treeTrunk;

@@ -1,31 +1,33 @@
-package nl.civcraft.core.conf;
+package nl.civcraft.core.modules;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import nl.civcraft.core.gamecomponents.*;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.rendering.VoxelRenderer;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.function.Function;
 
 /**
- * Created by Bob on 25-11-2016.
+ * Created by Bob on 9-6-2017.
  * <p>
  * This is probably not worth documenting
  */
-@Configuration
-public class Blocks {
+public class BlocksModule extends AbstractModule {
+    @Override
+    protected void configure() {
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("grass")
-    public PrefabManager grassManager(@Qualifier("block") PrefabManager blockManager,
+    }
+
+    @Provides
+    @Singleton
+    @Named("grass")
+    public PrefabManager grassManager(@Named("block") PrefabManager blockManager,
                                       VoxelManager voxelManager,
                                       VoxelRenderer.StaticVoxelRendererFactory voxelRenderer) {
         PrefabManager prefabManager = new PrefabManager(blockManager);
@@ -36,10 +38,10 @@ public class Blocks {
         return prefabManager;
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("cobbleStone")
-    public PrefabManager cobbleStoneManager(@Qualifier("block") PrefabManager blockManager,
+    @Provides
+    @Singleton
+    @Named("cobbleStone")
+    public PrefabManager cobbleStoneManager(@Named("block") PrefabManager blockManager,
                                             VoxelManager voxelManager,
                                             VoxelRenderer.StaticVoxelRendererFactory voxelRenderer) {
         PrefabManager prefabManager = new PrefabManager(blockManager);
@@ -50,10 +52,10 @@ public class Blocks {
         return prefabManager;
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("dirt")
-    public PrefabManager dirtManager(@Qualifier("block") PrefabManager blockManager,
+    @Provides
+    @Singleton
+    @Named("dirt")
+    public PrefabManager dirtManager(@Named("block") PrefabManager blockManager,
                                      VoxelManager voxelManager,
                                      VoxelRenderer.StaticVoxelRendererFactory voxelRenderer) {
         PrefabManager prefabManager = new PrefabManager(blockManager);
@@ -64,14 +66,14 @@ public class Blocks {
         return prefabManager;
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("treeLeaf")
+    @Provides
+    @Singleton
+    @Named("treeLeaf")
     public PrefabManager treeLeafManager(
-                                         @Qualifier("block") PrefabManager blockManager,
-                                         VoxelManager voxelManager,
-                                         @Qualifier("apple") PrefabManager itemManager,
-                                         VoxelRenderer.StateBasedVoxelRendererFactoryFactory voxelRenderer) {
+            @Named("block") PrefabManager blockManager,
+            VoxelManager voxelManager,
+            @Named("apple") PrefabManager itemManager,
+            VoxelRenderer.StateBasedVoxelRendererFactoryFactory voxelRenderer) {
         PrefabManager prefabManager = new PrefabManager(blockManager);
         Function<GameObject, String> stateSupplier = (GameObject gameObject) -> gameObject.getComponent(InventoryComponent.class).map(i -> i.isEmpty() ? "empty" :
                 "not-empty").orElse("empty");
@@ -85,13 +87,13 @@ public class Blocks {
         return prefabManager;
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("treeTrunk")
+    @Provides
+    @Singleton
+    @Named("treeTrunk")
     public PrefabManager treeTrunkManager(
-                                          @Qualifier("block") PrefabManager blockManager,
-                                          VoxelManager voxelManager,
-                                          VoxelRenderer.StaticVoxelRendererFactory voxelRenderer) {
+            @Named("block") PrefabManager blockManager,
+            VoxelManager voxelManager,
+            VoxelRenderer.StaticVoxelRendererFactory voxelRenderer) {
         PrefabManager prefabManager = new PrefabManager(blockManager);
         Voxel.Factory voxel = new Voxel.Factory("treeTrunk", voxelManager);
         prefabManager.registerComponent(voxel);

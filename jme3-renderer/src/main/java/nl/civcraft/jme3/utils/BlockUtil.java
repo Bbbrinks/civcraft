@@ -1,10 +1,17 @@
 package nl.civcraft.jme3.utils;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
 import nl.civcraft.core.model.Face;
 import nl.civcraft.jme3.model.RenderedVoxelFace;
@@ -92,6 +99,31 @@ public class BlockUtil {
 
         block.put(Face.BACK, new RenderedVoxelFace(sideMaterial, BACK.clone()));
 
+        return block;
+    }
+
+    public static Spatial getColoredBlock(AssetManager assetManager,
+                                          ColorRGBA value) {
+        Material mat = new Material(assetManager,  // Create new material and...
+                "Common/MatDefs/Misc/Unshaded.j3md");  // ... specify .j3md file to use (unshaded).
+        mat.setColor("Color", value);
+        mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        Box box = new Box(0.51f, 0.51f, 0.51f);
+        Geometry geometry = new Geometry("selectionBox", box);
+        geometry.setMaterial(mat);
+        geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
+        return geometry;
+    }
+
+
+    public static Node createSingleGeometryBoxCivvy(Material cobbleMaterial) {
+        Box box = new Box(0.25f, 2.0f, 0.35f);
+        Geometry geometry = new Geometry("box", box);
+        geometry.setMaterial(cobbleMaterial);
+        geometry.setLocalTranslation(0.0f, 1.0f, 0.0f);
+        Node block = new Node("civvy");
+        block.attachChild(geometry);
+        block.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         return block;
     }
 }

@@ -1,28 +1,30 @@
-package nl.civcraft.core.conf;
+package nl.civcraft.core.modules;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import nl.civcraft.core.gamecomponents.*;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.TickManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+
+import javax.inject.Named;
 
 /**
- * Created by Bob on 25-11-2016.
+ * Created by Bob on 9-6-2017.
  * <p>
  * This is probably not worth documenting
  */
-@Configuration
-public class Prefabs {
+public class PrefabsModule extends AbstractModule {
+    @Override
+    protected void configure() {
+    }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("civvy")
+    @Provides
+    @Singleton
+    @Named("civvy")
     public PrefabManager civvyManager(
             VoxelManager voxelManager,
             AStarPathFinder aStarPathFinder,
@@ -35,9 +37,9 @@ public class Prefabs {
         return prefabManager;
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("item")
+    @Provides
+    @Singleton
+    @Named("item")
     public PrefabManager itemManager() {
         PrefabManager prefabManager = new PrefabManager();
         prefabManager.registerComponent(new Haulable.Factory());
@@ -45,17 +47,16 @@ public class Prefabs {
     }
 
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("block")
-    public PrefabManager blockManager(
-            Neighbour.Factory neighbourComponent) {
+    @Provides
+    @Singleton
+    @Named("block")
+    public PrefabManager blockManager() {
         return new PrefabManager();
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("stockpile")
+    @Provides
+    @Singleton
+    @Named("stockpile")
     public PrefabManager stockpile(
             Stockpile.Factory stockpileComponent) {
         PrefabManager prefabManager = new PrefabManager();
@@ -63,18 +64,18 @@ public class Prefabs {
         return prefabManager;
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("voxelHighlight")
+    @Provides
+    @Singleton
+    @Named("voxelHighlight")
     public PrefabManager voxelHighlight() {
         PrefabManager prefabManager = new PrefabManager();
         prefabManager.registerComponent(new VoxelHighlight.Factory());
         return prefabManager;
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("planningGhost")
+    @Provides
+    @Singleton
+    @Named("planningGhost")
     public PrefabManager planningGhost() {
         PrefabManager prefabManager = new PrefabManager();
         prefabManager.registerComponent(new PlanningGhost.Factory());

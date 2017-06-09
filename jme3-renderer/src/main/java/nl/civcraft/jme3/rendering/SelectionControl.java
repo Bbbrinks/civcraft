@@ -9,10 +9,9 @@ import com.jme3.scene.control.AbstractControl;
 import nl.civcraft.core.gamecomponents.PlanningGhost;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.GameObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,16 +20,16 @@ import java.util.List;
  * <p>
  * This is probably not worth documenting
  */
-@Component
 public class SelectionControl extends AbstractControl {
     private final Node otherSelection;
     private final Spatial hoverSpatial;
     private final List<Spatial> spatials;
 
-    @Autowired
-    public SelectionControl(Node otherSelection,
-                            Spatial hoverSpatial,
-                            @Qualifier("planningGhost")
+    @Inject
+    public SelectionControl(@Named("otherSelection") Node otherSelection,
+                            @Named("rootNode") Node rootNode,
+                            @Named("hoverSpatial") Spatial hoverSpatial,
+                            @Named("planningGhost")
                                     PrefabManager planningGhostVoxel) {
         planningGhostVoxel.getGameObjectCreated().subscribe(this::handleNewSelection);
         planningGhostVoxel.getGameObjectChangedEvent().subscribe(this::handleNewSelection);
@@ -38,6 +37,7 @@ public class SelectionControl extends AbstractControl {
         this.otherSelection = otherSelection;
         this.hoverSpatial = hoverSpatial;
         spatials = new ArrayList<>();
+        rootNode.addControl(this);
     }
 
     private void hideSelection(GameObject gameObject) {

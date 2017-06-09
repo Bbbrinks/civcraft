@@ -3,7 +3,6 @@ package nl.civcraft.core.gamecomponents;
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.LimitedInventory;
-import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -68,7 +67,6 @@ public class Stockpile extends AbstractGameComponent implements Serializable {
         return first.flatMap(inventory -> inventory.removeItem(itemComponent));
     }
 
-    @Component
     public static class Factory implements GameComponentFactory<Stockpile> {
 
         @Override

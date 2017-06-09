@@ -13,21 +13,21 @@ import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import nl.civcraft.core.managers.TickManager;
 import nl.civcraft.core.utils.MathUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
-class SunLighting {
+import javax.inject.Inject;
+import javax.inject.Named;
+
+public class SunLighting {
 
     private static final float SUN_SPEED = 0.0f;
 
     private final DirectionalLight sunLight;
     private float sunCount = 90f;
 
-    @Autowired
-    public SunLighting(Spatial rootNode,
+    @Inject
+    public SunLighting(@Named("rootNode") Spatial rootNode,
                        AssetManager assetManager,
-                       ViewPort mainViewPort,
+                       @Named("mainViewPort") ViewPort mainViewPort,
                        TickManager tickManager) {
         tickManager.getTick().subscribe(this::handleTick);
 

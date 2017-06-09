@@ -5,11 +5,10 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.*;
 import nl.civcraft.core.interaction.MouseTool;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
-@Component
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class VoxelSelectionInput implements AnalogListener, ActionListener {
 
     private static final String MOUSE_MOTION_X = "MOUSE_MOTION_X";
@@ -26,8 +25,8 @@ public class VoxelSelectionInput implements AnalogListener, ActionListener {
 
     private MouseTool currentTool;
 
-    @Autowired
-    public VoxelSelectionInput(@Qualifier("singleVoxelSelector") MouseTool defaultTool,
+    @Inject
+    public VoxelSelectionInput(@Named("singleVoxelSelector") MouseTool defaultTool,
                                InputManager inputManager) {
         registerInput(inputManager);
         currentTool = defaultTool;

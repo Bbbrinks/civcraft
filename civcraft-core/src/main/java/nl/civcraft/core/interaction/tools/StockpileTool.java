@@ -6,27 +6,26 @@ import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Created by Bob on 14-8-2016.
  * <p>
  * This is probably not worth documenting
  */
-@Component
 public class StockpileTool extends GroundRectangleSelector {
 
 
     private final PrefabManager prefabManager;
     private Stockpile createdStockpile;
 
-    @Autowired
+    @Inject
     public StockpileTool(CurrentVoxelHighlighter currentVoxelHighlighter,
                          VoxelManager voxelManager,
-                         @Qualifier("stockpile") PrefabManager prefabManager,
-                         @Qualifier("voxelHighlight") PrefabManager voxelHighlightManager) {
+                         @Named("stockpile") PrefabManager prefabManager,
+                         @Named("voxelHighlight") PrefabManager voxelHighlightManager) {
         super(currentVoxelHighlighter, voxelManager, voxelHighlightManager);
         this.prefabManager = prefabManager;
     }

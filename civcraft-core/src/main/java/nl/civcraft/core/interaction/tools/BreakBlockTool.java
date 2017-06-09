@@ -4,21 +4,21 @@ import nl.civcraft.core.interaction.selectors.SingleVoxelSelector;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.tasks.BreakBlockTask;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
 
 /**
  * Created by Bob on 21-1-2017.
  * <p>
  * This is probably not worth documenting
  */
-@Component
-public class BreakBlokTool extends SingleVoxelSelector {
+public class BreakBlockTool extends SingleVoxelSelector {
 
     private final TaskManager taskManager;
 
-    @Autowired
-    public BreakBlokTool(CurrentVoxelHighlighter currentVoxelHighlighter, TaskManager taskManager) {
+    @Inject
+    public BreakBlockTool(CurrentVoxelHighlighter currentVoxelHighlighter,
+                          TaskManager taskManager) {
         super(currentVoxelHighlighter);
         this.taskManager = taskManager;
     }

@@ -5,16 +5,18 @@ import com.simsilica.lemur.Command;
 import com.simsilica.lemur.Container;
 import nl.civcraft.core.interaction.MouseTool;
 import nl.civcraft.jme3.input.VoxelSelectionInput;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Set;
 
-@Component
-class Toolbar {
 
-    @Autowired
-    public Toolbar(Container hud, List<MouseTool> tools, VoxelSelectionInput voxelSelectionInput) {
+public class Toolbar {
+
+    @Inject
+    public Toolbar(@Named("hudContainer") Container hud,
+                   Set<MouseTool> tools,
+                   VoxelSelectionInput voxelSelectionInput) {
 
         for (MouseTool tool : tools) {
             Button button = hud.addChild(new Button(tool.getLabel()));

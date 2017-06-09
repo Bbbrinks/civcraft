@@ -5,7 +5,6 @@ import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.utils.RandomUtil;
-import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-@Component
 public class Wander extends Task {
 
     public Wander() {

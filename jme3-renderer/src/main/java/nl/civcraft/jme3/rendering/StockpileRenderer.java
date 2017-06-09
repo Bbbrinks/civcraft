@@ -6,11 +6,9 @@ import nl.civcraft.core.SystemEventPublisher;
 import nl.civcraft.core.gamecomponents.Stockpile;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.GameObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -19,18 +17,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * <p>
  * This is probably not worth documenting
  */
-@Component
-class StockpileRenderer {
+public class StockpileRenderer {
 
     private final Node stockpileNode;
     private final List<Stockpile> stockpiles;
     private final Spatial stockpileSpatial;
 
-    @Autowired
-    public StockpileRenderer(Node rootNode,
-                             Spatial stockpileSpatial,
+    @Inject
+    public StockpileRenderer(@Named("rootNode") Node rootNode,
+                             @Named("stockpileSpatial") Spatial stockpileSpatial,
                              SystemEventPublisher systemEventPublisher,
-                             @Qualifier("stockpile") PrefabManager stockpileManager) {
+                             @Named("stockpile") PrefabManager stockpileManager) {
         stockpileManager.getGameObjectCreated().subscribe(this::stockpileCreated);
         systemEventPublisher.getPublisher().subscribe(this::update);
         stockpileNode = new Node("stockpiles");
@@ -39,7 +36,6 @@ class StockpileRenderer {
         this.stockpileSpatial = stockpileSpatial;
     }
 
-    @EventListener
     public void update(float tpf) {
         stockpileNode.detachAllChildren();
         for (Stockpile stockpile : stockpiles) {
@@ -51,7 +47,6 @@ class StockpileRenderer {
         }
     }
 
-    @EventListener
     public void stockpileCreated(GameObject stockpileCreated) {
         stockpileCreated.getComponent(Stockpile.class).ifPresent(stockpiles::add);
     }

@@ -5,9 +5,8 @@ import nl.civcraft.core.interaction.selectors.SingleVoxelSelector;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.tasks.Harvest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.Optional;
 
 /**
@@ -15,12 +14,11 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-@Component
 public class HarvestTool extends SingleVoxelSelector {
 
     private final TaskManager taskManager;
 
-    @Autowired
+    @Inject
     public HarvestTool(CurrentVoxelHighlighter currentVoxelHighlighter, TaskManager taskManager) {
         super(currentVoxelHighlighter);
         this.taskManager = taskManager;

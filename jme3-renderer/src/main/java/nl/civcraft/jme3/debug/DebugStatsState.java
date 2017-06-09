@@ -8,11 +8,11 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.scene.Node;
 import nl.civcraft.core.SystemEventPublisher;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
-class DebugStatsState implements ActionListener {
+import javax.inject.Inject;
+import javax.inject.Named;
+
+public class DebugStatsState implements ActionListener {
 
     private static final String TOGGLE_DEBUG_INFO = "TOGGLE_DEBUG_INFO";
     private static String LAST_MESSAGE; //NOSONAR
@@ -24,10 +24,10 @@ class DebugStatsState implements ActionListener {
     private int frameCounter;
     private boolean show = false;
 
-    @Autowired
-    public DebugStatsState(Node guiNode,
-                           BitmapText fpsText,
-                           BitmapText logMessageText,
+    @Inject
+    public DebugStatsState(@Named("guiNode") Node guiNode,
+                           @Named("fpsText") BitmapText fpsText,
+                           @Named("logMessageText") BitmapText logMessageText,
                            InputManager inputManager,
                            SystemEventPublisher systemEventPublisher) {
         systemEventPublisher.getPublisher().subscribe(this::update);

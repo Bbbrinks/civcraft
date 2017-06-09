@@ -8,20 +8,18 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 
-@Component
-class GlobalInput implements ActionListener, AssetEventListener {
+public class GlobalInput implements ActionListener, AssetEventListener {
     private static final String WIREFRAME = "WIREFRAME";
     private static final String EXIT = "EXIT";
     private final Set<Material> materials;
     private boolean wireframe;
 
-    @Autowired
+    @Inject
     public GlobalInput(AssetManager assetManager,
                        InputManager inputManager) {
         assetManager.addAssetEventListener(this);

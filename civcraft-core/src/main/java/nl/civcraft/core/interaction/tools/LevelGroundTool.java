@@ -9,10 +9,9 @@ import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.NeighbourDirection;
 import nl.civcraft.core.tasks.BreakBlockTask;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,17 +21,16 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-@Component
 public class LevelGroundTool extends GroundRectangleSelector {
 
     private final TaskManager taskManager;
     private List<BreakBlockTask> tasks;
 
-    @Autowired
+    @Inject
     public LevelGroundTool(CurrentVoxelHighlighter currentVoxelHighlighter,
                            VoxelManager voxelManager,
                            TaskManager taskManager,
-                           @Qualifier("voxelHighlight") PrefabManager voxelHighlightManager) {
+                           @Named("voxelHighlight") PrefabManager voxelHighlightManager) {
         super(currentVoxelHighlighter, voxelManager, voxelHighlightManager);
         this.taskManager = taskManager;
     }

@@ -7,10 +7,9 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.GameObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,21 +18,22 @@ import java.util.Map;
  * <p>
  * This is probably not worth documenting
  */
-@Component
 public class VoxelHighlightControl extends AbstractControl {
     private final Node selectionBoxes;
     private final Spatial hoverSpatial;
     private final Map<GameObject, Spatial> spatials;
 
-    @Autowired
-    public VoxelHighlightControl(Node selectionBoxes,
-                                 Spatial hoverSpatial,
-                                 @Qualifier("voxelHighlight") PrefabManager voxelHighlightManager) {
+    @Inject
+    public VoxelHighlightControl(@Named("selectionBoxes") Node selectionBoxes,
+                                 @Named("rootNode") Node rootNode,
+                                 @Named("hoverSpatial") Spatial hoverSpatial,
+                                 @Named("voxelHighlight") PrefabManager voxelHighlightManager) {
         this.selectionBoxes = selectionBoxes;
         this.hoverSpatial = hoverSpatial;
         spatials = new HashMap<>();
         voxelHighlightManager.getGameObjectDestroyed().subscribe(this::clearHighlight);
         voxelHighlightManager.getGameObjectCreated().subscribe(this::handleAddVoxelHighlight);
+        rootNode.addControl(this);
     }
 
     public void clearHighlight(GameObject removedHighlight) {

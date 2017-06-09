@@ -11,12 +11,11 @@ import com.jme3.scene.Spatial;
 import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.Optional;
 
-@Component
 public class CurrentVoxelHighlighterJme3 implements CurrentVoxelHighlighter {
 
     private static final float EPSILON = 0.0001f;
@@ -28,8 +27,12 @@ public class CurrentVoxelHighlighterJme3 implements CurrentVoxelHighlighter {
     private final Node hoverBoxes;
     private GameObject voxelAt;
 
-    @Autowired
-    public CurrentVoxelHighlighterJme3(Camera camera, InputManager inputManager, Node rootNode, VoxelManager voxelManager, Spatial hoverSpatial) {
+    @Inject
+    public CurrentVoxelHighlighterJme3(Camera camera,
+                                       InputManager inputManager,
+                                       @Named("rootNode") Node rootNode,
+                                       VoxelManager voxelManager,
+                                       @Named("hoverSpatial") Spatial hoverSpatial) {
         this.camera = camera;
         this.inputManager = inputManager;
         this.rootNode = rootNode;

@@ -8,35 +8,32 @@ import com.jme3.scene.control.AbstractControl;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@Component
 public class CivvyControl extends AbstractControl {
 
     private final Node civviesNode;
     private final Node civvySpatial;
     private final List<Civvy> civvies;
 
-    @Autowired
-    public CivvyControl(Node rootNode,
-                        Node civvy,
-                        @Qualifier("civvy") PrefabManager civvyManager) {
+    @Inject
+    public CivvyControl(@Named("rootNode") Node rootNode,
+                        @Named("civvy") Node civvy,
+                        @Named("civvy") PrefabManager civvyManager) {
         civvyManager.getGameObjectCreated().subscribe(this::addCivvy);
         civvyManager.getGameObjectDestroyed().subscribe(this::removeCivvy);
         civviesNode = new Node("civvies");
         rootNode.attachChild(civviesNode);
         civvies = new CopyOnWriteArrayList<>();
         this.civvySpatial = civvy;
+        rootNode.addControl(this);
     }
 
-    @EventListener
     public void addCivvy(GameObject civvyCreated) {
         Optional<Civvy> component = civvyCreated.getComponent(Civvy.class);
         if (!component.isPresent()) {
@@ -45,7 +42,6 @@ public class CivvyControl extends AbstractControl {
         civvies.add(component.get());
     }
 
-    @EventListener
     public void removeCivvy(GameObject civvyRemoved) {
         Optional<Civvy> component = civvyRemoved.getComponent(Civvy.class);
         if (!component.isPresent()) {
@@ -65,7 +61,8 @@ public class CivvyControl extends AbstractControl {
     }
 
     @Override
-    protected void controlRender(RenderManager rm, ViewPort vp) {
+    protected void controlRender(RenderManager rm,
+                                 ViewPort vp) {
 
     }
 }

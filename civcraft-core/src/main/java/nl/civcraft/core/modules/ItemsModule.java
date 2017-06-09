@@ -1,29 +1,32 @@
-package nl.civcraft.core.conf;
+package nl.civcraft.core.modules;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import nl.civcraft.core.gamecomponents.DropOnDestoyed;
 import nl.civcraft.core.gamecomponents.GameComponent;
 import nl.civcraft.core.gamecomponents.ItemComponent;
 import nl.civcraft.core.gamecomponents.Placable;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.rendering.ItemRenderer;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 /**
- * Created by Bob on 22-1-2017.
+ * Created by Bob on 9-6-2017.
  * <p>
  * This is probably not worth documenting
  */
-@Configuration
-public class Items {
+public class ItemsModule extends AbstractModule {
+    @Override
+    protected void configure() {
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("apple")
-    public PrefabManager apple(@Qualifier("item") PrefabManager itemManager,
+    }
+
+    @Provides
+    @Singleton
+    @Named("apple")
+    public PrefabManager apple(@Named("item") PrefabManager itemManager,
                                GameComponent.GameComponentFactory<ItemRenderer> itemRenderer) {
         PrefabManager appleManager = new PrefabManager(itemManager);
         appleManager.registerComponent(new ItemComponent.Factory("apple"));
@@ -31,11 +34,11 @@ public class Items {
         return appleManager;
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("grassItem")
-    public PrefabManager grassItem(@Qualifier("item") PrefabManager itemManager,
-                                   @Qualifier("grass") PrefabManager grassManager,
+    @Provides
+    @Singleton
+    @Named("grassItem")
+    public PrefabManager grassItem(@Named("item") PrefabManager itemManager,
+                                   @Named("grass") PrefabManager grassManager,
                                    GameComponent.GameComponentFactory<ItemRenderer> itemRenderer) {
         PrefabManager grassItemPrefabManager = new PrefabManager(itemManager);
         grassItemPrefabManager.registerComponent(new ItemComponent.Factory("grassItem"));
@@ -46,11 +49,11 @@ public class Items {
         return grassItemPrefabManager;
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("cobbleStoneItem")
-    public PrefabManager cobbleStoneItem(@Qualifier("item") PrefabManager itemManager,
-                                         @Qualifier("cobbleStone") PrefabManager cobbleStone,
+    @Provides
+    @Singleton
+    @Named("cobbleStoneItem")
+    public PrefabManager cobbleStoneItem(@Named("item") PrefabManager itemManager,
+                                         @Named("cobbleStone") PrefabManager cobbleStone,
                                          GameComponent.GameComponentFactory<ItemRenderer> itemRenderer) {
         PrefabManager cobbleStonePrefabManager = new PrefabManager(itemManager);
         cobbleStonePrefabManager.registerComponent(new ItemComponent.Factory("cobbleStone"));
@@ -61,11 +64,11 @@ public class Items {
         return cobbleStonePrefabManager;
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("dirtItem")
-    public PrefabManager dirtItem(@Qualifier("item") PrefabManager itemManager,
-                                  @Qualifier("dirt") PrefabManager dirt,
+    @Provides
+    @Singleton
+    @Named("dirtItem")
+    public PrefabManager dirtItem(@Named("item") PrefabManager itemManager,
+                                  @Named("dirt") PrefabManager dirt,
                                   GameComponent.GameComponentFactory<ItemRenderer> itemRenderer) {
         PrefabManager dirtPrefabManager = new PrefabManager(itemManager);
         dirtPrefabManager.registerComponent(new ItemComponent.Factory("dirt"));
@@ -76,11 +79,11 @@ public class Items {
         return dirtPrefabManager;
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier("treeTrunkItem")
-    public PrefabManager treeTrunkItem(@Qualifier("item") PrefabManager itemManager,
-                                       @Qualifier("treeTrunk") PrefabManager treeTrunk,
+    @Provides
+    @Singleton
+    @Named("treeTrunkItem")
+    public PrefabManager treeTrunkItem(@Named("item") PrefabManager itemManager,
+                                       @Named("treeTrunk") PrefabManager treeTrunk,
                                        GameComponent.GameComponentFactory<ItemRenderer> itemRenderer) {
         PrefabManager treeTrunkPrefabManager = new PrefabManager(itemManager);
         treeTrunkPrefabManager.registerComponent(new ItemComponent.Factory("treeTrunk"));

@@ -8,9 +8,8 @@ import nl.civcraft.jme3.model.RenderedVoxelFace;
 import nl.civcraft.jme3.rendering.VoxelMaterialManager;
 import nl.civcraft.jme3.rendering.VoxelRendererControl;
 import nl.civcraft.jme3.utils.BlockUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.Map;
 
 /**
@@ -45,12 +44,11 @@ public class StaticVoxelRenderer extends VoxelRenderer implements nl.civcraft.co
         return block;
     }
 
-    @Component
     public static class StaticVoxelRenderFactoryImpl implements StaticVoxelRendererFactory<StaticVoxelRenderer> {
         private final VoxelMaterialManager voxelMaterialManager;
         private final VoxelRendererControl voxelRenderControl;
 
-        @Autowired
+        @Inject
         public StaticVoxelRenderFactoryImpl(VoxelMaterialManager voxelMaterialManager, VoxelRendererControl voxelRenderControl) {
             this.voxelMaterialManager = voxelMaterialManager;
             this.voxelRenderControl = voxelRenderControl;

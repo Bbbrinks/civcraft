@@ -40,11 +40,11 @@ import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
-class FlyingCamera implements AnalogListener, ActionListener {
+import javax.inject.Inject;
+
+
+public class FlyingCamera implements AnalogListener, ActionListener {
 
     static final String FLYCAM_LEFT = "FLYCAM_Left";
     static final String FLYCAM_RIGHT = "FLYCAM_Right";
@@ -84,7 +84,7 @@ class FlyingCamera implements AnalogListener, ActionListener {
     private boolean canRotate = false;
 
 
-    @Autowired
+    @Inject
     public FlyingCamera(Camera camera, InputManager inputManager) {
         this.camera = camera;
         initialUpVec = this.camera.getUp().clone();
