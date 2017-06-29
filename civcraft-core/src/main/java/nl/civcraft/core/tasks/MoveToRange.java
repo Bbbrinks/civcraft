@@ -2,6 +2,7 @@ package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.gamecomponents.GroundMovement;
 import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.pathfinding.ChangeAwarePath;
 import nl.civcraft.core.pathfinding.MoveInRangeOfVoxelTarget;
 
 import java.util.Optional;
@@ -15,7 +16,7 @@ import java.util.Queue;
 public class MoveToRange extends Task {
     final GameObject target;
     private final float range;
-    private Queue<GameObject> path;
+    private ChangeAwarePath path;
     private GameObject currentGameObject;
 
     @SuppressWarnings("SameParameterValue")
@@ -37,20 +38,20 @@ public class MoveToRange extends Task {
         }
         this.currentGameObject = target;
         if (path == null) {
-            Optional<Queue<GameObject>> pathOptional = groundMovement.findPath(new MoveInRangeOfVoxelTarget(range, this.target));
+            path = groundMovement.findPath(new MoveInRangeOfVoxelTarget(range, this.target));
+            Optional<Queue<GameObject>> pathOptional = path.getCurrentPath();
             if (!pathOptional.isPresent()) {
                 return Result.FAILED;
-            } else {
-                this.path = pathOptional.get();
             }
         }
-        GameObject peek = path.peek();
+        Queue<GameObject> pathQueue = path.getCurrentPath().orElseThrow(() -> new IllegalStateException("fail"));
+        GameObject peek = pathQueue.peek();
         if (peek == null) {
             return Result.COMPLETED;
         }
         groundMovement.moveToward(peek, tpf);
         if (groundMovement.getCurrentVoxel().equals(peek)) {
-            path.poll();
+            pathQueue.poll();
         }
         return Result.IN_PROGRESS;
     }

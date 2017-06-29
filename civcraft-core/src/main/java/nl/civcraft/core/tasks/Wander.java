@@ -28,7 +28,7 @@ public class Wander extends Task {
             throw new IllegalStateException("Move to can only be done by GroundMovement game objects");
         }
         GroundMovement groundMovement = component.get();
-        GameObject currentVoxel = groundMovement.currentVoxel();
+        GameObject currentVoxel = groundMovement.getCurrentVoxel();
         if (currentVoxel != null) {
             List<GameObject> possibleNextVoxels = currentVoxel.getComponent(Neighbour.class).map(Neighbour::getEnterableNeighbours).orElse(Collections.emptyList());
             if (!possibleNextVoxels.isEmpty()) {

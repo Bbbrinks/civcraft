@@ -2,6 +2,7 @@ package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.gamecomponents.GroundMovement;
 import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.pathfinding.ChangeAwarePath;
 import nl.civcraft.core.pathfinding.MoveToVoxelTarget;
 
 import java.util.Optional;
@@ -15,7 +16,7 @@ import java.util.Queue;
 public class MoveTo extends Task {
 
     private final GameObject target;
-    private Queue<GameObject> path;
+    private ChangeAwarePath path;
     private GameObject civvy;
 
     public MoveTo(GameObject target) {
@@ -38,20 +39,20 @@ public class MoveTo extends Task {
             if (groundMovement.getCurrentVoxel().equals(target)) {
                 return Result.COMPLETED;
             }
-            Optional<Queue<GameObject>> pathOptional = groundMovement.findPath(new MoveToVoxelTarget(target));
+            path = groundMovement.findPath(new MoveToVoxelTarget(target));
+            Optional<Queue<GameObject>> pathOptional = path.getCurrentPath();
             if (!pathOptional.isPresent()) {
                 return Result.FAILED;
-            } else {
-                this.path = pathOptional.get();
             }
         }
-        GameObject peek = path.peek();
+        Queue<GameObject> pathQueue = path.getCurrentPath().orElseThrow(() -> new IllegalStateException("fail"));
+        GameObject peek = pathQueue.peek();
         if (peek == null) {
             return Result.COMPLETED;
         }
         groundMovement.moveToward(peek, tpf);
         if (groundMovement.getCurrentVoxel().equals(peek)) {
-            path.poll();
+            pathQueue.poll();
         }
         return Result.IN_PROGRESS;
     }

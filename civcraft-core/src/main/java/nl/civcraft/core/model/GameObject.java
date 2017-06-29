@@ -1,6 +1,8 @@
 package nl.civcraft.core.model;
 
 import com.jme3.math.Transform;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 import nl.civcraft.core.gamecomponents.GameComponent;
 import nl.civcraft.core.gamecomponents.ItemComponent;
 import nl.civcraft.core.rendering.VoxelRenderer;
@@ -20,6 +22,8 @@ public class GameObject implements Serializable {
 
     private final Transform transform;
     private final List<GameComponent> components;
+    private final Subject<GameObject> gameObjectDestroyed;
+    private final Subject<GameObject> gameObjectChangedEvent;
 
     public GameObject() {
         this(new Transform());
@@ -29,6 +33,8 @@ public class GameObject implements Serializable {
     public GameObject(Transform transform) {
         this.transform = transform;
         components = new ArrayList<>();
+        gameObjectDestroyed = PublishSubject.create();
+        gameObjectChangedEvent = PublishSubject.create();
     }
 
     public void addComponent(GameComponent component) {
@@ -37,16 +43,27 @@ public class GameObject implements Serializable {
     }
 
     public void changed() {
+        gameObjectChangedEvent.onNext(this);
         for (GameComponent component : components) {
             component.changed();
         }
     }
 
     public void destroy() {
+        gameObjectDestroyed.onNext(this);
         for (GameComponent component : components) {
             component.destroyed();
         }
     }
+
+    public Subject<GameObject> getGameObjectDestroyed() {
+        return gameObjectDestroyed;
+    }
+
+    public Subject<GameObject> getGameObjectChangedEvent() {
+        return gameObjectChangedEvent;
+    }
+
 
     public void removeComponent(GameComponent gameComponent) {
         gameComponent.removeFrom(this);

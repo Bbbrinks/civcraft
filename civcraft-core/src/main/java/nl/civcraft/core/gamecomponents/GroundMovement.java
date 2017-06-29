@@ -1,13 +1,14 @@
 package nl.civcraft.core.gamecomponents;
 
 import com.jme3.math.Vector3f;
+import io.reactivex.disposables.Disposable;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
+import nl.civcraft.core.pathfinding.ChangeAwarePath;
 import nl.civcraft.core.pathfinding.PathFindingTarget;
 
 import java.util.Optional;
-import java.util.Queue;
 
 /**
  * Created by Bob on 18-11-2016.
@@ -19,18 +20,18 @@ public class GroundMovement extends AbstractGameComponent {
     private final VoxelManager voxelManager;
     private final AStarPathFinder aStarPathFinder;
     private GameObject currentVoxel;
+    private Disposable currentVoxelSubscription;
 
-    public GroundMovement(float speed, VoxelManager voxelManager, AStarPathFinder aStarPathFinder) {
+    public GroundMovement(float speed,
+                          VoxelManager voxelManager,
+                          AStarPathFinder aStarPathFinder) {
         this.speed = speed;
         this.voxelManager = voxelManager;
         this.aStarPathFinder = aStarPathFinder;
     }
 
-    public GameObject currentVoxel() {
-        return currentVoxel;
-    }
-
-    public void moveToward(GameObject target, float tpf) {
+    public void moveToward(GameObject target,
+                           float tpf) {
         Optional<Voxel> voxelOptional = target.getComponent(Voxel.class);
         if (!voxelOptional.isPresent()) {
             throw new IllegalStateException("Can only move toward voxels");
@@ -42,7 +43,7 @@ public class GroundMovement extends AbstractGameComponent {
             movement = movement.mult(tpf * speed);
 
         } else {
-            currentVoxel = target;
+            setCurrentVoxel(target);
         }
 
         gameObject.getTransform().setTranslation(gameObject.getTransform().getTranslation().add(movement));
@@ -56,24 +57,39 @@ public class GroundMovement extends AbstractGameComponent {
     @Override
     public void addTo(GameObject gameObject) {
         super.addTo(gameObject);
+    }
 
+    public ChangeAwarePath findPath(PathFindingTarget moveToVoxelTarget) {
+        return new ChangeAwarePath(aStarPathFinder, moveToVoxelTarget, getGameObject());
+    }
+
+    public GameObject getCurrentVoxel() {
+        if (currentVoxel == null) {
+            setCurrentVoxelToGround(gameObject);
+        }
+        return currentVoxel;
+    }
+
+    private void setCurrentVoxelToGround(GameObject gameObject) {
         GameObject groundVoxel = voxelManager.getGroundAt(gameObject.getTransform().getTranslation(), 10).
-                map(v -> v).
                 orElseThrow(() -> new IllegalStateException("No ground found at " + gameObject.getTransform().getTranslation()));
 
         setCurrentVoxel(groundVoxel);
     }
 
-    public Optional<Queue<GameObject>> findPath(PathFindingTarget moveToVoxelTarget) {
-        return aStarPathFinder.findPath(gameObject, getCurrentVoxel(), moveToVoxelTarget);
-    }
-
-    public GameObject getCurrentVoxel() {
-        return currentVoxel;
-    }
-
     private void setCurrentVoxel(GameObject currentVoxel) {
+        if (currentVoxelSubscription != null && !currentVoxelSubscription.isDisposed()) {
+            currentVoxelSubscription.dispose();
+        }
+
+        currentVoxelSubscription = currentVoxel.getGameObjectDestroyed().subscribe(gameObject1 ->
+        {
+            currentVoxelSubscription.dispose();
+            this.currentVoxel = null;
+        });
+
         this.currentVoxel = currentVoxel;
+        getGameObject().getTransform().getTranslation().setY(currentVoxel.getTransform().getTranslation().getY() + 1);
     }
 
     public static class Factory implements GameComponentFactory<GroundMovement> {
@@ -82,7 +98,9 @@ public class GroundMovement extends AbstractGameComponent {
         private final AStarPathFinder aStarPathFinder;
 
         @SuppressWarnings("SameParameterValue")
-        public Factory(float speed, VoxelManager voxelManager, AStarPathFinder aStarPathFinder) {
+        public Factory(float speed,
+                       VoxelManager voxelManager,
+                       AStarPathFinder aStarPathFinder) {
             this.speed = speed;
             this.voxelManager = voxelManager;
             this.aStarPathFinder = aStarPathFinder;
