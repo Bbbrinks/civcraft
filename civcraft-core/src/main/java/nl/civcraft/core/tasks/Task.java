@@ -3,14 +3,12 @@ package nl.civcraft.core.tasks;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.npc.Civvy;
 
-import java.io.Serializable;
-
 /**
  * Created by Bob on 31-12-2015.
  * <p>
  * This is probably not worth documenting
  */
-public abstract class Task implements Serializable {
+public abstract class Task {
 
     private State state;
 

@@ -7,7 +7,6 @@ import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.NeighbourDirection;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +19,7 @@ import java.util.stream.Stream;
  * This is probably not worth documenting
  */
 //TODO: Move this to jme3-renderer and use PrefabManager in civcraft-core instead
-public class VoxelManager implements Serializable {
+public class VoxelManager {
 
     private final List<Chunk> chunks;
 

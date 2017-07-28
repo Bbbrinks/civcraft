@@ -7,7 +7,6 @@ import nl.civcraft.core.gamecomponents.GameComponent;
 import nl.civcraft.core.gamecomponents.ItemComponent;
 import nl.civcraft.core.rendering.VoxelRenderer;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
  * <p>
  * This is probably not worth documenting
  */
-public class GameObject implements Serializable {
+public class GameObject {
 
     private final Transform transform;
     private final List<GameComponent> components;

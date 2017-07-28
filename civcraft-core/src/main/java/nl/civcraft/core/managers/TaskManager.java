@@ -8,14 +8,13 @@ import nl.civcraft.core.utils.MathUtil;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-public class TaskManager implements Serializable {
+public class TaskManager {
 
 
     private final List<Civvy> civvies;

@@ -4,7 +4,6 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import nl.civcraft.core.utils.MathUtil;
 
-import java.io.Serializable;
 import java.util.Optional;
 
 /**
@@ -12,7 +11,7 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-public class Chunk implements Serializable {
+public class Chunk {
 
     public static final int CHUNK_SIZE = 30;
     private final int chunkX;

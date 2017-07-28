@@ -3,11 +3,10 @@ package nl.civcraft.core.pathfinding;
 import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.model.GameObject;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingDeque;
 
-public class AStarPathFinder implements Serializable {
+public class AStarPathFinder {
 
     public Optional<Queue<GameObject>> findPath(GameObject civvy, GameObject start, PathFindingTarget target) {
         AStarNode startNode = new AStarNode(start);
