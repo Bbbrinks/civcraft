@@ -20,7 +20,7 @@ import javax.inject.Singleton;
 public class ItemsModule extends AbstractModule {
     @Override
     protected void configure() {
-
+        // Nothing yet
     }
 
     @Provides

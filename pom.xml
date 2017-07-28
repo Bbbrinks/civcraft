@@ -165,6 +165,12 @@
                 <artifactId>rxjava</artifactId>
                 <version>2.1.0</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.statefulj</groupId>
+                <artifactId>statefulj-fsm</artifactId>
+                <version>3.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

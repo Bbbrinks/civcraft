@@ -20,6 +20,7 @@ import javax.inject.Named;
 public class PrefabsModule extends AbstractModule {
     @Override
     protected void configure() {
+        // Nothing yet
     }
 
     @Provides

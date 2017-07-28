@@ -42,7 +42,7 @@ public class ChangeAwarePath {
         if (path.isPresent()) {
             currentPath = path.get();
             for (GameObject gameObject : currentPath) {
-                Disposable subscribe = gameObject.getGameObjectDestroyed().subscribe(this::clearPath);
+                Disposable subscribe = gameObject.getGameObjectDestroyed().subscribe(gameObject1 -> clearPath());
                 subscriptions.put(gameObject, subscribe);
             }
         }
@@ -50,7 +50,7 @@ public class ChangeAwarePath {
 
     }
 
-    private void clearPath(GameObject gameObject) {
+    private void clearPath() {
         subscriptions.values().forEach(Disposable::dispose);
         subscriptions.clear();
         currentPath = null;

@@ -21,7 +21,7 @@ import java.util.function.Function;
 public class BlocksModule extends AbstractModule {
     @Override
     protected void configure() {
-
+        // Nothing yet
     }
 
     @Provides

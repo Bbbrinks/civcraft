@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 /**
  * Created by Bob on 21-4-2017.
@@ -25,7 +24,6 @@ import java.util.logging.Logger;
  */
 public class BuildWallTool implements MouseTool {
 
-    private static final Logger LOGGER = Logger.getLogger(BuildWallTool.class.getName());
     private final CurrentVoxelHighlighter currentVoxelHighlighter;
     private final TaskManager taskManager;
     private final PrefabManager stockpileManager;
@@ -103,7 +101,7 @@ public class BuildWallTool implements MouseTool {
             planningGhostComponent.setPlannedVoxels(Collections.singletonList(start));
         } else if (start != null) {
             List<Transform> selection = new ArrayList<>();
-            loopThroughSelection(transform -> selection.add(transform));
+            loopThroughSelection(selection::add);
             planningGhostComponent.setPlannedVoxels(selection);
         }
 

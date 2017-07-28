@@ -60,6 +60,10 @@
             <artifactId>rxjava</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.statefulj</groupId>
+            <artifactId>statefulj-fsm</artifactId>
+        </dependency>
 
     </dependencies>
 </project>

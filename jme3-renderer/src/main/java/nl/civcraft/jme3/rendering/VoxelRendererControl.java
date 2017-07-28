@@ -41,7 +41,7 @@ public class VoxelRendererControl extends AbstractControl {
 
     public void handleVoxelAdded(VoxelRenderer component) {
         voxelManager.addVoxel(component.getGameObject());
-        Chunk chunk = voxelManager.getChunkAt(component.getGameObject()).map(c -> c).orElseThrow(() -> new IllegalStateException("Chunk not foudn"));
+        Chunk chunk = voxelManager.getChunkAt(component.getGameObject()).orElseThrow(() -> new IllegalStateException("Chunk not foudn"));
         if (optimizerThreadMap.containsKey(chunk)) {
             optimizerThreadMap.get(chunk).cancel(true);
             newOptimizedChunks.remove(optimizerThreadMap.get(chunk));
@@ -53,7 +53,7 @@ public class VoxelRendererControl extends AbstractControl {
 
     public void handleVoxelRemoved(VoxelRenderer component) {
         voxelManager.removeVoxel(component.getGameObject());
-        Chunk chunk = voxelManager.getChunkAt(component.getGameObject()).map(c -> c).orElseThrow(() -> new IllegalStateException("Chunk not foudn"));
+        Chunk chunk = voxelManager.getChunkAt(component.getGameObject()).orElseThrow(() -> new IllegalStateException("Chunk not foudn"));
         if (optimizerThreadMap.containsKey(chunk)) {
             optimizerThreadMap.get(chunk).cancel(true);
             newOptimizedChunks.remove(optimizerThreadMap.get(chunk));

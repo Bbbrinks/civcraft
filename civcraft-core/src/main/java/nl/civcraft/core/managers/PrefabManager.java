@@ -87,8 +87,8 @@ public class PrefabManager {
         return getClosestGameObject(transform, o -> o.hasComponent(withComponent));
     }
 
-    public <T extends GameComponent> Optional<GameObject> getClosestGameObject(Transform transform,
-                                                                               Predicate<GameObject> predicate) {
+    public Optional<GameObject> getClosestGameObject(Transform transform,
+                                                     Predicate<GameObject> predicate) {
         Optional<GameObject> closest = managedObjects.stream().
                 filter(predicate).
                 sorted((first, second) -> (int) (second.getTransform().getTranslation().distance(transform.getTranslation()) - first.getTransform().getTranslation().distance(transform.getTranslation()))).
