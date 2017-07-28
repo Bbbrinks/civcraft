@@ -16,7 +16,7 @@ public class Hunger extends AbstractGameComponent {
 
     @Inject
     public Hunger(TickManager tickManager) {
-        subscribe = tickManager.getTick().subscribe(this::handleTick);
+        subscribe = tickManager.getTick().subscribe(tpt -> handleTick());
     }
 
     @Override
@@ -34,7 +34,7 @@ public class Hunger extends AbstractGameComponent {
         super.destroyed();
     }
 
-    private void handleTick(Long tpt) {
+    private void handleTick() {
         if (calories > 1) {
             calories -= 1;
         } else {

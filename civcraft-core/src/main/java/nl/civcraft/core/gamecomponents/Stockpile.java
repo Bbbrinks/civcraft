@@ -4,7 +4,6 @@ import com.jme3.math.Vector3f;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.LimitedInventory;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -15,7 +14,7 @@ import java.util.Set;
  * <p>
  * This is probably not worth documenting
  */
-public class Stockpile extends AbstractGameComponent implements Serializable {
+public class Stockpile extends AbstractGameComponent {
     private final Map<GameObject, Inventory> voxels;
 
     public Stockpile() {

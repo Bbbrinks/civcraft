@@ -14,9 +14,10 @@ import java.util.Optional;
 public class RandomItemGenerator extends AbstractGameComponent {
 
     private final int maxItems;
-    private final transient PrefabManager itemSupplier;
+    private final PrefabManager itemSupplier;
 
-    private RandomItemGenerator(int maxItems, PrefabManager itemSupplier) {
+    private RandomItemGenerator(int maxItems,
+                                PrefabManager itemSupplier) {
         this.maxItems = maxItems;
         this.itemSupplier = itemSupplier;
     }
@@ -37,10 +38,11 @@ public class RandomItemGenerator extends AbstractGameComponent {
 
     public static class Factory implements GameComponentFactory<RandomItemGenerator> {
         private final int maxItems;
-        private final transient PrefabManager itemManager;
+        private final PrefabManager itemManager;
 
         @SuppressWarnings("SameParameterValue")
-        public Factory(int maxItems, PrefabManager itemManager) {
+        public Factory(int maxItems,
+                       PrefabManager itemManager) {
             this.maxItems = maxItems;
             this.itemManager = itemManager;
         }

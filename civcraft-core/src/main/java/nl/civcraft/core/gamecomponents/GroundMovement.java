@@ -53,12 +53,6 @@ public class GroundMovement extends AbstractGameComponent {
         return target.getTransform().getTranslation().distance(gameObject.getTransform().getTranslation().subtract(0, 1, 0));
     }
 
-
-    @Override
-    public void addTo(GameObject gameObject) {
-        super.addTo(gameObject);
-    }
-
     public ChangeAwarePath findPath(PathFindingTarget moveToVoxelTarget) {
         return new ChangeAwarePath(aStarPathFinder, moveToVoxelTarget, getGameObject());
     }

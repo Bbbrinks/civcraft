@@ -48,15 +48,6 @@ public class InventoryComponent extends AbstractGameComponent implements GameCom
         return inventory.hasRoom(item);
     }
 
-    @Override
-    public void addTo(GameObject gameObject) {
-        super.addTo(gameObject);
-    }
-
-    @Override
-    public void changed() {
-        super.changed();
-    }
 
     public static class Factory implements GameComponentFactory<InventoryComponent> {
         private final int size;

@@ -9,7 +9,7 @@ import nl.civcraft.core.managers.PrefabManager;
  */
 public class ManagedObject extends AbstractGameComponent implements GameComponent {
 
-    private final transient PrefabManager prefabManager;
+    private final PrefabManager prefabManager;
 
     public ManagedObject(PrefabManager prefabManager) {
         this.prefabManager = prefabManager;
