@@ -2,7 +2,6 @@ package nl.civcraft.core.gamecomponents;
 
 import nl.civcraft.core.model.GameObject;
 
-import java.io.Serializable;
 import java.util.Optional;
 
 /**
@@ -10,7 +9,7 @@ import java.util.Optional;
  * <p>
  * This is probably not worth documenting
  */
-public interface Inventory extends Serializable {
+public interface Inventory {
     Optional<GameObject> getFirstItem();
 
     boolean addItem(GameObject item);
