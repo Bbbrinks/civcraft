@@ -3,6 +3,7 @@ package nl.civcraft.core.gamecomponents;
 import nl.civcraft.core.managers.PrefabManager;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Created by Bob on 21-4-2017.
@@ -11,9 +12,9 @@ import java.util.Map;
  */
 public class DropOnDestoyed extends AbstractGameComponent {
 
-    private final Map<PrefabManager, Integer> drops;
+    private final Map<Supplier<PrefabManager>, Integer> drops;
 
-    public DropOnDestoyed(Map<PrefabManager, Integer> drops) {
+    public DropOnDestoyed(Map<Supplier<PrefabManager>, Integer> drops) {
         this.drops = drops;
     }
 
@@ -22,7 +23,7 @@ public class DropOnDestoyed extends AbstractGameComponent {
     public void destroyed() {
         drops.forEach((prefabManager, count) -> {
             for (int i = 0; i < count; i++) {
-                prefabManager.build(getGameObject().getTransform().clone(), true);
+                prefabManager.get().build(getGameObject().getTransform().clone(), true);
             }
         });
     }
@@ -30,9 +31,9 @@ public class DropOnDestoyed extends AbstractGameComponent {
     public static class Factory implements GameComponentFactory<DropOnDestoyed> {
 
 
-        private final Map<PrefabManager, Integer> drops;
+        private final Map<Supplier<PrefabManager>, Integer> drops;
 
-        public Factory(Map<PrefabManager, Integer> drops) {
+        public Factory(Map<Supplier<PrefabManager>, Integer> drops) {
             this.drops = drops;
         }
 
@@ -46,7 +47,7 @@ public class DropOnDestoyed extends AbstractGameComponent {
             return DropOnDestoyed.class;
         }
 
-        public Map<PrefabManager, Integer> getDrops() {
+        public Map<Supplier<PrefabManager>, Integer> getDrops() {
             return drops;
         }
     }

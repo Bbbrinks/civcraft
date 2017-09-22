@@ -11,6 +11,7 @@ import nl.civcraft.core.SystemEventPublisher;
 import nl.civcraft.core.interaction.MouseTool;
 import nl.civcraft.core.interaction.selectors.SingleVoxelSelector;
 import nl.civcraft.core.interaction.tools.*;
+import nl.civcraft.core.managers.AutoHauling;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
@@ -54,7 +55,10 @@ public class CivCraftCoreModule extends AbstractModule {
         bind(TaskManager.class).asEagerSingleton();
         bind(AStarPathFinder.class).asEagerSingleton();
         bind(VoxelManager.class).asEagerSingleton();
+        bind(AutoHauling.class).asEagerSingleton();
+
 
     }
+
 }
 

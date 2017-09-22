@@ -15,7 +15,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  * <p>
  * This is probably not worth documenting
  */
-
 public class AutoHauling {
     private final TaskManager taskManager;
     private final PrefabManager stockpileManager;

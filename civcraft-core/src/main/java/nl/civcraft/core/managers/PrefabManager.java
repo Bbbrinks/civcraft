@@ -44,7 +44,7 @@ public class PrefabManager {
                             boolean publish) {
         GameObject gameObject;
         if (parent != null) {
-            gameObject = parent.build(transform, false);
+            gameObject = parent.build(transform, publish);
         } else {
             gameObject = new GameObject(transform);
         }
