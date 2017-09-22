@@ -33,7 +33,7 @@ public class PrefabsModule extends AbstractModule {
         PrefabManager prefabManager = new PrefabManager();
         prefabManager.registerComponent(new InventoryComponent.Factory(2));
         prefabManager.registerComponent(new Civvy.Factory());
-        prefabManager.registerComponent(new GroundMovement.Factory(2f, voxelManager, aStarPathFinder));
+        prefabManager.registerComponent(new GroundMovement.Factory(2f, voxelManager, aStarPathFinder, tickManager));
         prefabManager.registerComponent(new Hunger.Factory(tickManager));
         return prefabManager;
     }

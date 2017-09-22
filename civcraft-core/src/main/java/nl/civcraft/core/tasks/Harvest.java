@@ -12,12 +12,16 @@ import static nl.civcraft.core.tasks.Task.Result.FAILED;
 public class Harvest extends MoveToRange {
 
 
+    private final GameObject target;
+
     public Harvest(GameObject target) {
         super(target, 3.0f);
+        this.target = target;
     }
 
     @Override
-    public Result affect(GameObject civvy, float tpf) {
+    public Result affect(GameObject civvy,
+                         float tpf) {
         Result inRange = super.affect(civvy, tpf);
         if (inRange.equals(COMPLETED)) {
             Optional<Harvestable> component = this.target.getComponent(Harvestable.class);

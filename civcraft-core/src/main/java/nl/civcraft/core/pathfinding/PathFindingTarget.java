@@ -13,4 +13,6 @@ public interface PathFindingTarget {
     int getCostFrom(AStarNode next);
 
     int getMaxSearchArea(GameObject start);
+
+    GameObject getTarget();
 }

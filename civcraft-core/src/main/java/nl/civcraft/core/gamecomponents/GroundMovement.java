@@ -2,13 +2,18 @@ package nl.civcraft.core.gamecomponents;
 
 import com.jme3.math.Vector3f;
 import io.reactivex.disposables.Disposable;
+import nl.civcraft.core.managers.TickManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.pathfinding.AStarNode;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.pathfinding.ChangeAwarePath;
 import nl.civcraft.core.pathfinding.PathFindingTarget;
+import nl.civcraft.core.pathfinding.exceptions.UnreachableVoxelException;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
 
 /**
  * Created by Bob on 18-11-2016.
@@ -21,41 +26,64 @@ public class GroundMovement extends AbstractGameComponent {
     private final AStarPathFinder aStarPathFinder;
     private GameObject currentVoxel;
     private Disposable currentVoxelSubscription;
+    private PathFindingTarget currentTarget;
+    private ChangeAwarePath currentPath;
 
     public GroundMovement(float speed,
                           VoxelManager voxelManager,
-                          AStarPathFinder aStarPathFinder) {
-        this.speed = speed;
+                          AStarPathFinder aStarPathFinder,
+                          TickManager tickManager) {
+        // Divide speed  so it's 1 block/sec
+        this.speed = speed / 20;
         this.voxelManager = voxelManager;
         this.aStarPathFinder = aStarPathFinder;
+        tickManager.getTick().subscribe(this::handleTick);
+        currentPath = null;
     }
 
-    public void moveToward(GameObject target,
-                           float tpf) {
-        Optional<Voxel> voxelOptional = target.getComponent(Voxel.class);
-        if (!voxelOptional.isPresent()) {
-            throw new IllegalStateException("Can only move toward voxels");
+    private void handleTick(Long tickLenght) {
+        if (currentPath == null) {
+            return;
         }
-        Vector3f location = target.getTransform().getTranslation().add(new Vector3f(0, 1, 0));
-        Vector3f movement = location.subtract(gameObject.getTransform().getTranslation());
-        if (distance(target) >= tpf * speed) {
-            movement.normalizeLocal();
-            movement = movement.mult(tpf * speed);
+        Optional<Queue<GameObject>> currentPathOptional = currentPath.getCurrentPath();
+        if (!currentPathOptional.isPresent()) {
+            this.currentTarget = null;
+            return;
+        }
+        Queue<GameObject> path = currentPathOptional.get();
 
+        GameObject nextTarget = path.peek();
+        if (nextTarget != null) {
+            Vector3f location = nextTarget.getTransform().getTranslation().add(new Vector3f(0, 1, 0));
+            Vector3f movement = location.subtract(gameObject.getTransform().getTranslation());
+            if (distance(nextTarget) >= speed) {
+                movement.normalizeLocal();
+                movement = movement.mult(speed);
+            } else {
+                setCurrentVoxel(nextTarget);
+                path.poll();
+            }
+            gameObject.getTransform().setTranslation(gameObject.getTransform().getTranslation().add(movement));
         } else {
-            setCurrentVoxel(target);
+            this.currentPath = null;
         }
+    }
 
-        gameObject.getTransform().setTranslation(gameObject.getTransform().getTranslation().add(movement));
+    public boolean moveToward(PathFindingTarget target) throws UnreachableVoxelException {
+        if (!Objects.equals(target, currentTarget)) {
+            currentTarget = target;
+            currentPath = new ChangeAwarePath(aStarPathFinder, currentTarget, getGameObject());
+            if (!currentPath.getCurrentPath().isPresent()) {
+                throw new UnreachableVoxelException();
+            }
+        }
+        return currentTarget.isReached(getGameObject(), new AStarNode(getCurrentVoxel()));
     }
 
     private float distance(GameObject target) {
         return target.getTransform().getTranslation().distance(gameObject.getTransform().getTranslation().subtract(0, 1, 0));
     }
 
-    public ChangeAwarePath findPath(PathFindingTarget moveToVoxelTarget) {
-        return new ChangeAwarePath(aStarPathFinder, moveToVoxelTarget, getGameObject());
-    }
 
     public GameObject getCurrentVoxel() {
         if (currentVoxel == null) {
@@ -90,19 +118,22 @@ public class GroundMovement extends AbstractGameComponent {
         private final float speed;
         private final VoxelManager voxelManager;
         private final AStarPathFinder aStarPathFinder;
+        private final TickManager tickManager;
 
         @SuppressWarnings("SameParameterValue")
         public Factory(float speed,
                        VoxelManager voxelManager,
-                       AStarPathFinder aStarPathFinder) {
+                       AStarPathFinder aStarPathFinder,
+                       TickManager tickManager) {
             this.speed = speed;
             this.voxelManager = voxelManager;
             this.aStarPathFinder = aStarPathFinder;
+            this.tickManager = tickManager;
         }
 
         @Override
         public GroundMovement build() {
-            return new GroundMovement(speed, voxelManager, aStarPathFinder);
+            return new GroundMovement(speed, voxelManager, aStarPathFinder, tickManager);
         }
 
         @Override

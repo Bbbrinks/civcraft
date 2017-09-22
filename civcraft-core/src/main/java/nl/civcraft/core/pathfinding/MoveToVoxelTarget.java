@@ -32,4 +32,8 @@ public class MoveToVoxelTarget implements PathFindingTarget {
     public int getMaxSearchArea(GameObject start) {
         return (int) (target.getTransform().getTranslation().distance(start.getTransform().getTranslation()) * 5);
     }
+
+    public GameObject getTarget() {
+        return target;
+    }
 }

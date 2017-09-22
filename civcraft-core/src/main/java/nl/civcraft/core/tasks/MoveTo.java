@@ -2,11 +2,11 @@ package nl.civcraft.core.tasks;
 
 import nl.civcraft.core.gamecomponents.GroundMovement;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.pathfinding.ChangeAwarePath;
 import nl.civcraft.core.pathfinding.MoveToVoxelTarget;
-
-import java.util.Optional;
-import java.util.Queue;
+import nl.civcraft.core.pathfinding.PathFindingTarget;
+import nl.civcraft.core.pathfinding.exceptions.UnreachableVoxelException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by Bob on 8-1-2016.
@@ -15,50 +15,37 @@ import java.util.Queue;
  */
 public class MoveTo extends Task {
 
-    private final GameObject target;
-    private ChangeAwarePath path;
-    private GameObject civvy;
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    protected final PathFindingTarget pathFindingTarget;
 
     public MoveTo(GameObject target) {
+        this(new MoveToVoxelTarget(target));
+    }
+
+    public MoveTo(PathFindingTarget target) {
         super(State.TODO);
-        this.target = target;
+        this.pathFindingTarget = target;
     }
 
     @Override
-    public Result affect(GameObject civvy, float tpf) {
-        Optional<GroundMovement> component = civvy.getComponent(GroundMovement.class);
-        if (!component.isPresent()) {
-            throw new IllegalStateException("Move to can only be done by GroundMovement game objects");
-        }
-        GroundMovement groundMovement = component.get();
-        if (this.civvy != civvy) {
-            path = null;
-        }
-        this.civvy = civvy;
-        if (path == null) {
-            if (groundMovement.getCurrentVoxel().equals(target)) {
+    public Result affect(GameObject subject,
+                         float tpf) {
+        GroundMovement component = subject.getComponent(GroundMovement.class).orElseThrow(() -> new IllegalStateException("Move to can only be done by GroundMovement game objects"));
+        try {
+            if (component.moveToward(pathFindingTarget)) {
                 return Result.COMPLETED;
             }
-            path = groundMovement.findPath(new MoveToVoxelTarget(target));
-            Optional<Queue<GameObject>> pathOptional = path.getCurrentPath();
-            if (!pathOptional.isPresent()) {
-                return Result.FAILED;
-            }
+            return Result.IN_PROGRESS;
+        } catch (UnreachableVoxelException e) {
+            LOGGER.debug("Could not reach target {}", pathFindingTarget, e);
+            return Result.FAILED;
         }
-        Queue<GameObject> pathQueue = path.getCurrentPath().orElseThrow(() -> new IllegalStateException("fail"));
-        GameObject peek = pathQueue.peek();
-        if (peek == null) {
-            return Result.COMPLETED;
-        }
-        groundMovement.moveToward(peek, tpf);
-        if (groundMovement.getCurrentVoxel().equals(peek)) {
-            pathQueue.poll();
-        }
-        return Result.IN_PROGRESS;
+
     }
 
 
     public GameObject getTarget() {
-        return target;
+        return pathFindingTarget.getTarget();
     }
 }

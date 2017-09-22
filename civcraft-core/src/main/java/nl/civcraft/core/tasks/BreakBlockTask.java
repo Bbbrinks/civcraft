@@ -16,8 +16,11 @@ import static nl.civcraft.core.tasks.Task.Result.*;
  */
 public class BreakBlockTask extends MoveToRange {
 
+    private final GameObject target;
+
     public BreakBlockTask(GameObject target) {
-        super(target, 3.0f);
+        super(target, 2.0f);
+        this.target = target;
     }
 
     @Override
