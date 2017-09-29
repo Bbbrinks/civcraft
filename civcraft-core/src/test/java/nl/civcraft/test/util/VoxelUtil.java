@@ -1,10 +1,11 @@
 package nl.civcraft.test.util;
 
-import com.jme3.math.Transform;
-import com.jme3.math.Vector3f;
+
 import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 /**
  * Created by Bob on 19-2-2017.
@@ -33,7 +34,7 @@ public class VoxelUtil {
     }
 
     public static GameObject createVoxel(Vector3f translation, VoxelManager voxelManager) {
-        GameObject gameObject = new GameObject(new Transform(translation));
+        GameObject gameObject = new GameObject(new Matrix4f().translate(translation));
         gameObject.addComponent(new Voxel("test", voxelManager));
         return gameObject;
     }

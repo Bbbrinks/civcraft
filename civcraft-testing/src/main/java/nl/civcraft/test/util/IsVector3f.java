@@ -1,10 +1,10 @@
 package nl.civcraft.test.util;
 
-import com.jme3.math.Vector3f;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
+import org.joml.Vector3f;
 
 /**
  * Created by Bob on 17-2-2017.
