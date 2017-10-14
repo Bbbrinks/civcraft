@@ -3,13 +3,11 @@ package nl.civcraft.core.managers;
 
 import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.rendering.VoxelRenderer;
 import nl.civcraft.test.util.VoxelUtil;
 import org.joml.Vector3f;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Optional;
@@ -30,8 +28,6 @@ public class VoxelManagerTest {
 
 
     private VoxelManager underTest;
-    @Mock
-    private VoxelRenderer.StaticVoxelRendererFactory voxelRenderer;
 
     @Before
     public void setUp() throws Exception {
