@@ -4,14 +4,14 @@ import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.TickManager;
 import nl.civcraft.core.model.GameObject;
+import nl.civcraft.core.model.NeighbourDirection;
 import nl.civcraft.opengl.engine.Window;
 import nl.civcraft.opengl.rendering.*;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Bob on 13-10-2017.
@@ -40,7 +40,6 @@ public class VoxelRenderer {
         voxels = new Node("voxels", rootNode);
 
 
-
     }
 
 
@@ -64,10 +63,28 @@ public class VoxelRenderer {
             gameObjectNode.getTransform().add(gameObject.getTransform());
 
 
-
             gameObjectNode.getGeometries().add(() -> {
                 Texture texture = textureManager.loadTexture(String.format("/textures/%s.png", voxel.getType()));
-                return new Geometry(Box.instance(), texture);
+                List<Mesh> quads = new ArrayList<>();
+                if (!voxel.getNeighbour(NeighbourDirection.FRONT).isPresent()) {
+                    quads.add(Quad.front());
+                }
+                if (!voxel.getNeighbour(NeighbourDirection.BACK).isPresent()) {
+                    quads.add(Quad.back());
+                }
+                if (!voxel.getNeighbour(NeighbourDirection.TOP).isPresent()) {
+                    quads.add(Quad.top());
+                }
+                if (!voxel.getNeighbour(NeighbourDirection.BOTTOM).isPresent()) {
+                    quads.add(Quad.bottom());
+                }
+                if (!voxel.getNeighbour(NeighbourDirection.LEFT).isPresent()) {
+                    quads.add(Quad.left());
+                }
+                if (!voxel.getNeighbour(NeighbourDirection.RIGHT).isPresent()) {
+                    quads.add(Quad.right());
+                }
+                return new Geometry(quads, texture);
             });
             renderedVoxels.put(gameObject, gameObjectNode);
         } else if (voxel.isVisible()) {

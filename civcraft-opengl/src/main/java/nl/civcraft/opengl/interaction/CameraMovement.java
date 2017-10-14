@@ -13,7 +13,7 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class CameraMovement {
 
-    private static final float MOVEMENT_SPEED = 3.0f;
+    private static final float MOVEMENT_SPEED = 6.0f;
 
     @Inject
     public CameraMovement(KeyboardInputManager keyboardInputManager,

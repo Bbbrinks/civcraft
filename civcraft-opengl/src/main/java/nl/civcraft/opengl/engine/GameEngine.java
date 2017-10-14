@@ -6,11 +6,13 @@ import nl.civcraft.opengl.interaction.KeyboardInputManager;
 import nl.civcraft.opengl.interaction.MouseInputManager;
 import nl.civcraft.opengl.rendering.Node;
 import nl.civcraft.opengl.rendering.Renderer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Named;
 
 public class GameEngine implements Runnable {
-
+    private static final Logger LOGGER = LogManager.getLogger();
     public static final int TARGET_FPS = 75;
 
     public static final int TARGET_UPS = 30;
@@ -71,8 +73,6 @@ public class GameEngine implements Runnable {
     }
 
     protected void gameLoop() {
-
-        float interval = 1f / TARGET_UPS;
 
         boolean running = true;
         while (running && !window.windowShouldClose()) {
