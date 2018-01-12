@@ -7,6 +7,7 @@ import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.modules.CivCraftCoreModule;
 import nl.civcraft.opengl.interaction.CameraMovement;
 import nl.civcraft.opengl.rendering.Node;
+import nl.civcraft.opengl.rendering.civvy.CivvyRenderer;
 import nl.civcraft.opengl.rendering.voxel.VoxelRenderer;
 
 /**
@@ -19,6 +20,7 @@ public class CivCraftJme3Module extends AbstractModule {
     protected void configure() {
         install(new CivCraftCoreModule());
         bind(VoxelRenderer.class).asEagerSingleton();
+        bind(CivvyRenderer.class).asEagerSingleton();
         bind(CameraMovement.class).asEagerSingleton();
         bind(CurrentVoxelHighlighter.class).to(nl.civcraft.opengl.interaction.CurrentVoxelHighlighter.class);
         bind(Key.get(Node.class, Names.named("rootNode"))).toInstance(new Node("root",null));

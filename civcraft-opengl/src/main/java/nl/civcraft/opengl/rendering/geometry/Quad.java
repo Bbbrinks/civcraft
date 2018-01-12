@@ -1,4 +1,6 @@
-package nl.civcraft.opengl.rendering;
+package nl.civcraft.opengl.rendering.geometry;
+
+import nl.civcraft.opengl.rendering.Mesh;
 
 /**
  * Created by Bob on 14-10-2017.

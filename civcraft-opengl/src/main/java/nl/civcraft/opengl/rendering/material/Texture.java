@@ -1,4 +1,4 @@
-package nl.civcraft.opengl.rendering;
+package nl.civcraft.opengl.rendering.material;
 
 
 import de.matthiasmann.twl.utils.PNGDecoder;
@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
-public class Texture {
+public class Texture implements Material {
 
     private final int id;
 

@@ -1,4 +1,4 @@
-package nl.civcraft.opengl.rendering;
+package nl.civcraft.opengl.rendering.material;
 
 import java.io.IOException;
 import java.util.HashMap;

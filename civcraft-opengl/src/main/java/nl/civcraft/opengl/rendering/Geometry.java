@@ -1,5 +1,7 @@
 package nl.civcraft.opengl.rendering;
 
+import nl.civcraft.opengl.rendering.material.Material;
+
 import java.util.List;
 
 /**
@@ -8,20 +10,20 @@ import java.util.List;
  * This is probably not worth documenting
  */
 public class Geometry {
-    private final List<Mesh> meshes;
-    private final Texture texture;
+    protected final List<Mesh> meshes;
+    protected final Material texture;
 
     public Geometry(List<Mesh> meshes,
-                    Texture texture) {
+                    Material material) {
         this.meshes = meshes;
-        this.texture = texture;
+        this.texture = material;
     }
 
     public List<Mesh> getMeshes() {
         return meshes;
     }
 
-    public Texture getTexture() {
+    public Material getMaterial() {
         return texture;
     }
 

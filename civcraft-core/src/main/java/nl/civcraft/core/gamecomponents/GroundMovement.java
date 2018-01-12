@@ -65,6 +65,7 @@ public class GroundMovement extends AbstractGameComponent {
                 path.poll();
             }
             gameObject.getTransform().setTranslation(gameObjectTransform.add(movement));
+            gameObject.changed();
         } else {
             this.currentPath = null;
         }

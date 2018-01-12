@@ -1,5 +1,6 @@
 package nl.civcraft.opengl.rendering;
 
+import nl.civcraft.opengl.rendering.material.Material;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -11,9 +12,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 /**
@@ -89,11 +88,11 @@ public class Mesh {
         return vertexCount;
     }
 
-    public void render(Texture texture) {
+    public void render(Material material) {
         // Activate firs texture bank
         glActiveTexture(GL_TEXTURE0);
         // Bind the texture
-        glBindTexture(GL_TEXTURE_2D, texture.getId());
+        material.bind();
 
         // Draw the mesh
         glBindVertexArray(getVaoId());
