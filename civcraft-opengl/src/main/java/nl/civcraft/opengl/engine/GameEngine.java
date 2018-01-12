@@ -1,6 +1,9 @@
 package nl.civcraft.opengl.engine;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 import nl.civcraft.core.worldgeneration.WorldGenerator;
 import nl.civcraft.opengl.interaction.KeyboardInputManager;
 import nl.civcraft.opengl.interaction.MouseInputManager;
@@ -11,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.inject.Named;
 
+@Singleton
 public class GameEngine implements Runnable {
     private static final Logger LOGGER = LogManager.getLogger();
     public static final int TARGET_FPS = 75;
@@ -29,6 +33,8 @@ public class GameEngine implements Runnable {
     private final MouseInputManager mouseInputManager;
     private final Timer timer;
 
+    private final Subject<Float> updateScene;
+
 
     @Inject
     public GameEngine(Window window,
@@ -46,6 +52,7 @@ public class GameEngine implements Runnable {
         this.timer = timer;
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
         this.rootNode = rootNode;
+        updateScene = PublishSubject.create();
     }
 
     public void start() {
@@ -77,6 +84,7 @@ public class GameEngine implements Runnable {
         boolean running = true;
         while (running && !window.windowShouldClose()) {
             float elapsedTime = timer.getElapsedTime();
+            updateScene.onNext(elapsedTime);
             render();
             keyboardInputManager.update(window, elapsedTime);
             mouseInputManager.input(window);
@@ -84,7 +92,6 @@ public class GameEngine implements Runnable {
     }
 
     protected void cleanup() {
-
         window.cleanup();
     }
 
@@ -92,5 +99,9 @@ public class GameEngine implements Runnable {
     protected void render() {
         renderer.render(window, rootNode);
         window.update();
+    }
+
+    public Subject<Float> getUpdateScene() {
+        return updateScene;
     }
 }

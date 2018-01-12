@@ -2,6 +2,8 @@ package nl.civcraft.core.interaction.util;
 
 import nl.civcraft.core.model.GameObject;
 
+import java.util.Optional;
+
 /**
  * Created by Bob on 4-11-2016.
  * <p>
@@ -10,7 +12,7 @@ import nl.civcraft.core.model.GameObject;
 public interface CurrentVoxelHighlighter {
     GameObject highLight();
 
-    GameObject getCurrentVoxel();
+    Optional<GameObject> getCurrentVoxel();
 
     void clear();
 }

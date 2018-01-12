@@ -7,8 +7,8 @@ import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.modules.CivCraftCoreModule;
 import nl.civcraft.opengl.interaction.CameraMovement;
 import nl.civcraft.opengl.rendering.Node;
-import nl.civcraft.opengl.rendering.civvy.CivvyRenderer;
-import nl.civcraft.opengl.rendering.voxel.VoxelRenderer;
+import nl.civcraft.opengl.rendering.CivvyRenderer;
+import nl.civcraft.opengl.rendering.VoxelRenderer;
 
 /**
  * Created by Bob on 9-6-2017.

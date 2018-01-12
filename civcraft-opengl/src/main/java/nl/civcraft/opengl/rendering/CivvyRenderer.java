@@ -1,8 +1,8 @@
-package nl.civcraft.opengl.rendering.civvy;
+package nl.civcraft.opengl.rendering;
 
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.opengl.rendering.Node;
+import nl.civcraft.opengl.engine.GameEngine;
 import nl.civcraft.opengl.rendering.geometry.Box;
 import nl.civcraft.opengl.rendering.material.TextureManager;
 
@@ -27,11 +27,14 @@ public class CivvyRenderer {
     @Inject
     public CivvyRenderer(@Named("civvy") PrefabManager civvyManager,
                          @Named("rootNode") Node rootNode,
-                         TextureManager textureManager) throws IOException {
+                         TextureManager textureManager,
+                         GameEngine gameEngine) throws IOException {
         this.textureManager = textureManager;
-        civvyManager.getGameObjectCreated().subscribe(this::newCivvy);
-        civvyManager.getGameObjectDestroyed().subscribe(this::removedCivvy);
-        civvyManager.getGameObjectChanged().subscribe(this::updatedCivvy);
+
+
+        civvyManager.getGameObjectCreated().buffer(gameEngine.getUpdateScene()).subscribe(gameObjects -> gameObjects.forEach(this::newCivvy));
+        civvyManager.getGameObjectDestroyed().buffer(gameEngine.getUpdateScene()).subscribe(gameObjects -> gameObjects.forEach(this::removedCivvy));
+        civvyManager.getGameObjectChanged().buffer(gameEngine.getUpdateScene()).subscribe(gameObjects -> gameObjects.forEach(this::updatedCivvy));
         renderedCivvies = new HashMap<>();
         civvies = new Node("civvies", rootNode);
 
@@ -42,13 +45,13 @@ public class CivvyRenderer {
         removedCivvy(gameObject);
         Node gameObjectNode = new Node(civvies);
         gameObjectNode.getTransform().add(gameObject.getTransform());
-        gameObjectNode.getTransform().scale(1, 3, 1);
+        gameObjectNode.getTransform().scale(0.5f, 2, 0.5f);
         gameObjectNode.getGeometries().add(() -> new Box(textureManager.loadTexture("/textures/blue.png")));
         renderedCivvies.put(gameObject, gameObjectNode);
     }
 
     private void removedCivvy(GameObject gameObject) {
-        if(renderedCivvies.containsKey(gameObject)){
+        if (renderedCivvies.containsKey(gameObject)) {
             Node node = renderedCivvies.get(gameObject);
             civvies.removeChild(node);
             renderedCivvies.remove(gameObject);

@@ -1,12 +1,10 @@
-package nl.civcraft.opengl.rendering.voxel;
+package nl.civcraft.opengl.rendering;
 
 import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.NeighbourDirection;
-import nl.civcraft.opengl.rendering.Geometry;
-import nl.civcraft.opengl.rendering.Mesh;
-import nl.civcraft.opengl.rendering.Node;
+import nl.civcraft.opengl.engine.GameEngine;
 import nl.civcraft.opengl.rendering.geometry.Quad;
 import nl.civcraft.opengl.rendering.material.Texture;
 import nl.civcraft.opengl.rendering.material.TextureManager;
@@ -35,11 +33,12 @@ public class VoxelRenderer {
     @Inject
     public VoxelRenderer(@Named("block") PrefabManager blockManager,
                          @Named("rootNode") Node rootNode,
-                         TextureManager textureManager) throws IOException {
+                         TextureManager textureManager,
+                         GameEngine gameEngine) throws IOException {
         this.textureManager = textureManager;
-        blockManager.getGameObjectCreated().subscribe(this::newVoxel);
-        blockManager.getGameObjectDestroyed().subscribe(this::removedVoxel);
-        blockManager.getGameObjectChanged().subscribe(this::updateVoxel);
+        blockManager.getGameObjectCreated().buffer(gameEngine.getUpdateScene()).subscribe(gameObjects -> gameObjects.forEach(this::newVoxel));
+        blockManager.getGameObjectDestroyed().buffer(gameEngine.getUpdateScene()).subscribe(gameObjects -> gameObjects.forEach(this::removedVoxel));
+        blockManager.getGameObjectChanged().buffer(gameEngine.getUpdateScene()).subscribe(gameObjects -> gameObjects.forEach(this::updateVoxel));
         renderedVoxels = new HashMap<>();
         voxels = new Node("voxels", rootNode);
 
