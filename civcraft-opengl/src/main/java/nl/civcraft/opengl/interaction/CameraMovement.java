@@ -1,5 +1,6 @@
 package nl.civcraft.opengl.interaction;
 
+import nl.civcraft.core.interaction.MouseInputManagerInterface;
 import nl.civcraft.opengl.rendering.Camera;
 
 import javax.inject.Inject;
@@ -17,7 +18,7 @@ public class CameraMovement {
 
     @Inject
     public CameraMovement(KeyboardInputManager keyboardInputManager,
-                          MouseInputManager mousseInput,
+                          MouseInputManagerInterface mousseInput,
                           Camera camera) {
         keyboardInputManager.bindKey(GLFW_KEY_A, tpf -> camera.movePosition(-MOVEMENT_SPEED * tpf, 0, 0));
         keyboardInputManager.bindKey(GLFW_KEY_D, tpf -> camera.movePosition(MOVEMENT_SPEED * tpf, 0, 0));

@@ -34,12 +34,14 @@ public class GameEngine implements Runnable {
     private final Timer timer;
 
     private final Subject<Float> updateScene;
+    private final Node debugNode;
 
 
     @Inject
     public GameEngine(Window window,
                       Renderer renderer,
                       @Named("rootNode") Node rootNode,
+                      @Named("debugNode") Node debugNode,
                       WorldGenerator worldGenerator,
                       KeyboardInputManager keyboardInputManager,
                       MouseInputManager mouseInputManager,
@@ -52,6 +54,7 @@ public class GameEngine implements Runnable {
         this.timer = timer;
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
         this.rootNode = rootNode;
+        this.debugNode = debugNode;
         updateScene = PublishSubject.create();
     }
 
@@ -97,7 +100,7 @@ public class GameEngine implements Runnable {
 
 
     protected void render() {
-        renderer.render(window, rootNode);
+        renderer.render(window, rootNode, debugNode);
         window.update();
     }
 

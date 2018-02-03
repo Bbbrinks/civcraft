@@ -57,5 +57,10 @@
             <groupId>org.joml</groupId>
             <artifactId>joml</artifactId>
         </dependency>
+        <dependency>
+            <groupId>nl.civcraft</groupId>
+            <artifactId>civcraft-math</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

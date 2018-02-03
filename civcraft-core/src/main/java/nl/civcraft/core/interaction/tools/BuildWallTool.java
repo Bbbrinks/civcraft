@@ -21,6 +21,7 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 
@@ -175,8 +176,11 @@ public class BuildWallTool implements MouseTool {
             return;
         }
         try {
-            Matrix4f clickedTransform = currentVoxelHighlighter.getCurrentVoxel().getTransform().translate(new Vector3f(0, 1, 0), new Matrix4f());
-            wallToolStateFSM.onEvent(wallToolState, EVENT_LEFT_CLICK, clickedTransform);
+            Optional<GameObject> currentVoxel = currentVoxelHighlighter.getCurrentVoxel();
+            if(currentVoxel.isPresent()) {
+                Matrix4f clickedTransform = currentVoxel.get().getTransform().translate(new Vector3f(0, 1, 0), new Matrix4f());
+                wallToolStateFSM.onEvent(wallToolState, EVENT_LEFT_CLICK, clickedTransform);
+            }
         } catch (TooBusyException e) {
             throw new IllegalStateException(e);
         }
@@ -187,8 +191,11 @@ public class BuildWallTool implements MouseTool {
                                   float yDiff) {
 
         try {
-            Matrix4f clickedTransform = currentVoxelHighlighter.getCurrentVoxel().getTransform().translate(new Vector3f(0, 1, 0), new Matrix4f());
-            wallToolStateFSM.onEvent(wallToolState, EVENT_MOUSE_MOVEMENT, clickedTransform, yDiff * 10.0f);
+            Optional<GameObject> currentVoxel = currentVoxelHighlighter.getCurrentVoxel();
+            if(currentVoxel.isPresent()) {
+                Matrix4f clickedTransform = currentVoxel.get().getTransform().translate(new Vector3f(0, 1, 0), new Matrix4f());
+                wallToolStateFSM.onEvent(wallToolState, EVENT_MOUSE_MOVEMENT, clickedTransform, yDiff * 10.0f);
+            }
         } catch (TooBusyException e) {
             throw new IllegalStateException(e);
         }

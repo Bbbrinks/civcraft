@@ -17,6 +17,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
@@ -53,7 +55,7 @@ public class BuildWallToolTest {
     public void testPlacement_startNextToEnd() {
         GameObject start = new GameObject(new Matrix4f().translate(new Vector3f(1, 1, 1)));
         GameObject end = new GameObject(new Matrix4f().translate(new Vector3f(2, 1, 1)));
-        when(currentVoxelHighlighter.getCurrentVoxel()).thenReturn(start, end);
+        when(currentVoxelHighlighter.getCurrentVoxel()).thenReturn(Optional.of(start), Optional.of(end));
         underTest.handleMouseMotion(0, 0);
         underTest.handleLeftClick(true);
         underTest.handleMouseMotion(1, 0);
@@ -70,7 +72,7 @@ public class BuildWallToolTest {
     public void testPlacement_endNextToStart() {
         GameObject start = new GameObject(new Matrix4f().translate(new Vector3f(2, 1, 1)));
         GameObject end = new GameObject(new Matrix4f().translate(new Vector3f(1, 1, 1)));
-        when(currentVoxelHighlighter.getCurrentVoxel()).thenReturn(start, end);
+        when(currentVoxelHighlighter.getCurrentVoxel()).thenReturn(Optional.of(start), Optional.of(end));
         underTest.handleMouseMotion(0, 0);
         underTest.handleLeftClick(true);
         underTest.handleMouseMotion(1, 0);
@@ -86,7 +88,7 @@ public class BuildWallToolTest {
     public void testPlacement_startBehindEnd() {
         GameObject start = new GameObject(new Matrix4f().translate(new Vector3f(1, 1, 1)));
         GameObject end = new GameObject(new Matrix4f().translate(new Vector3f(1, 1, 2)));
-        when(currentVoxelHighlighter.getCurrentVoxel()).thenReturn(start, end);
+        when(currentVoxelHighlighter.getCurrentVoxel()).thenReturn(Optional.of(start), Optional.of(end));
         underTest.handleMouseMotion(0, 0);
         underTest.handleLeftClick(true);
         underTest.handleMouseMotion(1, 0);
@@ -103,7 +105,7 @@ public class BuildWallToolTest {
     public void testPlacement_endBehindStart() {
         GameObject start = new GameObject(new Matrix4f().translate(new Vector3f(1, 1, 2)));
         GameObject end = new GameObject(new Matrix4f().translate(new Vector3f(1, 1, 1)));
-        when(currentVoxelHighlighter.getCurrentVoxel()).thenReturn(start, end);
+        when(currentVoxelHighlighter.getCurrentVoxel()).thenReturn(Optional.of(start), Optional.of(end));
         underTest.handleMouseMotion(0, 0);
         underTest.handleLeftClick(true);
         underTest.handleMouseMotion(1, 0);

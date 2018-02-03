@@ -1,6 +1,7 @@
 package nl.civcraft.opengl.rendering;
 
 import nl.civcraft.opengl.rendering.material.Material;
+import org.joml.AABBf;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -26,9 +27,14 @@ public class Mesh {
     private final List<Integer> vboIdList;
 
     private final int vertexCount;
+    private final AABBf bounds;
 
 
-    public Mesh(float[] positions, float[] textCoords, int[] indices) {
+    public Mesh(float[] positions,
+                float[] textCoords,
+                int[] indices,
+                AABBf bounds) {
+        this.bounds = bounds;
         FloatBuffer posBuffer = null;
         FloatBuffer textCoordsBuffer = null;
         IntBuffer indicesBuffer = null;
@@ -119,5 +125,9 @@ public class Mesh {
         // Delete the VAO
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+    }
+
+    public AABBf getBounds() {
+        return bounds;
     }
 }

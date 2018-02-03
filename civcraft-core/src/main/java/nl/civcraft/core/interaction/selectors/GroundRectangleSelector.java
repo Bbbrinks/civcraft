@@ -41,7 +41,7 @@ public abstract class GroundRectangleSelector implements MouseTool {
     public void handleLeftClick(boolean isPressed) {
         if (isPressed) {
             if (startingVoxel == null) {
-                startingVoxel = currentVoxelHighlighter.getCurrentVoxel();
+                startingVoxel = currentVoxelHighlighter.getCurrentVoxel().orElse(null);
             } else {
                 startSelection();
                 loopThroughSelection(this::handleSelection);
@@ -100,7 +100,7 @@ public abstract class GroundRectangleSelector implements MouseTool {
             currentVoxel = currentVoxelHighlighter.highLight();
         } else {
             currentVoxelHighlighter.clear();
-            currentVoxel = currentVoxelHighlighter.getCurrentVoxel();
+            currentVoxel = currentVoxelHighlighter.getCurrentVoxel().orElse(null);
             clearHighlights();
             loopThroughSelection(this::addHighlight);
         }

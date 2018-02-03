@@ -14,7 +14,7 @@ import java.util.Optional;
  */
 public class Chunk {
 
-    public static final int CHUNK_SIZE = 30;
+    public static final int CHUNK_SIZE = 20;
     private final int chunkX;
     private final int chunkZ;
     private final GameObject[] voxels;

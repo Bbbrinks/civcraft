@@ -46,7 +46,7 @@ public class CivvyRenderer {
         Node gameObjectNode = new Node(civvies);
         gameObjectNode.getTransform().add(gameObject.getTransform());
         gameObjectNode.getTransform().scale(0.5f, 2, 0.5f);
-        gameObjectNode.getGeometries().add(() -> new Box(textureManager.loadTexture("/textures/blue.png")));
+        gameObjectNode.addChild( new Box(textureManager.loadTexture("/textures/blue.png")));
         renderedCivvies.put(gameObject, gameObjectNode);
     }
 

@@ -2,6 +2,7 @@ package nl.civcraft.core.worldgeneration;
 
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
+import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.utils.MathUtil;
 import org.apache.logging.log4j.LogManager;
@@ -31,6 +32,9 @@ public class WorldGenerator implements Runnable {
     private HeightMap heightMap;
     private boolean generationDone;
 
+    private final static int WORLD_WIDTH = 3;
+    private final static int WORLD_DEPTH = 3;
+
     @Inject
     public WorldGenerator(@Named("height_map_width") int heightMapWidth,
                           @Named("height_map_height") int heightMapHeight,
@@ -59,24 +63,24 @@ public class WorldGenerator implements Runnable {
         voxelManager.clear();
         blockManager.pausePublishing();
         int chunkCount = 0;
-        for (int x = 0; x < 4; x++) {
-            for (int z = 0; z < 4; z++) {
+        for (int x = 0; x < WORLD_WIDTH; x++) {
+            for (int z = 0; z < WORLD_DEPTH; z++) {
                 generateChunk(x, z);
-                LOGGER.trace("Generating chunk: " + chunkCount + "/36");
+                LOGGER.trace("Generating chunk: " + (chunkCount  + 1) + "/" + WORLD_WIDTH * WORLD_DEPTH);
                 chunkCount++;
             }
         }
-        for (int i = 0; i < 50; i++) {
-            float treeX = MathUtil.rnd(0f, 120f);
-            float treeZ = MathUtil.rnd(0f, 120f);
+        for (int i = 0; i < WORLD_WIDTH * WORLD_DEPTH * 7; i++) {
+            float treeX = MathUtil.rnd(0f, Chunk.CHUNK_SIZE * (float)WORLD_WIDTH);
+            float treeZ = MathUtil.rnd(0f, Chunk.CHUNK_SIZE * (float)WORLD_DEPTH);
             float treeY = heightMap.getHeight((int) treeX, (int) treeZ);
             treeGenerator.addTree((int) treeX, (int) treeY, (int) treeZ);
 
         }
 
-        for (int i = 0; i < 1; i++) {
-            float civX = MathUtil.rnd(0f, 120f);
-            float civZ = MathUtil.rnd(0f, 120f);
+        for (int i = 0; i < 2; i++) {
+            float civX = MathUtil.rnd(0f, Chunk.CHUNK_SIZE * (float)WORLD_WIDTH);
+            float civZ = MathUtil.rnd(0f, Chunk.CHUNK_SIZE * (float)WORLD_DEPTH);
             float civY = heightMap.getHeight((int) civX, (int) civZ);
             Optional<GameObject> voxelAt = voxelManager.getVoxelAt(civX, civY, civZ);
             if (!voxelAt.isPresent()) {

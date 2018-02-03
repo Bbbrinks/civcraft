@@ -20,6 +20,7 @@ public class Box extends Geometry {
         meshes.add(Quad.left());
         meshes.add(Quad.right());
         meshes.add(Quad.top());
+        updateBounds();
     }
 
 

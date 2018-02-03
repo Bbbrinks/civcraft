@@ -1,6 +1,7 @@
 package nl.civcraft.opengl.rendering;
 
 import nl.civcraft.opengl.rendering.material.Material;
+import org.joml.AABBf;
 
 import java.util.List;
 
@@ -12,11 +13,21 @@ import java.util.List;
 public class Geometry {
     protected final List<Mesh> meshes;
     protected final Material texture;
+    private AABBf boundingBox;
 
     public Geometry(List<Mesh> meshes,
                     Material material) {
         this.meshes = meshes;
         this.texture = material;
+        updateBounds();
+    }
+
+    public void updateBounds() {
+        AABBf bounds = new AABBf();
+        for (Mesh mesh : meshes) {
+            bounds = bounds.union(mesh.getBounds(), new AABBf());
+        }
+        boundingBox = bounds;
     }
 
     public List<Mesh> getMeshes() {
@@ -27,7 +38,7 @@ public class Geometry {
         return texture;
     }
 
-    public void render(){
+    public void render() {
         meshes.forEach(mesh -> mesh.render(texture));
     }
 
@@ -37,4 +48,9 @@ public class Geometry {
         // Delete the texture
         texture.cleanup();
     }
+
+    public AABBf getBoundingBox() {
+        return boundingBox;
+    }
+
 }

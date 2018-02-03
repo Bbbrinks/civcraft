@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 import static org.lwjgl.glfw.GLFW.*;
 @Singleton
-public class MouseInputManager {
+public class MouseInputManager implements nl.civcraft.core.interaction.MouseInputManagerInterface {
 
     private final Vector2d previousPos;
 
@@ -48,6 +48,7 @@ public class MouseInputManager {
         });
     }
 
+    @Override
     public void registerListener(Consumer<Vector2f> listener) {
         this.listeners.add(listener);
     }
@@ -72,11 +73,18 @@ public class MouseInputManager {
         listeners.forEach(listener -> listener.accept(displVec));
     }
 
+    @Override
     public boolean isLeftButtonPressed() {
         return leftButtonPressed;
     }
 
+    @Override
     public boolean isRightButtonPressed() {
         return rightButtonPressed;
+    }
+
+    @Override
+    public Vector2d getMousePosition() {
+        return currentPos;
     }
 }

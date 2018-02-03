@@ -1,14 +1,14 @@
 package nl.civcraft.opengl.rendering;
 
 import nl.civcraft.opengl.engine.ShaderProgram;
-import nl.civcraft.opengl.engine.Transformation;
 import nl.civcraft.opengl.engine.Window;
+import nl.civcraft.opengl.util.MatrixUtil;
 import nl.civcraft.opengl.util.ResourceUtil;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import javax.inject.Inject;
-
-import java.util.function.Supplier;
+import javax.inject.Singleton;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -17,6 +17,7 @@ import static org.lwjgl.opengl.GL11.*;
  * <p>
  * This is probably not worth documenting
  */
+@Singleton
 public class Renderer {
 
     /**
@@ -28,15 +29,12 @@ public class Renderer {
 
     private static final float Z_FAR = 1000.f;
 
-    private final Transformation transformation;
-
     private ShaderProgram shaderProgram;
     private final Camera camera;
 
     @Inject
     public Renderer(Camera camera) {
         this.camera = camera;
-        transformation = new Transformation();
     }
 
     public void init(Window window) throws Exception {
@@ -56,47 +54,60 @@ public class Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    public void render(Window window, Node rootNode) {
+    public void render(Window window,
+                       Node rootNode,
+                       Node debugNode) {
         clear();
 
-        if ( window.isResized() ) {
+        if (window.isResized()) {
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
 
+        finalizeNode(rootNode);
+
         shaderProgram.bind();
 
         // Update projection Matrix
-        Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
+        Matrix4f projectionMatrix = MatrixUtil.getProjectionMatrix(window);
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
         shaderProgram.setUniform("texture_sampler", 0);
 
-        renderNode(rootNode);
+        Matrix4f viewMatrix = MatrixUtil.getViewMatrix(camera);
+        renderNode(rootNode, viewMatrix);
+        renderNode(debugNode, viewMatrix);
 
         shaderProgram.unbind();
     }
 
-    private void renderNode(Node currentNode) {
-        for (Node node : currentNode.getChildren()) {
-            // TODO: check culling and shit
-            renderNode(node);
-        }
+
+    private void finalizeNode(Node node) {
+        node.getChildren().forEachRemaining(this::finalizeNode);
+        node.recalculateBoundingBox();
+    }
+
+    private void renderNode(Node currentNode,
+                            Matrix4f viewMatrix) {
+        // TODO: check culling and shit
+        currentNode.getChildren().forEachRemaining(node -> renderNode(node, viewMatrix));
 
         Matrix4f nodeTransform = currentNode.getTransform();
 
         // Set world matrix for this item
-        Matrix4f modelViewMatrix = transformation.getModelViewMatrix(nodeTransform, transformation.getViewMatrix(camera));
+        Matrix4f modelViewMatrix = viewMatrix.mul(nodeTransform, new Matrix4f());
         shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 
-        for (Supplier<Geometry> mesh : currentNode.getGeometries()) {
-            mesh.get().render();
-        }
+        currentNode.getGeometries().forEachRemaining(Geometry::render);
     }
 
     public void cleanup() {
         if (shaderProgram != null) {
             shaderProgram.cleanup();
         }
+    }
+
+    public Vector3f getOrigin() {
+        return camera.getPosition();
     }
 }

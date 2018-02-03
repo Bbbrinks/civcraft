@@ -1,5 +1,8 @@
 package nl.civcraft.opengl.rendering;
 
+import org.joml.AABBf;
+import org.joml.Vector3f;
+
 /**
  * Created by Bob on 14-10-2017.
  * <p>
@@ -8,53 +11,53 @@ package nl.civcraft.opengl.rendering;
 public class Box extends Mesh {
     private static final float[] positions = new float[]{
             // V0
-            -0.25f, 0.25f, 0.25f,
+            -0.5f, 0.5f, 0.5f,
             // V1
-            -0.25f, -0.25f, 0.25f,
+            -0.5f, -0.5f, 0.5f,
             // V2
-            0.25f, -0.25f, 0.25f,
+            0.5f, -0.5f, 0.5f,
             // V3
-            0.25f, 0.25f, 0.25f,
+            0.5f, 0.5f, 0.5f,
             // V4
-            -0.25f, 0.25f, -0.25f,
+            -0.5f, 0.5f, -0.5f,
             // V5
-            0.25f, 0.25f, -0.25f,
+            0.5f, 0.5f, -0.5f,
             // V6
-            -0.25f, -0.25f, -0.25f,
+            -0.5f, -0.5f, -0.5f,
             // V7
-            0.25f, -0.25f, -0.25f,
+            0.5f, -0.5f, -0.5f,
 
             // For text coords in top face
             // V8: V4 repeated
-            -0.25f, 0.25f, -0.25f,
+            -0.5f, 0.5f, -0.5f,
             // V9: V5 repeated
-            0.25f, 0.25f, -0.25f,
+            0.5f, 0.5f, -0.5f,
             // V10: V0 repeated
-            -0.25f, 0.25f, 0.25f,
+            -0.5f, 0.5f, 0.5f,
             // V11: V3 repeated
-            0.25f, 0.25f, 0.25f,
+            0.5f, 0.5f, 0.5f,
 
             // For text coords in right face
             // V12: V3 repeated
-            0.25f, 0.25f, 0.25f,
+            0.5f, 0.5f, 0.5f,
             // V13: V2 repeated
-            0.25f, -0.25f, 0.25f,
+            0.5f, -0.5f, 0.5f,
 
             // For text coords in left face
             // V14: V0 repeated
-            -0.25f, 0.25f, 0.25f,
+            -0.5f, 0.5f, 0.5f,
             // V15: V1 repeated
-            -0.25f, -0.25f, 0.25f,
+            -0.5f, -0.5f, 0.5f,
 
             // For text coords in bottom face
             // V16: V6 repeated
-            -0.25f, -0.25f, -0.25f,
+            -0.5f, -0.5f, -0.5f,
             // V17: V7 repeated
-            0.25f, -0.25f, -0.25f,
+            0.5f, -0.5f, -0.5f,
             // V18: V1 repeated
-            -0.25f, -0.25f, 0.25f,
+            -0.5f, -0.5f, 0.5f,
             // V19: V2 repeated
-            0.25f, -0.25f, 0.25f,
+            0.5f, -0.5f, 0.5f,
     };
     private static float[] textCoords = new float[]{
             0.0f, 0.0f,
@@ -104,11 +107,11 @@ public class Box extends Mesh {
     private static Box INSTANCE;
 
     private Box() {
-        super(positions, textCoords, indices);
+        super(positions, textCoords, indices, new AABBf(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector3f(0.5f, 0.5f, 0.5f)));
     }
 
     public static Box instance() {
-        if(Box.INSTANCE == null){
+        if (Box.INSTANCE == null) {
             Box.INSTANCE = new Box();
         }
         return Box.INSTANCE;
