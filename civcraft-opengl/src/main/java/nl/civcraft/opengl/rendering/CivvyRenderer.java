@@ -5,6 +5,7 @@ import nl.civcraft.core.model.GameObject;
 import nl.civcraft.opengl.engine.GameEngine;
 import nl.civcraft.opengl.rendering.geometry.Box;
 import nl.civcraft.opengl.rendering.material.TextureManager;
+import org.joml.Vector3f;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -44,8 +45,8 @@ public class CivvyRenderer {
     private void updatedCivvy(GameObject gameObject) {
         removedCivvy(gameObject);
         Node gameObjectNode = new Node(civvies);
-        gameObjectNode.getTransform().add(gameObject.getTransform());
-        gameObjectNode.getTransform().scale(0.5f, 2, 0.5f);
+        gameObjectNode.getTransform().translate(gameObject.getTransform().getTranslation(new Vector3f()));
+        gameObjectNode.getTransform().scale(0.5f, 1.5f, 0.5f);
         gameObjectNode.addChild( new Box(textureManager.loadTexture("/textures/blue.png")));
         renderedCivvies.put(gameObject, gameObjectNode);
     }
