@@ -51,7 +51,7 @@ public class Renderer {
     }
 
     public void clear() {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
     public void render(Window window,
@@ -64,6 +64,12 @@ public class Renderer {
             window.setResized(false);
         }
 
+        renderScene(window, rootNode, debugNode);
+    }
+
+    private void renderScene(Window window,
+                            Node rootNode,
+                            Node debugNode) {
         finalizeNode(rootNode);
 
         shaderProgram.bind();

@@ -7,6 +7,7 @@ import io.reactivex.subjects.Subject;
 import nl.civcraft.core.worldgeneration.WorldGenerator;
 import nl.civcraft.opengl.interaction.KeyboardInputManager;
 import nl.civcraft.opengl.interaction.MouseInputManager;
+import nl.civcraft.opengl.interaction.hud.Hud;
 import nl.civcraft.opengl.rendering.Node;
 import nl.civcraft.opengl.rendering.Renderer;
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +36,7 @@ public class GameEngine implements Runnable {
 
     private final Subject<Float> updateScene;
     private final Node debugNode;
+    private final Hud hud;
 
 
     @Inject
@@ -45,13 +47,15 @@ public class GameEngine implements Runnable {
                       WorldGenerator worldGenerator,
                       KeyboardInputManager keyboardInputManager,
                       MouseInputManager mouseInputManager,
-                      Timer timer) throws Exception {
+                      Timer timer,
+                      Hud hud) throws Exception {
         this.window = window;
         this.renderer = renderer;
         this.worldGenerator = worldGenerator;
         this.keyboardInputManager = keyboardInputManager;
         this.mouseInputManager = mouseInputManager;
         this.timer = timer;
+        this.hud = hud;
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
         this.rootNode = rootNode;
         this.debugNode = debugNode;
@@ -78,6 +82,7 @@ public class GameEngine implements Runnable {
     protected void init() throws Exception {
         window.init();
         renderer.init(window);
+        hud.init(window);
         timer.init();
         mouseInputManager.init(window);
     }
@@ -89,6 +94,7 @@ public class GameEngine implements Runnable {
             float elapsedTime = timer.getElapsedTime();
             updateScene.onNext(elapsedTime);
             render();
+            hud.render(window);
             keyboardInputManager.update(window, elapsedTime);
             mouseInputManager.input(window);
         }
@@ -96,6 +102,8 @@ public class GameEngine implements Runnable {
 
     protected void cleanup() {
         window.cleanup();
+        renderer.cleanup();
+        hud.cleanup();
     }
 
 
