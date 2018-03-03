@@ -1,5 +1,6 @@
 package nl.civcraft.opengl.rendering;
 
+import nl.civcraft.core.model.GameObject;
 import nl.civcraft.opengl.util.MatrixUtil;
 import org.joml.AABBf;
 import org.joml.Matrix4f;
@@ -20,6 +21,7 @@ public class Node {
     private final Matrix4f transform;
     private AABBf boundingBox;
     private boolean updateBounds = true;
+    private GameObject gameObject;
 
     public Node(Node parent) {
         this(UUID.randomUUID().toString(), parent);
@@ -111,5 +113,13 @@ public class Node {
         children.clear();
         geometries.clear();
         setUpdateBounds(true);
+    }
+
+    public GameObject getGameObject() {
+        return gameObject;
+    }
+
+    public void setGameObject(GameObject gameObject) {
+        this.gameObject = gameObject;
     }
 }

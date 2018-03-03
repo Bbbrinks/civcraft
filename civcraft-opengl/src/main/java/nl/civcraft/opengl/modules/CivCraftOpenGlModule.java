@@ -8,6 +8,7 @@ import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.modules.CivCraftCoreModule;
 import nl.civcraft.opengl.interaction.CameraMovement;
 import nl.civcraft.opengl.interaction.MouseInputManager;
+import nl.civcraft.opengl.interaction.ToolManager;
 import nl.civcraft.opengl.raycast.MousePicker;
 import nl.civcraft.opengl.rendering.CivvyRenderer;
 import nl.civcraft.opengl.rendering.DebugRenderer;
@@ -28,6 +29,7 @@ public class CivCraftOpenGlModule extends AbstractModule {
         bind(CameraMovement.class).asEagerSingleton();
         bind(MousePicker.class).asEagerSingleton();
         bind(DebugRenderer.class).asEagerSingleton();
+        bind(ToolManager.class).asEagerSingleton();
         bind(CurrentVoxelHighlighter.class).to(nl.civcraft.opengl.interaction.CurrentVoxelHighlighter.class);
         bind(MouseInputManagerInterface.class).to(MouseInputManager.class);
         bind(Key.get(Node.class, Names.named("rootNode"))).toInstance(new Node("root",null));

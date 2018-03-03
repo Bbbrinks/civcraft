@@ -25,13 +25,15 @@ public class MouseInputManager implements nl.civcraft.core.interaction.MouseInpu
 
     private boolean rightButtonPressed = false;
 
-    private final List<Consumer<Vector2f>> listeners;
+    private final List<Consumer<Vector2f>> movementsListeners;
+    private final List<Consumer<Boolean>>  leftClickListeners;
 
     public MouseInputManager() {
         previousPos = new Vector2d(-1, -1);
         currentPos = new Vector2d(0, 0);
         displVec = new Vector2f();
-        listeners = new ArrayList<>();
+        movementsListeners = new ArrayList<>();
+        leftClickListeners = new ArrayList<>();
     }
 
     public void init(Window window) {
@@ -49,9 +51,15 @@ public class MouseInputManager implements nl.civcraft.core.interaction.MouseInpu
     }
 
     @Override
-    public void registerListener(Consumer<Vector2f> listener) {
-        this.listeners.add(listener);
+    public void registerMovementListener(Consumer<Vector2f> listener) {
+        this.movementsListeners.add(listener);
     }
+
+    @Override
+    public void registerLeftClickListener(Consumer<Boolean> listener) {
+        this.leftClickListeners.add(listener);
+    }
+
 
     public void input(Window window) {
         displVec.x = 0;
@@ -70,7 +78,8 @@ public class MouseInputManager implements nl.civcraft.core.interaction.MouseInpu
         }
         previousPos.x = currentPos.x;
         previousPos.y = currentPos.y;
-        listeners.forEach(listener -> listener.accept(displVec));
+        movementsListeners.forEach(listener -> listener.accept(displVec));
+        leftClickListeners.forEach(listener -> listener.accept(isLeftButtonPressed()));
     }
 
     @Override

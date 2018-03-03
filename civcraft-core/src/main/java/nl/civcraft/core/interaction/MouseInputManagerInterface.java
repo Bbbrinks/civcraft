@@ -11,7 +11,9 @@ import java.util.function.Consumer;
  * This is probably not worth documenting
  */
 public interface MouseInputManagerInterface {
-    void registerListener(Consumer<Vector2f> listener);
+    void registerMovementListener(Consumer<Vector2f> listener);
+
+    void registerLeftClickListener(Consumer<Boolean> listener);
 
     boolean isLeftButtonPressed();
 

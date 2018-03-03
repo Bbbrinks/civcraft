@@ -87,6 +87,7 @@ public class VoxelRenderer {
                 quads.add(Quad.right());
             }
             gameObjectNode.addChild(new Geometry(quads, texture));
+            gameObjectNode.setGameObject(gameObject);
             renderedVoxels.put(gameObject, gameObjectNode);
         } else if (voxel.isVisible()) {
             Node node = renderedVoxels.get(gameObject);

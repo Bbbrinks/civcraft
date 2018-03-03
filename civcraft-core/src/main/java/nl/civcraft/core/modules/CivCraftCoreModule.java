@@ -32,7 +32,6 @@ public class CivCraftCoreModule extends AbstractModule {
 
         bind(Scheduler.class).to(SingleScheduler.class).in(Singleton.class);
 
-
         bind(MouseTool.class).annotatedWith(Names.named("singleVoxelSelector")).to(SingleVoxelSelector.class).in(Singleton.class);
         bind(MouseTool.class).annotatedWith(Names.named("stockpileTool")).to(StockpileTool.class).in(Singleton.class);
         bind(MouseTool.class).annotatedWith(Names.named("breakBlockTool")).to(BreakBlockTool.class).in(Singleton.class);

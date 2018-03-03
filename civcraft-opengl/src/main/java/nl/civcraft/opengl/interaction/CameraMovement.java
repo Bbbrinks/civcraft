@@ -28,7 +28,7 @@ public class CameraMovement {
         keyboardInputManager.bindKey(GLFW_KEY_SPACE, tpf -> camera.movePosition(0, MOVEMENT_SPEED * tpf, 0));
         keyboardInputManager.bindKey(GLFW_KEY_LEFT_SHIFT, tpf -> camera.movePosition(tpf, -MOVEMENT_SPEED * tpf, 0));
 
-        mousseInput.registerListener(mouseMovement -> {
+        mousseInput.registerMovementListener(mouseMovement -> {
             if (mousseInput.isRightButtonPressed()) {
                 camera.moveRotation(mouseMovement.x, mouseMovement.y, 0);
             }

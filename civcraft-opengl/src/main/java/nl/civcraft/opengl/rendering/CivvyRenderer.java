@@ -48,6 +48,7 @@ public class CivvyRenderer {
         gameObjectNode.getTransform().translate(gameObject.getTransform().getTranslation(new Vector3f()));
         gameObjectNode.getTransform().scale(0.5f, 1.5f, 0.5f);
         gameObjectNode.addChild( new Box(textureManager.loadTexture("/textures/blue.png")));
+        gameObjectNode.setGameObject(gameObject);
         renderedCivvies.put(gameObject, gameObjectNode);
     }
 
