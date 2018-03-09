@@ -33,6 +33,8 @@ public class DebugRenderer {
     private Texture texture;
     private Box box;
     private Node rayNode;
+    private boolean drawRootBoundingBox = false;
+    private long oldTime;
 
     @Inject
     public DebugRenderer(@Named("debugNode") Node debugNode,
@@ -77,15 +79,25 @@ public class DebugRenderer {
 
     private void debug(Float aFloat) {
         debugNode.detachAll();
-        if (active) {
-            Node rootBoundingBoxNode = new Node("rootBoundingBox", debugNode);
-            AABBf boundingBox = rootNode.getBoundingBox();
-            rootBoundingBoxNode.getTransform().translate((boundingBox.maxX - boundingBox.minX) / 2.0f, (boundingBox.maxY - boundingBox.minY) / 2.0f, (boundingBox.maxZ - boundingBox.minZ) / 2.0f);
-            rootBoundingBoxNode.getTransform().scale(boundingBox.maxX - boundingBox.minX, boundingBox.maxY - boundingBox.minY, boundingBox.maxZ - boundingBox.minZ);
-            rootBoundingBoxNode.addChild(new Geometry(Collections.singletonList(box), texture));
-            if (this.rayNode != null) {
-                debugNode.addChild(this.rayNode);
-            }
+        if (active && drawRootBoundingBox) {
+            drawRootBoundingBox();
+
+        }
+        if(active){
+            long newTime = System.nanoTime();
+            LOGGER.info("fps: " + (1.0f / ((newTime - oldTime) / Math.pow(10, 9))));
+            oldTime = newTime;
+        }
+    }
+
+    private void drawRootBoundingBox() {
+        Node rootBoundingBoxNode = new Node("rootBoundingBox", debugNode);
+        AABBf boundingBox = rootNode.getBoundingBox();
+        rootBoundingBoxNode.getTransform().translate((boundingBox.maxX - boundingBox.minX) / 2.0f, (boundingBox.maxY - boundingBox.minY) / 2.0f, (boundingBox.maxZ - boundingBox.minZ) / 2.0f);
+        rootBoundingBoxNode.getTransform().scale(boundingBox.maxX - boundingBox.minX, boundingBox.maxY - boundingBox.minY, boundingBox.maxZ - boundingBox.minZ);
+        rootBoundingBoxNode.addChild(new Geometry(Collections.singletonList(box), texture));
+        if (this.rayNode != null) {
+            debugNode.addChild(this.rayNode);
         }
     }
 }

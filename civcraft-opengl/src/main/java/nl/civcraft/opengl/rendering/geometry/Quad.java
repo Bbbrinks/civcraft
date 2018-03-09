@@ -44,14 +44,14 @@ public class Quad extends Mesh {
     };
 
     private static float[] leftPositions = new float[]{
-            // V14
-            -0.5f, 0.5f, 0.5f,
-            // V15
-            -0.5f, -0.5f, 0.5f,
-            // V6
-            -0.5f, -0.5f, -0.5f,
             // V4
             -0.5f, 0.5f, -0.5f,
+            // V6
+            -0.5f, -0.5f, -0.5f,
+            // V15
+            -0.5f, -0.5f, 0.5f,
+            // V14
+            -0.5f, 0.5f, 0.5f,
     };
 
 
@@ -92,14 +92,14 @@ public class Quad extends Mesh {
     };
 
     private static float[] frontPositions = new float[]{
-            // V4
-            -0.5f, 0.5f, -0.5f,
-            // V6
-            -0.5f, -0.5f, -0.5f,
-            // V7
-            0.5f, -0.5f, -0.5f,
             // V5
             0.5f, 0.5f, -0.5f,
+            // V7
+            0.5f, -0.5f, -0.5f,
+            // V6
+            -0.5f, -0.5f, -0.5f,
+            // V4
+            -0.5f, 0.5f, -0.5f,
     };
 
     private static float[] frontTextCoords = new float[]{
@@ -142,14 +142,14 @@ public class Quad extends Mesh {
     };
 
     private static float[] bottomPositions = new float[]{
-            // V16
-            -0.5f, -0.5f, -0.5f,
-            // V18
-            -0.5f, -0.5f, 0.5f,
-            // V19
-            0.5f, -0.5f, 0.5f,
             // V17
             0.5f, -0.5f, -0.5f,
+            // V19
+            0.5f, -0.5f, 0.5f,
+            // V18
+            -0.5f, -0.5f, 0.5f,
+            // V16
+            -0.5f, -0.5f, -0.5f,
     };
 
 

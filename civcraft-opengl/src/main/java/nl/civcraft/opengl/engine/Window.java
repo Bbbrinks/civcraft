@@ -32,11 +32,14 @@ public class Window {
     private boolean vSync;
     private GLFWErrorCallback errorCallback;
 
-    public Window(){
+    public Window() {
         this("Civcraft", 1024, 768, true);
     }
 
-    public Window(String title, int width, int height, boolean vSync) {
+    public Window(String title,
+                  int width,
+                  int height,
+                  boolean vSync) {
         this.title = title;
         this.width = width;
         this.height = height;
@@ -106,8 +109,18 @@ public class Window {
 
         // Set the clear color
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_STENCIL_TEST);
+
+        // Support for transparencies
         glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+
         glfwWindowHint(GLFW_SAMPLES, 4);
+
 
         restoreState();
 
@@ -117,9 +130,14 @@ public class Window {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_STENCIL_TEST);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
     }
 
-    public void setClearColor(float r, float g, float b, float alpha) {
+    public void setClearColor(float r,
+                              float g,
+                              float b,
+                              float alpha) {
         glClearColor(r, g, b, alpha);
     }
 
