@@ -35,7 +35,7 @@ public class Hud {
     private int counter;
 
     public void init(Window window) throws Exception {
-        this.vg = nvgCreate(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG );
+        this.vg = nvgCreate(NVG_ANTIALIAS | NVG_STENCIL_STROKES );
         if (this.vg == NULL) {
             throw new Exception("Could not init nanovg");
         }

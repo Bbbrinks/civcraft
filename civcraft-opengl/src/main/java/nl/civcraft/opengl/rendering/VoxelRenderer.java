@@ -6,7 +6,7 @@ import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.NeighbourDirection;
 import nl.civcraft.opengl.engine.GameEngine;
 import nl.civcraft.opengl.rendering.geometry.Quad;
-import nl.civcraft.opengl.rendering.material.Texture;
+import nl.civcraft.opengl.rendering.material.Material;
 import nl.civcraft.opengl.rendering.material.TextureManager;
 import org.joml.Vector3f;
 
@@ -66,7 +66,7 @@ public class VoxelRenderer {
 
             gameObjectNode.getTransform().translate(gameObject.getTransform().getTranslation(new Vector3f()));
 
-            Texture texture = textureManager.loadTexture(String.format("/textures/%s.png", voxel.getType()));
+            Material material = new Material(textureManager.loadTexture(String.format("/textures/%s.png", voxel.getType())));
             List<Mesh> quads = new ArrayList<>();
             if (!voxel.getNeighbour(NeighbourDirection.FRONT).isPresent()) {
                 quads.add(Quad.front());
@@ -86,7 +86,7 @@ public class VoxelRenderer {
             if (!voxel.getNeighbour(NeighbourDirection.RIGHT).isPresent()) {
                 quads.add(Quad.right());
             }
-            gameObjectNode.addChild(new Geometry(quads, texture));
+            gameObjectNode.addChild(new Geometry(quads, material));
             gameObjectNode.setGameObject(gameObject);
             renderedVoxels.put(gameObject, gameObjectNode);
         } else if (voxel.isVisible()) {

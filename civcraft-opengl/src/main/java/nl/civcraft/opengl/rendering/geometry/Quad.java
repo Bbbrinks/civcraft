@@ -161,52 +161,56 @@ public class Quad extends Mesh {
     };
     private static Quad FRONT;
 
-
+    private static float[] normals = new float[]{
+            -1f, -1f, -1f,-1f, -1f, -1f
+    };
+    
     private Quad(float[] positions,
                  float[] textCoords,
                  int[] indices,
-                 AABBf bounds) {
-        super(positions, textCoords, indices, bounds);
+                 AABBf bounds,
+                 float[] normals) {
+        super(positions, textCoords, indices, normals, bounds);
     }
 
     public static Quad front() {
         if (Quad.FRONT == null) {
-            Quad.FRONT = new Quad(frontPositions, frontTextCoords, frontIndices, new AABBf(new Vector3f(-0.5f, -0.5f, -0.5f ), new Vector3f(0.5f, 0.5f, -0.5f)));
+            Quad.FRONT = new Quad(frontPositions, frontTextCoords, frontIndices, new AABBf(new Vector3f(-0.5f, -0.5f, -0.5f ), new Vector3f(0.5f, 0.5f, -0.5f)), normals);
         }
         return Quad.FRONT;
     }
 
     public static Quad back() {
         if (Quad.BACK == null) {
-            Quad.BACK = new Quad(backPostions, backTextCoords, backIndices,  new AABBf(new Vector3f(-0.5f, -0.5f, 0.5f ), new Vector3f(0.5f, 0.5f, 0.5f)));
+            Quad.BACK = new Quad(backPostions, backTextCoords, backIndices,  new AABBf(new Vector3f(-0.5f, -0.5f, 0.5f ), new Vector3f(0.5f, 0.5f, 0.5f)), normals);
         }
         return Quad.BACK;
     }
 
     public static Quad top() {
         if (Quad.TOP == null) {
-            Quad.TOP = new Quad(topPositions, topTextCoords, topIndices,  new AABBf(new Vector3f(-0.5f, 0.5f, -0.5f ), new Vector3f(0.5f, 0.5f, -0.5f)));
+            Quad.TOP = new Quad(topPositions, topTextCoords, topIndices,  new AABBf(new Vector3f(-0.5f, 0.5f, -0.5f ), new Vector3f(0.5f, 0.5f, -0.5f)), normals);
         }
         return Quad.TOP;
     }
 
     public static Quad bottom() {
         if (Quad.BOTTOM == null) {
-            Quad.BOTTOM = new Quad(bottomPositions, bottomTextCoords, bottomIndices, new AABBf(new Vector3f(-0.5f, -0.5f, -0.5f ), new Vector3f(0.5f, -0.5f, 0.5f)) );
+            Quad.BOTTOM = new Quad(bottomPositions, bottomTextCoords, bottomIndices, new AABBf(new Vector3f(-0.5f, -0.5f, -0.5f ), new Vector3f(0.5f, -0.5f, 0.5f)), normals);
         }
         return Quad.BOTTOM;
     }
 
     public static Quad left() {
         if (Quad.LEFT == null) {
-            Quad.LEFT = new Quad(leftPositions, leftTextCoords, leftIndices,  new AABBf(new Vector3f(-0.5f, -0.5f, -0.5f ), new Vector3f(-0.5f, 0.5f, 0.5f)) );
+            Quad.LEFT = new Quad(leftPositions, leftTextCoords, leftIndices,  new AABBf(new Vector3f(-0.5f, -0.5f, -0.5f ), new Vector3f(-0.5f, 0.5f, 0.5f)), normals);
         }
         return Quad.LEFT;
     }
 
     public static Quad right() {
         if (Quad.RIGHT == null) {
-            Quad.RIGHT = new Quad(rightPositions, rightTextCoords, rightIndices,  new AABBf(new Vector3f(0.5f, -0.5f, -0.5f ), new Vector3f(0.5f, 0.5f, -0.5f)));
+            Quad.RIGHT = new Quad(rightPositions, rightTextCoords, rightIndices,  new AABBf(new Vector3f(0.5f, -0.5f, -0.5f ), new Vector3f(0.5f, 0.5f, -0.5f)), normals);
         }
         return Quad.RIGHT;
     }

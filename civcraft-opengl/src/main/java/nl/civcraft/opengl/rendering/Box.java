@@ -104,10 +104,24 @@ public class Box extends Mesh {
             // Back face
             7, 4, 5, 7, 6, 4,};
 
+    private static float[] normals = new float[]{
+            // Front face
+            1, 1, 1, 1, 1, 1,
+            // Top Face
+            1, 1, 1, 1, 1, 1,
+            // Right face
+            1, 1, 1, 1, 1, 1,
+            // Left face
+            1, 1, 1, 1, 1, 1,
+            // Bottom face
+            1, 1, 1, 1, 1, 1,
+            // Back face
+            1, 1, 1, 1, 1, 1,};
+
     private static Box INSTANCE;
 
     private Box() {
-        super(positions, textCoords, indices, new AABBf(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector3f(0.5f, 0.5f, 0.5f)));
+        super(positions, textCoords, indices, normals, new AABBf(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector3f(0.5f, 0.5f, 0.5f)));
     }
 
     public static Box instance() {

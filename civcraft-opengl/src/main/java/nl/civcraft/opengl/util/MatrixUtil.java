@@ -45,4 +45,20 @@ public class MatrixUtil {
         max.mul(transfrom.getScale(new Vector3f())).add(transfrom.getTranslation(new Vector3f()));
         return new AABBf(min,max);
     }
+
+    public static Matrix4f getLightViewMatrix(Vector3f position,
+                                              Vector3f rotation) {
+        return new Matrix4f().rotationX((float)Math.toRadians(rotation.x))
+                .rotateY((float)Math.toRadians(rotation.y))
+                .translate(-position.x, -position.y, -position.z);
+    }
+
+    public static Matrix4f getOrthoProjectionMatrix(float left,
+                                                    float right,
+                                                    float bottom,
+                                                    float top,
+                                                    float zNear,
+                                                    float zFar) {
+        return new Matrix4f().setOrtho(left, right, bottom, top, zNear, zFar);
+    }
 }

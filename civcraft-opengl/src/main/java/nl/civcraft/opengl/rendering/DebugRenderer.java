@@ -3,7 +3,7 @@ package nl.civcraft.opengl.rendering;
 import nl.civcraft.opengl.engine.GameEngine;
 import nl.civcraft.opengl.interaction.KeyboardInputManager;
 import nl.civcraft.opengl.raycast.MousePicker;
-import nl.civcraft.opengl.rendering.material.Texture;
+import nl.civcraft.opengl.rendering.material.Material;
 import nl.civcraft.opengl.rendering.material.TextureManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +30,7 @@ public class DebugRenderer {
     private final MousePicker mousePicker;
     private final Camera camera;
     private boolean active = false;
-    private Texture texture;
+    private Material material;
     private Box box;
     private Node rayNode;
     private boolean drawRootBoundingBox = false;
@@ -62,13 +62,13 @@ public class DebugRenderer {
             this.rayNode.getTransform().lookAlong(mousePicker.getMouseDirection(), new Vector3f(0, 1, 0));
             this.rayNode.getTransform().setTranslation(new Vector3f(camera.getPosition()));
             this.rayNode.getTransform().scale(0.01f, 0.01f, 1000f);
-            this.rayNode.addChild(new Geometry(Collections.singletonList(box), texture));
+            this.rayNode.addChild(new Geometry(Collections.singletonList(box), material));
         }
     }
 
     private void activate(Float aFloat) {
-        if (this.texture == null) {
-            this.texture = textureManager.loadTexture("/textures/blue.png");
+        if (this.material == null) {
+            this.material = new Material(textureManager.loadTexture("/textures/blue.png"));
             this.box = Box.instance();
         }
         active = !active;
@@ -95,7 +95,7 @@ public class DebugRenderer {
         AABBf boundingBox = rootNode.getBoundingBox();
         rootBoundingBoxNode.getTransform().translate((boundingBox.maxX - boundingBox.minX) / 2.0f, (boundingBox.maxY - boundingBox.minY) / 2.0f, (boundingBox.maxZ - boundingBox.minZ) / 2.0f);
         rootBoundingBoxNode.getTransform().scale(boundingBox.maxX - boundingBox.minX, boundingBox.maxY - boundingBox.minY, boundingBox.maxZ - boundingBox.minZ);
-        rootBoundingBoxNode.addChild(new Geometry(Collections.singletonList(box), texture));
+        rootBoundingBoxNode.addChild(new Geometry(Collections.singletonList(box), material));
         if (this.rayNode != null) {
             debugNode.addChild(this.rayNode);
         }

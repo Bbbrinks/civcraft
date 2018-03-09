@@ -10,6 +10,7 @@ import nl.civcraft.opengl.interaction.MouseInputManager;
 import nl.civcraft.opengl.interaction.hud.Hud;
 import nl.civcraft.opengl.rendering.Node;
 import nl.civcraft.opengl.rendering.Renderer;
+import nl.civcraft.opengl.rendering.Scene;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +28,7 @@ public class GameEngine implements Runnable {
     private final Thread gameLoopThread;
 
     private final Renderer renderer;
-    private final Node rootNode;
+    private final Scene scene;
 
     private final WorldGenerator worldGenerator;
     private final KeyboardInputManager keyboardInputManager;
@@ -42,7 +43,7 @@ public class GameEngine implements Runnable {
     @Inject
     public GameEngine(Window window,
                       Renderer renderer,
-                      @Named("rootNode") Node rootNode,
+                      Scene scene,
                       @Named("debugNode") Node debugNode,
                       WorldGenerator worldGenerator,
                       KeyboardInputManager keyboardInputManager,
@@ -57,7 +58,7 @@ public class GameEngine implements Runnable {
         this.timer = timer;
         this.hud = hud;
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
-        this.rootNode = rootNode;
+        this.scene = scene;
         this.debugNode = debugNode;
         updateScene = PublishSubject.create();
     }
@@ -94,7 +95,6 @@ public class GameEngine implements Runnable {
             float elapsedTime = timer.getElapsedTime();
             updateScene.onNext(elapsedTime);
             render();
-            hud.render(window);
             keyboardInputManager.update(window, elapsedTime);
             mouseInputManager.input(window);
         }
@@ -108,7 +108,8 @@ public class GameEngine implements Runnable {
 
 
     protected void render() {
-        renderer.render(window, rootNode, debugNode);
+        renderer.render(window, scene, debugNode);
+        hud.render(window);
         window.update();
     }
 

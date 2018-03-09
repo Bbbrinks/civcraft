@@ -18,4 +18,8 @@ public class RandomUtil {
     public static int getNextInt(int max) {
         return randomGenerator.nextInt(max);
     }
+
+    public static double getNextFloat(float max) {
+        return randomGenerator.nextFloat() * max;
+    }
 }
