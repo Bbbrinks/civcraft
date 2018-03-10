@@ -109,27 +109,29 @@ public class Material {
         this.normalMap = normalMap;
     }
 
-    public void bind(Matrix4f viewMatrix, ShaderProgram shader, ShaderProgram sceneShaderProgram, ShadowMap shadowMap) {
+    public void bind(Matrix4f viewMatrix, ShaderProgram shaderProgram, ShadowMap shadowMap) {
         if (viewMatrix != null) {
-            shader.setUniform("material", this);
+            shaderProgram.setUniform("material", this);
             glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMapTexture().getId());
+
+            if (texture != null) {
+                shaderProgram.setUniform("numCols", texture.getNumCols());
+                shaderProgram.setUniform("numRows", texture.getNumRows());
+                // Activate first texture bank
+                glActiveTexture(GL_TEXTURE0);
+                // Bind the texture
+                glBindTexture(GL_TEXTURE_2D, texture.getId());
+            }
+
+            if ( normalMap != null ) {
+                // Activate first texture bank
+                glActiveTexture(GL_TEXTURE1);
+                // Bind the texture
+                glBindTexture(GL_TEXTURE_2D, normalMap.getId());
+            }
         }
 
-        if (texture != null) {
-            sceneShaderProgram.setUniform("numCols", texture.getNumCols());
-            sceneShaderProgram.setUniform("numRows", texture.getNumRows());
-            // Activate first texture bank
-            glActiveTexture(GL_TEXTURE0);
-            // Bind the texture
-            glBindTexture(GL_TEXTURE_2D, texture.getId());
-        }
 
-        if ( normalMap != null ) {
-            // Activate first texture bank
-            glActiveTexture(GL_TEXTURE1);
-            // Bind the texture
-            glBindTexture(GL_TEXTURE_2D, normalMap.getId());
-        }
     }
 }

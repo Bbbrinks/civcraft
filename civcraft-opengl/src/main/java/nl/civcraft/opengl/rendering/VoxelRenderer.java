@@ -3,9 +3,8 @@ package nl.civcraft.opengl.rendering;
 import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.model.NeighbourDirection;
 import nl.civcraft.opengl.engine.GameEngine;
-import nl.civcraft.opengl.rendering.geometry.Quad;
+import nl.civcraft.opengl.loaders.ObjFileManager;
 import nl.civcraft.opengl.rendering.material.Material;
 import nl.civcraft.opengl.rendering.material.TextureManager;
 import org.joml.Vector3f;
@@ -13,9 +12,7 @@ import org.joml.Vector3f;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,15 +26,18 @@ public class VoxelRenderer {
     private final TextureManager textureManager;
     private final Map<GameObject, Node> renderedVoxels;
     private final ChunkManager chunkManager;
+    private final ObjFileManager objFileManager;
 
 
     @Inject
     public VoxelRenderer(@Named("block") PrefabManager blockManager,
                          TextureManager textureManager,
                          GameEngine gameEngine,
-                         ChunkManager chunkManager) throws IOException {
+                         ChunkManager chunkManager,
+                         ObjFileManager objFileManager) throws IOException {
         this.textureManager = textureManager;
         this.chunkManager = chunkManager;
+        this.objFileManager = objFileManager;
         blockManager.getGameObjectCreated().buffer(gameEngine.getUpdateScene()).subscribe(gameObjects -> gameObjects.forEach(this::newVoxel));
         blockManager.getGameObjectDestroyed().buffer(gameEngine.getUpdateScene()).subscribe(gameObjects -> gameObjects.forEach(this::removedVoxel));
         blockManager.getGameObjectChanged().buffer(gameEngine.getUpdateScene()).subscribe(gameObjects -> gameObjects.forEach(this::updateVoxel));
@@ -67,26 +67,7 @@ public class VoxelRenderer {
             gameObjectNode.getTransform().translate(gameObject.getTransform().getTranslation(new Vector3f()));
 
             Material material = new Material(textureManager.loadTexture(String.format("/textures/%s.png", voxel.getType())));
-            List<Mesh> quads = new ArrayList<>();
-            if (!voxel.getNeighbour(NeighbourDirection.FRONT).isPresent()) {
-                quads.add(Quad.front());
-            }
-            if (!voxel.getNeighbour(NeighbourDirection.BACK).isPresent()) {
-                quads.add(Quad.back());
-            }
-            if (!voxel.getNeighbour(NeighbourDirection.TOP).isPresent()) {
-                quads.add(Quad.top());
-            }
-            if (!voxel.getNeighbour(NeighbourDirection.BOTTOM).isPresent()) {
-                quads.add(Quad.bottom());
-            }
-            if (!voxel.getNeighbour(NeighbourDirection.LEFT).isPresent()) {
-                quads.add(Quad.left());
-            }
-            if (!voxel.getNeighbour(NeighbourDirection.RIGHT).isPresent()) {
-                quads.add(Quad.right());
-            }
-            gameObjectNode.addChild(new Geometry(quads, material));
+            gameObjectNode.addChild(new Geometry(objFileManager.loadMesh("models/cube.obj"), material));
             gameObjectNode.setGameObject(gameObject);
             renderedVoxels.put(gameObject, gameObjectNode);
         } else if (voxel.isVisible()) {

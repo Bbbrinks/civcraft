@@ -5,6 +5,7 @@ import nl.civcraft.opengl.rendering.material.Material;
 import org.joml.AABBf;
 import org.joml.Matrix4f;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -16,6 +17,10 @@ public class Geometry {
     protected final List<Mesh> meshes;
     protected final Material material;
     private AABBf boundingBox;
+
+    public Geometry(Mesh mesh,  Material material) {
+        this(Collections.singletonList(mesh), material);
+    }
 
     public Geometry(List<Mesh> meshes,
                     Material material) {
@@ -41,10 +46,9 @@ public class Geometry {
     }
 
     public void render(Matrix4f viewMatrix,
-                       ShaderProgram shader,
-                       ShaderProgram sceneShaderProgram,
+                       ShaderProgram shaderProgram,
                        ShadowMap shadowMap) {
-        meshes.forEach(mesh -> mesh.render(material, viewMatrix, shader, sceneShaderProgram, shadowMap));
+        meshes.forEach(mesh -> mesh.render(material, viewMatrix, shaderProgram, shadowMap));
     }
 
     public void cleanUp() {

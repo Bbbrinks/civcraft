@@ -34,16 +34,18 @@ public class Mesh {
 
     public Mesh(float[] positions,
                 float[] textCoords,
-                int[] indices,
                 float[] normals,
+                int[] indices,
                 AABBf bounds) {
-        this(positions, textCoords, indices, normals,  createEmptyIntArray(MAX_WEIGHTS * positions.length / 3, 0), createEmptyFloatArray(MAX_WEIGHTS * positions.length / 3, 0), bounds)   ;
+        this(positions, textCoords, normals, indices, createEmptyIntArray(MAX_WEIGHTS * positions.length / 3, 0), createEmptyFloatArray(MAX_WEIGHTS * positions.length / 3, 0), bounds);
     }
 
     public Mesh(float[] positions,
                 float[] textCoords,
+                float[] normals,
                 int[] indices,
-                float[] normals, int[] jointIndices, float[] weights,
+                int[] jointIndices,
+                float[] weights,
                 AABBf bounds) {
         this.bounds = bounds;
         FloatBuffer posBuffer = null;
@@ -146,11 +148,10 @@ public class Mesh {
 
     public void render(Material material,
                        Matrix4f viewMatrix,
-                       ShaderProgram shader,
-                       ShaderProgram sceneShaderProgram,
+                       ShaderProgram shaderProgram,
                        ShadowMap shadowMap) {
         // Bind the texture
-        material.bind(viewMatrix, shader, sceneShaderProgram, shadowMap);
+        material.bind(viewMatrix, shaderProgram, shadowMap);
 
         // Draw the mesh
         glBindVertexArray(getVaoId());
@@ -191,13 +192,15 @@ public class Mesh {
     }
 
 
-    protected static int[] createEmptyIntArray(int length, int defaultValue) {
+    protected static int[] createEmptyIntArray(int length,
+                                               int defaultValue) {
         int[] result = new int[length];
         Arrays.fill(result, defaultValue);
         return result;
     }
 
-    protected static float[] createEmptyFloatArray(int length, float defaultValue) {
+    protected static float[] createEmptyFloatArray(int length,
+                                                   float defaultValue) {
         float[] result = new float[length];
         Arrays.fill(result, defaultValue);
         return result;

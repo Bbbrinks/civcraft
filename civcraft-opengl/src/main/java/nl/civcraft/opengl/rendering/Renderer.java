@@ -1,7 +1,6 @@
 package nl.civcraft.opengl.rendering;
 
 
-import nl.civcraft.core.utils.RandomUtil;
 import nl.civcraft.opengl.engine.ShaderProgram;
 import nl.civcraft.opengl.engine.Window;
 import nl.civcraft.opengl.rendering.light.DirectionalLight;
@@ -84,16 +83,16 @@ public class Renderer {
         DirectionalLight light = scene.getSceneLight().getDirectionalLight();
         Vector3f lightDirection = light.getDirection();
 
-        float lightAngleX = (float) Math.toDegrees(Math.acos(RandomUtil.getNextFloat( 2.0f) - 1.0f));
-        float lightAngleY = (float) Math.toDegrees(Math.asin(RandomUtil.getNextFloat( 2.0f) - 1.0f));
-        float lightAngleZ = (float) Math.toDegrees(Math.atan(RandomUtil.getNextFloat( 2.0f) - 1.0f));
+        float lightAngleX = (float) Math.toDegrees(Math.acos(lightDirection.z));
+        float lightAngleY = (float) Math.toDegrees(Math.asin(lightDirection.x));
+        float lightAngleZ = 0;
 
         Matrix4f lightViewMatrix = MatrixUtil.getLightViewMatrix(new Vector3f(lightDirection).mul(light.getShadowPosMult()), new Vector3f(lightAngleX, lightAngleY, lightAngleZ));
         DirectionalLight.OrthoCoords orthCoords = light.getOrthoCoords();
         Matrix4f orthoProjMatrix = MatrixUtil.getOrthoProjectionMatrix(orthCoords.left, orthCoords.right, orthCoords.bottom, orthCoords.top, orthCoords.near, orthCoords.far);
 
         // Render depth map before view ports has been set up
-        // TODO: something with this to make shadows and light work
+        // TODO: something with this to make shadows
         renderDepthMap(window, camera, scene, lightViewMatrix, orthoProjMatrix);
 
         glViewport(0, 0, window.getWidth(), window.getHeight());
@@ -145,7 +144,6 @@ public class Renderer {
 
         // Set world matrix for this item
 
-
         if (viewMatrix != null) {
             Matrix4f modelViewMatrix = viewMatrix.mul(nodeTransform, new Matrix4f());
             sceneShaderProgram.setUniform("modelViewNonInstancedMatrix", modelViewMatrix);
@@ -153,7 +151,7 @@ public class Renderer {
         Matrix4f modelLightViewMatrix = lightViewMatrix.mulAffine(nodeTransform, new Matrix4f());
         sceneShaderProgram.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
 
-        currentNode.getGeometries().forEachRemaining(geometry -> geometry.render(viewMatrix, shader, sceneShaderProgram, shadowMap));
+        currentNode.getGeometries().forEachRemaining(geometry -> geometry.render(viewMatrix, shader, shadowMap));
     }
 
     private void setupDepthShader() throws Exception {

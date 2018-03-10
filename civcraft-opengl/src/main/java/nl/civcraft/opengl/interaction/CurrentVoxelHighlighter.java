@@ -2,8 +2,8 @@ package nl.civcraft.opengl.interaction;
 
 import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.model.GameObject;
+import nl.civcraft.opengl.loaders.ObjFileManager;
 import nl.civcraft.opengl.raycast.MousePicker;
-import nl.civcraft.opengl.rendering.Box;
 import nl.civcraft.opengl.rendering.Geometry;
 import nl.civcraft.opengl.rendering.Node;
 import nl.civcraft.opengl.rendering.material.Material;
@@ -14,7 +14,6 @@ import org.joml.Vector3f;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -31,15 +30,18 @@ public class CurrentVoxelHighlighter implements nl.civcraft.core.interaction.uti
     private final Node voxelHighLightsNode;
     private final TextureManager textureManager;
     private Material material;
+    private final ObjFileManager objFileManager;
 
     @Inject
     public CurrentVoxelHighlighter(MousePicker mousePicker,
                                    @Named("rootNode") Node rootNode,
-                                   TextureManager textureManager) {
+                                   TextureManager textureManager,
+                                   ObjFileManager objFileManager) {
         this.mousePicker = mousePicker;
         this.voxelHighLightsNode = new Node("voxelHighLightsNode", rootNode);
 
         this.textureManager = textureManager;
+        this.objFileManager = objFileManager;
     }
 
     @Override
@@ -55,7 +57,7 @@ public class CurrentVoxelHighlighter implements nl.civcraft.core.interaction.uti
             Node gameObjectNode = new Node(voxelHighLightsNode);
             gameObjectNode.getTransform().translate(gameObject.getTransform().getTranslation(new Vector3f()));
             gameObjectNode.getTransform().scale(HIGH_LIGHT_SIZE, HIGH_LIGHT_SIZE, HIGH_LIGHT_SIZE);
-            gameObjectNode.addChild(new Geometry(Collections.singletonList(Box.instance()), material));
+            gameObjectNode.addChild(new Geometry(objFileManager.loadMesh("models/cube.obj"), material));
             gameObjectNode.setGameObject(gameObject);
             return gameObject;
         }
