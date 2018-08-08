@@ -27,6 +27,7 @@ public class Voxel extends Neighbour implements Breakable, Renderable {
 
     @Override
     public void destroyed() {
+        getNeighbours().forEach((neighbourDirection, gameObject1) -> gameObject1.changed());
         voxelManager.removeVoxel(gameObject);
         super.destroyed();
     }
