@@ -7,6 +7,7 @@ import org.joml.Vector2f;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -21,12 +22,10 @@ public class MouseInputManager implements nl.civcraft.core.interaction.MouseInpu
 
     private boolean inWindow = false;
 
-    private boolean leftButtonPressed = false;
-
     private boolean rightButtonPressed = false;
 
     private final List<Consumer<Vector2f>> movementsListeners;
-    private final List<Consumer<Boolean>>  leftClickListeners;
+    private final List<Runnable>  leftClickListeners;
 
     public MouseInputManager() {
         previousPos = new Vector2d(-1, -1);
@@ -45,7 +44,9 @@ public class MouseInputManager implements nl.civcraft.core.interaction.MouseInpu
             inWindow = entered;
         });
         glfwSetMouseButtonCallback(window.getWindowHandle(), (windowHandle, button, action, mode) -> {
-            leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
+            if(button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
+                leftClickListeners.forEach(Runnable::run);
+            }
             rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS;
         });
     }
@@ -56,7 +57,7 @@ public class MouseInputManager implements nl.civcraft.core.interaction.MouseInpu
     }
 
     @Override
-    public void registerLeftClickListener(Consumer<Boolean> listener) {
+    public void registerLeftClickListener(Runnable listener) {
         this.leftClickListeners.add(listener);
     }
 
@@ -79,12 +80,7 @@ public class MouseInputManager implements nl.civcraft.core.interaction.MouseInpu
         previousPos.x = currentPos.x;
         previousPos.y = currentPos.y;
         movementsListeners.forEach(listener -> listener.accept(displVec));
-        leftClickListeners.forEach(listener -> listener.accept(isLeftButtonPressed()));
-    }
 
-    @Override
-    public boolean isLeftButtonPressed() {
-        return leftButtonPressed;
     }
 
     @Override

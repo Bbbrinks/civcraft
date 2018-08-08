@@ -17,15 +17,20 @@ import static nl.civcraft.core.tasks.Task.Result.*;
 public class BreakBlockTask extends MoveToRange {
 
     private final GameObject target;
+    private boolean alreadyDestoyed = false;
 
     public BreakBlockTask(GameObject target) {
         super(target, 2.0f);
         this.target = target;
+        target.getGameObjectDestroyed().subscribe(gameObject -> this.alreadyDestoyed = true);
     }
 
     @Override
     public Result affect(GameObject civvy,
                          float tpf) {
+        if(this.alreadyDestoyed) {
+            return COMPLETED;
+        }
         if (target.getComponent(Neighbour.class).map(n -> n.getNeighbours(NeighbourDirection.BACK, NeighbourDirection.FRONT, NeighbourDirection.LEFT, NeighbourDirection.RIGHT, NeighbourDirection
                 .TOP, NeighbourDirection.BOTTOM).size() == 6).orElse(false)) {
             return FAILED;

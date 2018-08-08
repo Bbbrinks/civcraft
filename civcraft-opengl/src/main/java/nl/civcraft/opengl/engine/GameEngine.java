@@ -7,7 +7,7 @@ import io.reactivex.subjects.Subject;
 import nl.civcraft.core.worldgeneration.WorldGenerator;
 import nl.civcraft.opengl.interaction.KeyboardInputManager;
 import nl.civcraft.opengl.interaction.MouseInputManager;
-import nl.civcraft.opengl.interaction.hud.Hud;
+import nl.civcraft.opengl.hud.Hud;
 import nl.civcraft.opengl.rendering.Node;
 import nl.civcraft.opengl.rendering.Renderer;
 import nl.civcraft.opengl.rendering.Scene;
@@ -83,7 +83,7 @@ public class GameEngine implements Runnable {
     protected void init() throws Exception {
         window.init();
         renderer.init(window);
-        hud.init(window);
+        hud.init();
         timer.init();
         mouseInputManager.init(window);
     }

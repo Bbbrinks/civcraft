@@ -9,15 +9,15 @@ public class SceneLight {
 
     public SceneLight() {
         // Ambient Light
-        setAmbientLight(new Vector3f(0.4f, 0.4f, 0.4f));
+        setAmbientLight(new Vector3f(0.1f, 0.1f, 0.1f));
         setSkyBoxLight(new Vector3f(1.0f, 1.0f, 1.0f));
 
         // Directional Light
         float lightIntensity = 0.9f;
-        Vector3f lightDirection = new Vector3f(0, 1, 1);
+        Vector3f lightDirection = new Vector3f(0.1f, 0.8f, 0.8f);
         directionalLight = new DirectionalLight(new Vector3f(1, 1, 1), lightDirection, lightIntensity);
-        directionalLight.setShadowPosMult(10);
-        directionalLight.setOrthoCords(-10.0f, 10.0f, -10.0f, 10.0f, -1.0f, 20.0f);
+        directionalLight.setShadowPosMult(100);
+        directionalLight.setOrthoCords(-1000000.0f, 1000000.0f, -100000.0f, 1000000.0f, -1.0f, 20000000.0f);
     }
 
     private Vector3f ambientLight;

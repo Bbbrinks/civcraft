@@ -116,8 +116,6 @@ public class Material {
             glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMapTexture().getId());
 
             if (texture != null) {
-                shaderProgram.setUniform("numCols", texture.getNumCols());
-                shaderProgram.setUniform("numRows", texture.getNumRows());
                 // Activate first texture bank
                 glActiveTexture(GL_TEXTURE0);
                 // Bind the texture

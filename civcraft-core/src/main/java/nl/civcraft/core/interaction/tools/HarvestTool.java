@@ -26,7 +26,7 @@ public class HarvestTool extends SingleVoxelSelector {
     }
 
     @Override
-    public void handleLeftClick(boolean isPressed) {
+    public void handleLeftClick() {
         Optional<Harvestable> component = currentVoxel.getComponent(Harvestable.class);
         component.ifPresent(harvestable -> taskManager.addTask(new Harvest(currentVoxel)));
     }

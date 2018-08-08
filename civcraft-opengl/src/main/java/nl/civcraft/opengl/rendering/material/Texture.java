@@ -18,8 +18,6 @@ public class Texture {
     private final int width;
 
     private final int height;
-    private int numCols = 1;
-    private int numRows = 1;
 
     /**
      * Creates an empty texture.
@@ -95,11 +93,4 @@ public class Texture {
         glDeleteTextures(id);
     }
 
-    public int getNumCols() {
-        return numCols;
-    }
-
-    public int getNumRows() {
-        return numRows;
-    }
 }

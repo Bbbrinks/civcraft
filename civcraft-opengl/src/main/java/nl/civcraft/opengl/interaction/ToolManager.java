@@ -1,6 +1,7 @@
 package nl.civcraft.opengl.interaction;
 
 import nl.civcraft.core.interaction.MouseToolManager;
+import org.joml.Vector2f;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -12,16 +13,18 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class ToolManager {
-    private final MouseInputManager mouseInputManager;
     private final MouseToolManager mouseToolManager;
 
     @Inject
-    public ToolManager(MouseInputManager mouseInputManager,
-                       MouseToolManager mouseToolManager) {
-        this.mouseInputManager = mouseInputManager;
+    public ToolManager(MouseToolManager mouseToolManager) {
         this.mouseToolManager = mouseToolManager;
+    }
 
-        mouseInputManager.registerMovementListener(vector2f -> mouseToolManager.getSelectedMouseTool().handleMouseMotion(vector2f.x, vector2f.y));
-        mouseInputManager.registerLeftClickListener(isClicked -> mouseToolManager.getSelectedMouseTool().handleLeftClick(isClicked));
+    public void handleMovement(Vector2f mouseMovement) {
+        mouseToolManager.getSelectedMouseTool().handleMouseMotion(mouseMovement.x, mouseMovement.y);
+    }
+
+    public void handleMouseClick() {
+        mouseToolManager.getSelectedMouseTool().handleLeftClick();
     }
 }

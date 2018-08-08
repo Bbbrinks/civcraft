@@ -47,6 +47,7 @@ public class TaskManager {
     }
 
     public void addTask(Task task) {
+        System.out.println("Added task");
         this.tasks.add(task);
     }
 

@@ -171,10 +171,7 @@ public class BuildWallTool implements MouseTool {
     }
 
     @Override
-    public void handleLeftClick(boolean isPressed) {
-        if (!isPressed) {
-            return;
-        }
+    public void handleLeftClick() {
         try {
             Optional<GameObject> currentVoxel = currentVoxelHighlighter.getCurrentVoxel();
             if(currentVoxel.isPresent()) {

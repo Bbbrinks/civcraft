@@ -24,10 +24,8 @@ public class BreakBlockTool extends SingleVoxelSelector {
     }
 
     @Override
-    public void handleLeftClick(boolean isPressed) {
-        if (isPressed) {
-            taskManager.addTask(new BreakBlockTask(currentVoxel));
-        }
+    public void handleLeftClick() {
+        taskManager.addTask(new BreakBlockTask(currentVoxel));
     }
 
     @Override

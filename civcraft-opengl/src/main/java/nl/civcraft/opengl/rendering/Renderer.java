@@ -120,7 +120,6 @@ public class Renderer {
         sceneShaderProgram.setUniform("texture_sampler", 0);
         sceneShaderProgram.setUniform("normalMap", 1);
         sceneShaderProgram.setUniform("shadowMap", 2);
-        sceneShaderProgram.setUniform("renderShadow",  1);
         
         doRender(scene, sceneShaderProgram, viewMatrix, lightViewMatrix);
 
@@ -146,10 +145,10 @@ public class Renderer {
 
         if (viewMatrix != null) {
             Matrix4f modelViewMatrix = viewMatrix.mul(nodeTransform, new Matrix4f());
-            sceneShaderProgram.setUniform("modelViewNonInstancedMatrix", modelViewMatrix);
+            sceneShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
         }
-        Matrix4f modelLightViewMatrix = lightViewMatrix.mulAffine(nodeTransform, new Matrix4f());
-        sceneShaderProgram.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
+        Matrix4f modelLightViewMatrix = lightViewMatrix.mul(nodeTransform, new Matrix4f());
+        sceneShaderProgram.setUniform("modelLightViewMatrix", modelLightViewMatrix);
 
         currentNode.getGeometries().forEachRemaining(geometry -> geometry.render(viewMatrix, shader, shadowMap));
     }
@@ -160,9 +159,7 @@ public class Renderer {
         depthShaderProgram.createFragmentShader(ResourceUtil.readResource("shaders/depth_fragment.fs"));
         depthShaderProgram.link();
 
-        depthShaderProgram.createUniform("isInstanced");
-        depthShaderProgram.createUniform("jointsMatrix");
-        depthShaderProgram.createUniform("modelLightViewNonInstancedMatrix");
+        depthShaderProgram.createUniform("modelLightViewMatrix");
         depthShaderProgram.createUniform("orthoProjectionMatrix");
     }
 
@@ -176,7 +173,7 @@ public class Renderer {
 
         // Create uniforms for modelView and projection matrices
         sceneShaderProgram.createUniform("projectionMatrix");
-        sceneShaderProgram.createUniform("modelViewNonInstancedMatrix");
+        sceneShaderProgram.createUniform("modelViewMatrix");
         sceneShaderProgram.createUniform("texture_sampler");
         sceneShaderProgram.createUniform("normalMap");
         // Create uniform for material
@@ -192,17 +189,8 @@ public class Renderer {
         // Create uniforms for shadow mapping
         sceneShaderProgram.createUniform("shadowMap");
         sceneShaderProgram.createUniform("orthoProjectionMatrix");
-        sceneShaderProgram.createUniform("modelLightViewNonInstancedMatrix");
-        sceneShaderProgram.createUniform("renderShadow");
+        sceneShaderProgram.createUniform("modelLightViewMatrix");
 
-        // Create uniform for joint matrices
-        sceneShaderProgram.createUniform("jointsMatrix");
-
-        sceneShaderProgram.createUniform("isInstanced");
-        sceneShaderProgram.createUniform("numCols");
-        sceneShaderProgram.createUniform("numRows");
-
-        sceneShaderProgram.createUniform("selectedNonInstanced");
     }
 
     private void renderDepthMap(Window window,
@@ -232,8 +220,6 @@ public class Renderer {
                           ShaderProgram shader,
                           Matrix4f viewMatrix,
                           Matrix4f lightViewMatrix) {
-        shader.setUniform("isInstanced", 0);
-
         renderNode(scene.getRootNode(), shader, viewMatrix, lightViewMatrix);
     }
     

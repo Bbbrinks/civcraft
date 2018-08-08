@@ -38,17 +38,15 @@ public abstract class GroundRectangleSelector implements MouseTool {
     }
 
     @Override
-    public void handleLeftClick(boolean isPressed) {
-        if (isPressed) {
-            if (startingVoxel == null) {
-                startingVoxel = currentVoxelHighlighter.getCurrentVoxel().orElse(null);
-            } else {
-                startSelection();
-                loopThroughSelection(this::handleSelection);
-                endSelection();
-                clearHighlights();
-                startingVoxel = null;
-            }
+    public void handleLeftClick() {
+        if (startingVoxel == null) {
+            startingVoxel = currentVoxelHighlighter.getCurrentVoxel().orElse(null);
+        } else {
+            startSelection();
+            loopThroughSelection(this::handleSelection);
+            endSelection();
+            clearHighlights();
+            startingVoxel = null;
         }
     }
 
