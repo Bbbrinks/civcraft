@@ -138,6 +138,7 @@ public class PrefabManager {
 
     public void destroy(GameObject gameObject) {
         publishDestroyedWithParents(gameObject);
+        managedObjects.remove(gameObject);
     }
 
     public void changed(GameObject gameObject) {
@@ -195,5 +196,11 @@ public class PrefabManager {
 
     public List<GameObject> getManagedObjects() {
         return managedObjects;
+    }
+
+
+    public void destroyAll() {
+        List<GameObject> currentObjects = new ArrayList<>(managedObjects);
+        currentObjects.forEach(GameObject::destroy);
     }
 }

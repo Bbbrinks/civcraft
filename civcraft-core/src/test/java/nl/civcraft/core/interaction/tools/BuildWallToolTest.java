@@ -1,7 +1,7 @@
 package nl.civcraft.core.interaction.tools;
 
 
-import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
+import nl.civcraft.core.interaction.MousePicker;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.model.GameObject;
@@ -31,8 +31,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class BuildWallToolTest {
     private BuildWallTool underTest;
-    @Mock
-    private CurrentVoxelHighlighter currentVoxelHighlighter;
+
     @Mock
     private TaskManager taskManager;
     @Mock
@@ -44,18 +43,20 @@ public class BuildWallToolTest {
     private ArgumentCaptor<Task> taskCaptor;
     @Mock
     private PrefabManager planningGhostManager;
+    @Mock
+    private MousePicker mousePicker;
 
 
     @Before
     public void setUp() throws Exception {
-        underTest = new BuildWallTool(currentVoxelHighlighter, taskManager, stockpileManager, blockManager, planningGhostManager);
+        underTest = new BuildWallTool(mousePicker, taskManager, stockpileManager, blockManager, planningGhostManager);
     }
 
     @Test
     public void testPlacement_startNextToEnd() {
         GameObject start = new GameObject(new Matrix4f().translate(new Vector3f(1, 1, 1)));
         GameObject end = new GameObject(new Matrix4f().translate(new Vector3f(2, 1, 1)));
-        when(currentVoxelHighlighter.getCurrentVoxel()).thenReturn(Optional.of(start), Optional.of(end));
+        when(mousePicker.pickNearest(any())).thenReturn(Optional.of(start), Optional.of(end));
         underTest.handleMouseMotion(0, 0);
         underTest.handleLeftClick();
         underTest.handleMouseMotion(1, 0);
@@ -72,7 +73,7 @@ public class BuildWallToolTest {
     public void testPlacement_endNextToStart() {
         GameObject start = new GameObject(new Matrix4f().translate(new Vector3f(2, 1, 1)));
         GameObject end = new GameObject(new Matrix4f().translate(new Vector3f(1, 1, 1)));
-        when(currentVoxelHighlighter.getCurrentVoxel()).thenReturn(Optional.of(start), Optional.of(end));
+        when(mousePicker.pickNearest(any())).thenReturn(Optional.of(start), Optional.of(end));
         underTest.handleMouseMotion(0, 0);
         underTest.handleLeftClick();
         underTest.handleMouseMotion(1, 0);
@@ -88,7 +89,7 @@ public class BuildWallToolTest {
     public void testPlacement_startBehindEnd() {
         GameObject start = new GameObject(new Matrix4f().translate(new Vector3f(1, 1, 1)));
         GameObject end = new GameObject(new Matrix4f().translate(new Vector3f(1, 1, 2)));
-        when(currentVoxelHighlighter.getCurrentVoxel()).thenReturn(Optional.of(start), Optional.of(end));
+        when(mousePicker.pickNearest(any())).thenReturn(Optional.of(start), Optional.of(end));
         underTest.handleMouseMotion(0, 0);
         underTest.handleLeftClick();
         underTest.handleMouseMotion(1, 0);
@@ -105,7 +106,7 @@ public class BuildWallToolTest {
     public void testPlacement_endBehindStart() {
         GameObject start = new GameObject(new Matrix4f().translate(new Vector3f(1, 1, 2)));
         GameObject end = new GameObject(new Matrix4f().translate(new Vector3f(1, 1, 1)));
-        when(currentVoxelHighlighter.getCurrentVoxel()).thenReturn(Optional.of(start), Optional.of(end));
+        when(mousePicker.pickNearest(any())).thenReturn(Optional.of(start), Optional.of(end));
         underTest.handleMouseMotion(0, 0);
         underTest.handleLeftClick();
         underTest.handleMouseMotion(1, 0);

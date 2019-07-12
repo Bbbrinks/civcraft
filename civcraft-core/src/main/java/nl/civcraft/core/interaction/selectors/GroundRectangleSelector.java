@@ -1,7 +1,8 @@
 package nl.civcraft.core.interaction.selectors;
 
+import nl.civcraft.core.gamecomponents.Voxel;
+import nl.civcraft.core.interaction.MousePicker;
 import nl.civcraft.core.interaction.MouseTool;
-import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
@@ -9,8 +10,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -21,26 +20,24 @@ import java.util.Optional;
 public abstract class GroundRectangleSelector implements MouseTool {
     private static final int MAX_HEIGHT_DIFFERENCE = 10;
     private final VoxelManager voxelManager;
-    private final CurrentVoxelHighlighter currentVoxelHighlighter;
+    protected final MousePicker mousePicker;
     private final PrefabManager voxelHighlightManager;
-    private final List<GameObject> highlightedVoxels;
     protected GameObject startingVoxel;
     private GameObject currentVoxel;
 
 
-    public GroundRectangleSelector(CurrentVoxelHighlighter currentVoxelHighlighter,
+    public GroundRectangleSelector(MousePicker mousePicker,
                                    VoxelManager voxelManager,
                                    @Named("voxelHighlight") PrefabManager voxelHighlightManager) {
-        this.currentVoxelHighlighter = currentVoxelHighlighter;
+        this.mousePicker = mousePicker;
         this.voxelManager = voxelManager;
         this.voxelHighlightManager = voxelHighlightManager;
-        highlightedVoxels = new ArrayList<>();
     }
 
     @Override
     public void handleLeftClick() {
         if (startingVoxel == null) {
-            startingVoxel = currentVoxelHighlighter.getCurrentVoxel().orElse(null);
+            startingVoxel = mousePicker.pickNearest(Voxel.class).orElse(null);
         } else {
             startSelection();
             loopThroughSelection(this::handleSelection);
@@ -87,19 +84,23 @@ public abstract class GroundRectangleSelector implements MouseTool {
     protected abstract void endSelection();
 
     private void clearHighlights() {
-        highlightedVoxels.forEach(GameObject::destroy);
-        highlightedVoxels.clear();
+        voxelHighlightManager.destroyAll();
     }
 
     @Override
     public void handleMouseMotion(float xDiff,
                                   float yDiff) {
+        clearHighlights();
         if (startingVoxel == null) {
-            currentVoxel = currentVoxelHighlighter.highLight();
+            Optional<GameObject> gameObject = mousePicker.pickNearest(Voxel.class);
+            if(gameObject.isPresent()){
+                currentVoxel = gameObject.get();
+                addHighlight(currentVoxel);
+            } else {
+                currentVoxel = null;
+            }
         } else {
-            currentVoxelHighlighter.clear();
-            currentVoxel = currentVoxelHighlighter.getCurrentVoxel().orElse(null);
-            clearHighlights();
+            currentVoxel = mousePicker.pickNearest(Voxel.class).orElse(null);
             loopThroughSelection(this::addHighlight);
         }
     }
@@ -107,9 +108,7 @@ public abstract class GroundRectangleSelector implements MouseTool {
     protected abstract void handleSelection(GameObject voxel);
 
     private void addHighlight(GameObject voxel) {
-
-        GameObject build = voxelHighlightManager.build(new Matrix4f(voxel.getTransform()), true);
-        highlightedVoxels.add(build);
+       voxelHighlightManager.build(new Matrix4f(voxel.getTransform()), true);
     }
 
     @FunctionalInterface

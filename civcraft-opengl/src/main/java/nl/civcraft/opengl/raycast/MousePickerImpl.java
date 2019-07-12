@@ -23,7 +23,7 @@ import java.util.Optional;
  * This is probably not worth documenting
  */
 @Singleton
-public class MousePicker {
+public class MousePickerImpl implements nl.civcraft.core.interaction.MousePicker {
 
     private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger();
     private final MouseInputManagerInterface mouseInputManagerInterface;
@@ -33,10 +33,10 @@ public class MousePicker {
 
 
     @Inject
-    public MousePicker(MouseInputManagerInterface mouseInputManagerInterface,
-                       Window window,
-                       Camera camera,
-                       @Named("rootNode") Node rootNode) {
+    public MousePickerImpl(MouseInputManagerInterface mouseInputManagerInterface,
+                           Window window,
+                           Camera camera,
+                           @Named("rootNode") Node rootNode) {
         this.mouseInputManagerInterface = mouseInputManagerInterface;
         this.window = window;
         this.camera = camera;
@@ -53,6 +53,7 @@ public class MousePicker {
         return intersections;
     }
 
+    @Override
     public <T extends GameComponent> Optional<GameObject> pickNearest(Class<T> gameComponent) {
         return pick().stream().filter(node -> {
             GameObject gameObject = node.getGameObject();

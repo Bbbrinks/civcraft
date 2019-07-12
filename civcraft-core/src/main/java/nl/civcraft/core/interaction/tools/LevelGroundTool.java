@@ -1,8 +1,8 @@
 package nl.civcraft.core.interaction.tools;
 
 import nl.civcraft.core.gamecomponents.Neighbour;
+import nl.civcraft.core.interaction.MousePicker;
 import nl.civcraft.core.interaction.selectors.GroundRectangleSelector;
-import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.managers.VoxelManager;
@@ -27,12 +27,13 @@ public class LevelGroundTool extends GroundRectangleSelector {
     private final TaskManager taskManager;
     private List<BreakBlockTask> tasks;
 
+
     @Inject
-    public LevelGroundTool(CurrentVoxelHighlighter currentVoxelHighlighter,
-                           VoxelManager voxelManager,
+    public LevelGroundTool(                           VoxelManager voxelManager,
                            TaskManager taskManager,
-                           @Named("voxelHighlight") PrefabManager voxelHighlightManager) {
-        super(currentVoxelHighlighter, voxelManager, voxelHighlightManager);
+                           @Named("voxelHighlight") PrefabManager voxelHighlightManager,
+                           MousePicker mousePicker) {
+        super(mousePicker, voxelManager, voxelHighlightManager);
         this.taskManager = taskManager;
     }
 

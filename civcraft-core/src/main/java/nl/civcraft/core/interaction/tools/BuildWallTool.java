@@ -1,9 +1,10 @@
 package nl.civcraft.core.interaction.tools;
 
 import nl.civcraft.core.gamecomponents.PlanningGhost;
+import nl.civcraft.core.gamecomponents.Voxel;
+import nl.civcraft.core.interaction.MousePicker;
 import nl.civcraft.core.interaction.MouseTool;
 import nl.civcraft.core.interaction.tools.walltool.WallToolState;
-import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.model.GameObject;
@@ -37,7 +38,7 @@ public class BuildWallTool implements MouseTool {
     private static final String EVENT_RIGHT_CLICK = "rightClick";
 
 
-    private final CurrentVoxelHighlighter currentVoxelHighlighter;
+    private final MousePicker mousePicker;
     private final TaskManager taskManager;
     private final PrefabManager stockpileManager;
     private final PrefabManager blockManager;
@@ -47,12 +48,12 @@ public class BuildWallTool implements MouseTool {
     private GameObject planningGhostObject;
 
     @Inject
-    public BuildWallTool(CurrentVoxelHighlighter currentVoxelHighlighter,
+    public BuildWallTool(MousePicker mousePicker,
                          TaskManager taskManager,
                          @Named("stockpile") PrefabManager stockpileManager,
                          @Named("block") PrefabManager blockManager,
                          @Named("planningGhost") PrefabManager planningGhostManager) {
-        this.currentVoxelHighlighter = currentVoxelHighlighter;
+        this.mousePicker = mousePicker;
         this.taskManager = taskManager;
         this.stockpileManager = stockpileManager;
         this.blockManager = blockManager;
@@ -173,7 +174,7 @@ public class BuildWallTool implements MouseTool {
     @Override
     public void handleLeftClick() {
         try {
-            Optional<GameObject> currentVoxel = currentVoxelHighlighter.getCurrentVoxel();
+            Optional<GameObject> currentVoxel = mousePicker.pickNearest(Voxel.class);
             if(currentVoxel.isPresent()) {
                 Matrix4f clickedTransform = currentVoxel.get().getTransform().translate(new Vector3f(0, 1, 0), new Matrix4f());
                 wallToolStateFSM.onEvent(wallToolState, EVENT_LEFT_CLICK, clickedTransform);
@@ -188,7 +189,7 @@ public class BuildWallTool implements MouseTool {
                                   float yDiff) {
 
         try {
-            Optional<GameObject> currentVoxel = currentVoxelHighlighter.getCurrentVoxel();
+            Optional<GameObject> currentVoxel = mousePicker.pickNearest(Voxel.class);
             if(currentVoxel.isPresent()) {
                 Matrix4f clickedTransform = currentVoxel.get().getTransform().translate(new Vector3f(0, 1, 0), new Matrix4f());
                 wallToolStateFSM.onEvent(wallToolState, EVENT_MOUSE_MOVEMENT, clickedTransform, yDiff * 10.0f);

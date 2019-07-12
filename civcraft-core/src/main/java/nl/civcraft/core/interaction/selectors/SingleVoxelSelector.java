@@ -1,8 +1,11 @@
 package nl.civcraft.core.interaction.selectors;
 
+import nl.civcraft.core.gamecomponents.Voxel;
+import nl.civcraft.core.interaction.MousePicker;
 import nl.civcraft.core.interaction.MouseTool;
-import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
+import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.GameObject;
+import org.joml.Matrix4f;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,12 +18,15 @@ import javax.inject.Named;
 @Named("singleVoxelSelector")
 public class SingleVoxelSelector implements MouseTool {
 
-    private final CurrentVoxelHighlighter currentVoxelHighlighter;
+    private final MousePicker mousePicker;
+    private final PrefabManager voxelHighlightManager;
     protected GameObject currentVoxel;
 
     @Inject
-    public SingleVoxelSelector(CurrentVoxelHighlighter currentVoxelHighlighter) {
-        this.currentVoxelHighlighter = currentVoxelHighlighter;
+    public SingleVoxelSelector(MousePicker mousePicker,
+                               @Named("voxelHighlight") PrefabManager voxelHighlightManager) {
+        this.mousePicker = mousePicker;
+        this.voxelHighlightManager = voxelHighlightManager;
     }
 
     @Override
@@ -31,7 +37,12 @@ public class SingleVoxelSelector implements MouseTool {
     @Override
     public void handleMouseMotion(float xDiff,
                                   float yDiff) {
-        this.currentVoxel = currentVoxelHighlighter.highLight();
+        voxelHighlightManager.destroyAll();
+        mousePicker.pickNearest(Voxel.class).ifPresent(gameObject -> {
+            this.currentVoxel = gameObject;
+            voxelHighlightManager.build(new Matrix4f(currentVoxel.getTransform()), true);
+        });
+
     }
 
     @Override
