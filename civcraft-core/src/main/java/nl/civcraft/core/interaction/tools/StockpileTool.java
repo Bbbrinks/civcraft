@@ -1,11 +1,13 @@
 package nl.civcraft.core.interaction.tools;
 
 import nl.civcraft.core.gamecomponents.Stockpile;
+import nl.civcraft.core.interaction.MousePicker;
 import nl.civcraft.core.interaction.selectors.GroundRectangleSelector;
-import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
+
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
+import org.joml.Matrix4f;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,17 +24,17 @@ public class StockpileTool extends GroundRectangleSelector {
     private Stockpile createdStockpile;
 
     @Inject
-    public StockpileTool(CurrentVoxelHighlighter currentVoxelHighlighter,
-                         VoxelManager voxelManager,
+    public StockpileTool(MousePicker mousePicker,
+            VoxelManager voxelManager,
                          @Named("stockpile") PrefabManager prefabManager,
                          @Named("voxelHighlight") PrefabManager voxelHighlightManager) {
-        super(currentVoxelHighlighter, voxelManager, voxelHighlightManager);
+        super(mousePicker, voxelManager, voxelHighlightManager);
         this.prefabManager = prefabManager;
     }
 
     @Override
     protected void startSelection() {
-        GameObject newStockpile = prefabManager.build(startingVoxel.getTransform().clone(), true);
+        GameObject newStockpile = prefabManager.build(new Matrix4f(startingVoxel.getTransform()), true);
         createdStockpile = newStockpile.getComponent(Stockpile.class).orElseThrow(() -> new IllegalStateException("Stockpiles should be stockpiles"));
     }
 

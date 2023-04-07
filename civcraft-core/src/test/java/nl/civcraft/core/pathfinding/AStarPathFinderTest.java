@@ -1,8 +1,8 @@
 package nl.civcraft.core.pathfinding;
 
-import com.jme3.math.Vector3f;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
+import org.joml.Vector3f;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,8 +65,8 @@ public class AStarPathFinderTest {
 
     @Test
     public void testFindPath_directNeighbour() {
-        GameObject start = createVoxel(Vector3f.ZERO, voxelManager);
-        GameObject targetVoxel = createVoxel(Vector3f.UNIT_X, voxelManager);
+        GameObject start = createVoxel(new Vector3f(), voxelManager);
+        GameObject targetVoxel = createVoxel(new Vector3f(1, 0, 0), voxelManager);
         target = new MoveToVoxelTarget(targetVoxel);
         Optional<Queue<GameObject>> path = underTest.findPath(testCivvy, start, target);
         assertThat(path, optionalWithValue(hasSize(2)));

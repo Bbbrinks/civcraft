@@ -11,7 +11,8 @@ import nl.civcraft.core.pathfinding.MoveInRangeOfVoxelTarget;
 public class MoveToRange extends MoveTo {
 
     @SuppressWarnings("SameParameterValue")
-    MoveToRange(GameObject target, float range) {
+    MoveToRange(GameObject target,
+                float range) {
         super(new MoveInRangeOfVoxelTarget(range, target));
     }
 }

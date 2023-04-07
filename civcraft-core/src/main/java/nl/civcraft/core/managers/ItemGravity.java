@@ -2,6 +2,7 @@ package nl.civcraft.core.managers;
 
 import nl.civcraft.core.gamecomponents.ItemComponent;
 import nl.civcraft.core.model.GameObject;
+import org.joml.Vector3f;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -23,7 +24,7 @@ public class ItemGravity {
                        @Named("item") PrefabManager prefabManager) {
         this.voxelManager = voxelManager;
         prefabManager.getGameObjectCreated().subscribe(this::handleEntityCreated);
-        prefabManager.getGameObjectChangedEvent().subscribe(this::handleEntityUpdated);
+        prefabManager.getGameObjectChanged().subscribe(this::handleEntityUpdated);
     }
 
     public void handleEntityCreated(GameObject gameObject) {
@@ -35,9 +36,10 @@ public class ItemGravity {
 
     private void itemGravity(GameObject gameObject) {
         if (gameObject.getComponent(ItemComponent.class).map(i -> !i.isInInventory()).orElse(false)) {
-            Optional<GameObject> groundAt = voxelManager.getGroundAt(gameObject.getTransform().getTranslation(), 30);
-            if (groundAt.isPresent() && groundAt.get().getTransform().getTranslation().distance(gameObject.getTransform().getTranslation()) > 0.5f) {
-                gameObject.getTransform().setTranslation(gameObject.getTransform().getTranslation().subtract(0, 0.1f, 0));
+            Vector3f gameObjectTranslation = gameObject.getTransform().getTranslation(new Vector3f());
+            Optional<GameObject> groundAt = voxelManager.getGroundAt(gameObjectTranslation, 30);
+            if (groundAt.isPresent() && groundAt.get().getTransform().getTranslation(new Vector3f()).distance(gameObjectTranslation) > 0.5f) {
+                gameObject.getTransform().setTranslation(gameObjectTranslation.sub(0, 0.1f, 0));
                 gameObject.changed();
             }
         }

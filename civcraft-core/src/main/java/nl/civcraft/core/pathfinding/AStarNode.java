@@ -1,6 +1,7 @@
 package nl.civcraft.core.pathfinding;
 
 import nl.civcraft.core.model.GameObject;
+import org.joml.Vector3f;
 
 /**
  * Created by Bob on 11-3-2016.
@@ -25,10 +26,6 @@ public class AStarNode {
         this.previous = previous;
     }
 
-    public GameObject getGameObject() {
-        return gameObject;
-    }
-
     public float gethCost() {
         return hCost;
     }
@@ -41,6 +38,10 @@ public class AStarNode {
         this.gCost = gCost;
     }
 
+    public GameObject getGameObject() {
+        return gameObject;
+    }
+
 
     public float getgCost() {
         return gCost;
@@ -49,7 +50,7 @@ public class AStarNode {
 
     public float calcGCost(AStarNode current) {
         float g = 1.0f;
-        if (current.getGameObject().getTransform().getTranslation().getY() < getGameObject().getTransform().getTranslation().getY()) {
+        if (current.getGameObject().getTransform().getTranslation(new Vector3f()).y() < getGameObject().getTransform().getTranslation(new Vector3f()).y()) {
             g = 1.5f;
         }
 

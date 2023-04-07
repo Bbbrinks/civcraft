@@ -18,14 +18,16 @@ public class Haul extends Task {
     private MoveTo moveToStockPile;
     private boolean itemPickedUp = false;
 
-    public Haul(Stockpile target, GameObject itemToHaul) {
+    public Haul(Stockpile target,
+                GameObject itemToHaul) {
         super(State.TODO);
         this.itemToHaul = itemToHaul;
         this.target = target;
     }
 
     @Override
-    public Result affect(GameObject civvy, float tpf) {
+    public Result affect(GameObject civvy,
+                         float tpf) {
         if (moveToObject == null) {
             moveToObject = new MoveToRange(itemToHaul, 3.0f);
         }
@@ -47,7 +49,8 @@ public class Haul extends Task {
         }
     }
 
-    private Result moveToObject(GameObject civvy, float tpf) {
+    private Result moveToObject(GameObject civvy,
+                                float tpf) {
         Result affect = moveToObject.affect(civvy, tpf);
         if (affect.equals(Result.FAILED)) {
             return Result.FAILED;
@@ -70,7 +73,8 @@ public class Haul extends Task {
         return Result.IN_PROGRESS;
     }
 
-    private Result moveToStockpile(GameObject civvy, float tpf) {
+    private Result moveToStockpile(GameObject civvy,
+                                   float tpf) {
         Result affect = moveToStockPile.affect(civvy, tpf);
         if (affect.equals(Result.FAILED)) {
             return Result.FAILED;

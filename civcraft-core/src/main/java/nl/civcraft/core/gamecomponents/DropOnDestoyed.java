@@ -1,6 +1,7 @@
 package nl.civcraft.core.gamecomponents;
 
 import nl.civcraft.core.managers.PrefabManager;
+import org.joml.Matrix4f;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -23,7 +24,7 @@ public class DropOnDestoyed extends AbstractGameComponent {
     public void destroyed() {
         drops.forEach((prefabManager, count) -> {
             for (int i = 0; i < count; i++) {
-                prefabManager.get().build(getGameObject().getTransform().clone(), true);
+                prefabManager.get().build(new Matrix4f(getGameObject().getTransform()), true);
             }
         });
     }

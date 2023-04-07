@@ -1,7 +1,7 @@
 package nl.civcraft.core.tasks;
 
+import nl.civcraft.core.gamecomponents.Civvy;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.npc.Civvy;
 
 /**
  * Created by Bob on 31-12-2015.
@@ -16,7 +16,8 @@ public abstract class Task {
         this.state = state;
     }
 
-    public abstract Result affect(GameObject target, float tpf);
+    public abstract Result affect(GameObject target,
+                                  float tpf);
 
     public void completed(Civvy civvy) {
         if (!State.CONTINUAL.equals(state)) {

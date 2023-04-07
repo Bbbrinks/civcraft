@@ -28,8 +28,8 @@ public class AutoHauling {
         itemManager.getGameObjectCreated().subscribe(this::handleNewItem);
         stockpileManager.getGameObjectCreated().subscribe(this::handleNewStockpile);
 
-        itemManager.getGameObjectChangedEvent().subscribe(this::handleNewItem);
-        stockpileManager.getGameObjectChangedEvent().subscribe(this::handleNewStockpile);
+        itemManager.getGameObjectChanged().subscribe(this::handleNewItem);
+        stockpileManager.getGameObjectChanged().subscribe(this::handleNewStockpile);
 
         this.taskManager = taskManager;
         this.stockpileManager = stockpileManager;

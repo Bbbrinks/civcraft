@@ -10,7 +10,8 @@ public class HeightMap {
     private final int width;
     private final long[] map;
 
-    public HeightMap(int width, int length) {
+    public HeightMap(int width,
+                     int length) {
         this.width = width;
         this.length = length;
         this.map = new long[width * length];
@@ -24,19 +25,25 @@ public class HeightMap {
         return length;
     }
 
-    public void setHeight(int x, int z, long peakHeight) {
+    public void setHeight(int x,
+                          int z,
+                          long peakHeight) {
         map[getByCoords(x, z)] = peakHeight;
     }
 
-    private int getByCoords(int x, int z) {
+    private int getByCoords(int x,
+                            int z) {
         return x + (width * z);
     }
 
-    public long getHeight(int x, int z) {
+    public long getHeight(int x,
+                          int z) {
         return map[getByCoords(x, z)];
     }
 
-    public void addToHeight(int x, int z, long amount) {
+    public void addToHeight(int x,
+                            int z,
+                            long amount) {
         map[getByCoords(x, z)] += amount;
     }
 

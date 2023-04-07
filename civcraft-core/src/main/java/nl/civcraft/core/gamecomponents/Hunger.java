@@ -3,7 +3,6 @@ package nl.civcraft.core.gamecomponents;
 import io.reactivex.disposables.Disposable;
 import nl.civcraft.core.managers.TickManager;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.npc.Civvy;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -19,6 +18,20 @@ public class Hunger extends AbstractGameComponent {
         subscribe = tickManager.getTick().subscribe(tpt -> handleTick());
     }
 
+    private void handleTick() {
+        if (calories > 1) {
+            calories -= 1;
+        } else {
+            starvation += 1;
+        }
+        if (calories > 200 && starvation > 0) {
+            starvation -= 10;
+        }
+        if (starvation > 200) {
+            gameObject.destroy();
+        }
+    }
+
     @Override
     public void addTo(GameObject gameObject) {
         Optional<Civvy> component = gameObject.getComponent(Civvy.class);
@@ -32,20 +45,6 @@ public class Hunger extends AbstractGameComponent {
     public void destroyed() {
         subscribe.dispose();
         super.destroyed();
-    }
-
-    private void handleTick() {
-        if (calories > 1) {
-            calories -= 1;
-        } else {
-            starvation += 1;
-        }
-        if (calories > 200 && starvation > 0) {
-            starvation -= 10;
-        }
-        if (starvation > 200) {
-            gameObject.destroy();
-        }
     }
 
     public static class Factory implements GameComponentFactory<Hunger> {

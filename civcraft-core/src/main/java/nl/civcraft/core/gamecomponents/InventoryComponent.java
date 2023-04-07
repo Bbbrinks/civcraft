@@ -1,8 +1,9 @@
 package nl.civcraft.core.gamecomponents;
 
-import com.jme3.math.Vector3f;
+
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.LimitedInventory;
+import org.joml.Vector3f;
 
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class InventoryComponent extends AbstractGameComponent implements GameCom
     }
 
     public boolean addItem(GameObject item) {
-        item.getTransform().setTranslation(getGameObject().getTransform().getTranslation().clone());
+        item.getTransform().setTranslation(getGameObject().getTransform().getTranslation(new Vector3f()));
         return inventory.addItem(item);
     }
 
@@ -33,13 +34,13 @@ public class InventoryComponent extends AbstractGameComponent implements GameCom
     }
 
     public void remove(GameObject item) {
-        item.getTransform().setTranslation(getGameObject().getTransform().getTranslation().add(Vector3f.UNIT_Y));
+        item.getTransform().setTranslation(getGameObject().getTransform().getTranslation(new Vector3f()).add(new Vector3f(0, 1, 0)));
         inventory.remove(item);
     }
 
     public Optional<GameObject> removeItem(String itemType) {
         return inventory.removeItem(itemType).map(gameObject1 -> {
-            gameObject1.getTransform().setTranslation(getGameObject().getTransform().getTranslation().add(Vector3f.UNIT_Y));
+            gameObject1.getTransform().setTranslation(getGameObject().getTransform().getTranslation(new Vector3f()).add(new Vector3f(0, 1, 0)));
             return gameObject1;
         });
     }

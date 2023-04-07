@@ -1,7 +1,9 @@
 package nl.civcraft.core.interaction.tools.walltool;
 
-import com.jme3.math.Transform;
+
 import nl.civcraft.core.interaction.tools.BuildWallTool;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.statefulj.persistence.annotations.State;
 
 /**
@@ -14,8 +16,8 @@ public class WallToolState {
     private final BuildWallTool buildWallTool;
     @State
     String state;   // Memory Persister requires a String
-    private Transform start;
-    private Transform end;
+    private Matrix4f start;
+    private Matrix4f end;
 
     public WallToolState(BuildWallTool buildWallTool) {
         this.buildWallTool = buildWallTool;
@@ -26,11 +28,11 @@ public class WallToolState {
         return state;
     }
 
-    public Transform getStart() {
+    public Matrix4f getStart() {
         return start;
     }
 
-    public void setStart(Transform start) {
+    public void setStart(Matrix4f start) {
         this.start = start;
     }
 
@@ -39,16 +41,16 @@ public class WallToolState {
         end = null;
     }
 
-    public Transform getEnd() {
+    public Matrix4f getEnd() {
         return end;
     }
 
-    public void setEnd(Transform end) {
+    public void setEnd(Matrix4f end) {
         this.end = end;
     }
 
     public void addVertical(float arg) {
-        this.end.getTranslation().y += arg;
+        this.end.translate(new Vector3f(0, arg, 0));
     }
 
 

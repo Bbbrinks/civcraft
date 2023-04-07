@@ -1,12 +1,13 @@
 package nl.civcraft.core.worldgeneration;
 
-import com.jme3.math.Transform;
-import com.jme3.math.Vector3f;
+
 import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.Chunk;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.utils.MathUtil;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,13 +30,17 @@ public class ChunkBuilder {
         this.grass = grass;
     }
 
-    public void buildChunk(int chunkX, int chunkZ, HeightMap heightMap) {
+    public void buildChunk(int chunkX,
+                           int chunkZ,
+                           HeightMap heightMap) {
         int chunkMinX = chunkX * Chunk.CHUNK_SIZE;
         int chunkMinZ = chunkZ * Chunk.CHUNK_SIZE;
         generateTerrain(heightMap, chunkMinX, chunkMinZ);
     }
 
-    private void generateTerrain(HeightMap heightMap, int chunkMinX, int chunkMinZ) {
+    private void generateTerrain(HeightMap heightMap,
+                                 int chunkMinX,
+                                 int chunkMinZ) {
         for (int x = chunkMinX; x < chunkMinX + Chunk.CHUNK_SIZE; x++) {
             for (int z = chunkMinZ; z < chunkMinZ + Chunk.CHUNK_SIZE; z++) {
                 int voxelY = (int) heightMap.getHeight(x, z);
@@ -44,9 +49,12 @@ public class ChunkBuilder {
         }
     }
 
-    private void fillToBedrock(int x, int z, int voxelY) {
+    private void fillToBedrock(int x,
+                               int z,
+                               int voxelY) {
         for (int y = 0; y <= voxelY; y++) {
-            Transform transform = new Transform(new Vector3f(x, y, z));
+            Matrix4f transform = new Matrix4f();
+            transform.setTranslation(new Vector3f(x, y, z));
             int rnd = MathUtil.rnd(8) - 1;
             GameObject build;
             if (voxelY - y - rnd > 0) {

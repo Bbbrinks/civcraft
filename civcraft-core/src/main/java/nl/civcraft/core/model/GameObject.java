@@ -1,11 +1,11 @@
 package nl.civcraft.core.model;
 
-import com.jme3.math.Transform;
+
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 import nl.civcraft.core.gamecomponents.GameComponent;
 import nl.civcraft.core.gamecomponents.ItemComponent;
-import nl.civcraft.core.rendering.VoxelRenderer;
+import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,17 +19,17 @@ import java.util.stream.Collectors;
  */
 public class GameObject {
 
-    private final Transform transform;
+    private final Matrix4f transform;
     private final List<GameComponent> components;
     private final Subject<GameObject> gameObjectDestroyed;
     private final Subject<GameObject> gameObjectChangedEvent;
 
     public GameObject() {
-        this(new Transform());
+        this(new Matrix4f());
 
     }
 
-    public GameObject(Transform transform) {
+    public GameObject(Matrix4f transform) {
         this.transform = transform;
         components = new ArrayList<>();
         gameObjectDestroyed = PublishSubject.create();
@@ -69,12 +69,12 @@ public class GameObject {
         components.remove(gameComponent);
     }
 
-    public Transform getTransform() {
+    public Matrix4f getTransform() {
         return transform;
     }
 
-    public void removeComponent(Class<VoxelRenderer> voxelRendererClass) {
-        getComponent(voxelRendererClass).ifPresent(this::removeComponent);
+    public void removeComponent(Class<GameComponent> componentClass) {
+        getComponent(componentClass).ifPresent(this::removeComponent);
     }
 
     public <T extends GameComponent> Optional<T> getComponent(Class<T> componentType) {
@@ -95,5 +95,9 @@ public class GameObject {
 
     public boolean hasComponent(ItemComponent component) {
         return components.contains(component);
+    }
+
+    public List<GameComponent> getComponents() {
+        return components;
     }
 }

@@ -2,12 +2,10 @@ package nl.civcraft.core.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import nl.civcraft.core.gamecomponents.GameComponent;
 import nl.civcraft.core.gamecomponents.ItemComponent;
 import nl.civcraft.core.gamecomponents.Placable;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.PrefabManagerManager;
-import nl.civcraft.core.rendering.ItemRenderer;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -27,11 +25,9 @@ public class ItemsModule extends AbstractModule {
     @Singleton
     @Named("apple")
     public PrefabManager apple(@Named("item") PrefabManager itemManager,
-                               GameComponent.GameComponentFactory<ItemRenderer> itemRenderer,
                                PrefabManagerManager prefabManagerManager) {
         PrefabManager appleManager = new PrefabManager(itemManager);
         appleManager.registerComponent(new ItemComponent.Factory("apple"));
-        appleManager.registerComponent(itemRenderer);
         return appleManager;
     }
 
@@ -39,11 +35,9 @@ public class ItemsModule extends AbstractModule {
     @Singleton
     @Named("grassItem")
     public PrefabManager grassItem(@Named("item") PrefabManager itemManager,
-                                   GameComponent.GameComponentFactory<ItemRenderer> itemRenderer,
                                    PrefabManagerManager prefabManagerManager) {
         PrefabManager grassItemPrefabManager = new PrefabManager(itemManager);
         grassItemPrefabManager.registerComponent(new ItemComponent.Factory("grassItem"));
-        grassItemPrefabManager.registerComponent(itemRenderer);
         grassItemPrefabManager.registerComponent(new Placable.Factory(() -> prefabManagerManager.get("grass"), true));
         return grassItemPrefabManager;
     }
@@ -52,11 +46,9 @@ public class ItemsModule extends AbstractModule {
     @Singleton
     @Named("cobbleStoneItem")
     public PrefabManager cobbleStoneItem(@Named("item") PrefabManager itemManager,
-                                         GameComponent.GameComponentFactory<ItemRenderer> itemRenderer,
                                          PrefabManagerManager prefabManagerManager) {
         PrefabManager cobbleStonePrefabManager = new PrefabManager(itemManager);
         cobbleStonePrefabManager.registerComponent(new ItemComponent.Factory("cobbleStone"));
-        cobbleStonePrefabManager.registerComponent(itemRenderer);
         cobbleStonePrefabManager.registerComponent(new Placable.Factory(() -> prefabManagerManager.get("cobbleStone"), true));
         return cobbleStonePrefabManager;
     }
@@ -65,11 +57,9 @@ public class ItemsModule extends AbstractModule {
     @Singleton
     @Named("dirtItem")
     public PrefabManager dirtItem(@Named("item") PrefabManager itemManager,
-                                  GameComponent.GameComponentFactory<ItemRenderer> itemRenderer,
                                   PrefabManagerManager prefabManagerManager) {
         PrefabManager dirtPrefabManager = new PrefabManager(itemManager);
         dirtPrefabManager.registerComponent(new ItemComponent.Factory("dirt"));
-        dirtPrefabManager.registerComponent(itemRenderer);
         dirtPrefabManager.registerComponent(new Placable.Factory(() -> prefabManagerManager.get("dirt"), true));
         return dirtPrefabManager;
     }
@@ -78,11 +68,9 @@ public class ItemsModule extends AbstractModule {
     @Singleton
     @Named("treeTrunkItem")
     public PrefabManager treeTrunkItem(@Named("item") PrefabManager itemManager,
-                                       GameComponent.GameComponentFactory<ItemRenderer> itemRenderer,
                                        PrefabManagerManager prefabManagerManager) {
         PrefabManager treeTrunkPrefabManager = new PrefabManager(itemManager);
         treeTrunkPrefabManager.registerComponent(new ItemComponent.Factory("treeTrunk"));
-        treeTrunkPrefabManager.registerComponent(itemRenderer);
         treeTrunkPrefabManager.registerComponent(new Placable.Factory(() -> prefabManagerManager.get("treeTrunk"), true));
         return treeTrunkPrefabManager;
     }

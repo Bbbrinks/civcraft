@@ -1,8 +1,7 @@
 package nl.civcraft.core.managers;
 
-import nl.civcraft.core.SystemEventPublisher;
+import nl.civcraft.core.gamecomponents.Civvy;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.tasks.Task;
 import nl.civcraft.core.utils.MathUtil;
 
@@ -23,9 +22,9 @@ public class TaskManager {
 
     @Inject
     public TaskManager(Set<Task> defaultTasks,
-                       SystemEventPublisher systemEventPublisher,
+                       TickManager tickManager,
                        @Named("civvy") PrefabManager prefabManager) {
-        systemEventPublisher.getPublisher().subscribe(this::update);
+        tickManager.getTick().subscribe(this::update);
         prefabManager.getGameObjectCreated().subscribe(this::addCivvy);
         civvies = new CopyOnWriteArrayList<>();
         tasks = new ArrayList<>();
@@ -48,6 +47,7 @@ public class TaskManager {
     }
 
     public void addTask(Task task) {
+        System.out.println("Added task");
         this.tasks.add(task);
     }
 

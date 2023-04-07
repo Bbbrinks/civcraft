@@ -1,7 +1,7 @@
 package nl.civcraft.core.gamecomponents;
 
-import com.jme3.math.Transform;
 import nl.civcraft.core.managers.PrefabManager;
+import org.joml.Matrix4f;
 
 import java.util.function.Supplier;
 
@@ -20,7 +20,7 @@ public class Placable extends AbstractGameComponent {
         this.destroyAfterPlacing = destroyAfterPlacing;
     }
 
-    public void place(Transform locationToPlace) {
+    public void place(Matrix4f locationToPlace) {
         this.prefabManager.get().build(locationToPlace, true);
         if (destroyAfterPlacing) {
             gameObject.destroy();

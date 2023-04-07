@@ -1,11 +1,12 @@
 package nl.civcraft.core.tasks;
 
-import com.jme3.math.Transform;
+
 import nl.civcraft.core.gamecomponents.InventoryComponent;
 import nl.civcraft.core.gamecomponents.Placable;
 import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.GameObject;
+import org.joml.Matrix4f;
 
 import java.util.Optional;
 
@@ -19,14 +20,14 @@ public class PlaceBlock extends Task {
     private final PrefabManager stockpileManager;
     private final PrefabManager blockManager;
     private final String itemName;
-    private final Transform locationToPlace;
+    private final Matrix4f locationToPlace;
     private FetchFromStockpile fetchFromStockpile;
     private MoveToRange moveToRange;
 
     public PlaceBlock(PrefabManager stockpileManager,
                       PrefabManager blockManager,
                       String itemName,
-                      Transform locationToPlace) {
+                      Matrix4f locationToPlace) {
         super(State.TODO);
         this.stockpileManager = stockpileManager;
         this.blockManager = blockManager;
@@ -66,7 +67,7 @@ public class PlaceBlock extends Task {
         return Result.IN_PROGRESS;
     }
 
-    public Transform getLocationToPlace() {
+    public Matrix4f getLocationToPlace() {
         return locationToPlace;
     }
 }

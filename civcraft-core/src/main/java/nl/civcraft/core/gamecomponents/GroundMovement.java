@@ -1,6 +1,5 @@
 package nl.civcraft.core.gamecomponents;
 
-import com.jme3.math.Vector3f;
 import io.reactivex.disposables.Disposable;
 import nl.civcraft.core.managers.TickManager;
 import nl.civcraft.core.managers.VoxelManager;
@@ -10,6 +9,7 @@ import nl.civcraft.core.pathfinding.AStarPathFinder;
 import nl.civcraft.core.pathfinding.ChangeAwarePath;
 import nl.civcraft.core.pathfinding.PathFindingTarget;
 import nl.civcraft.core.pathfinding.exceptions.UnreachableVoxelException;
+import org.joml.Vector3f;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -54,19 +54,25 @@ public class GroundMovement extends AbstractGameComponent {
 
         GameObject nextTarget = path.peek();
         if (nextTarget != null) {
-            Vector3f location = nextTarget.getTransform().getTranslation().add(new Vector3f(0, 1, 0));
-            Vector3f movement = location.subtract(gameObject.getTransform().getTranslation());
+            Vector3f location = nextTarget.getTransform().getTranslation(new Vector3f()).add(new Vector3f(0, 1, 0));
+            Vector3f gameObjectTransform = gameObject.getTransform().getTranslation(new Vector3f());
+            Vector3f movement = location.sub(gameObjectTransform);
             if (distance(nextTarget) >= speed) {
-                movement.normalizeLocal();
-                movement = movement.mult(speed);
+                movement.normalize();
+                movement = movement.mul(speed);
             } else {
                 setCurrentVoxel(nextTarget);
                 path.poll();
             }
-            gameObject.getTransform().setTranslation(gameObject.getTransform().getTranslation().add(movement));
+            gameObject.getTransform().setTranslation(gameObjectTransform.add(movement));
+            gameObject.changed();
         } else {
             this.currentPath = null;
         }
+    }
+
+    private float distance(GameObject target) {
+        return target.getTransform().getTranslation(new Vector3f()).distance(gameObject.getTransform().getTranslation(new Vector3f()).sub(0, 1, 0));
     }
 
     public boolean moveToward(PathFindingTarget target) throws UnreachableVoxelException {
@@ -80,11 +86,6 @@ public class GroundMovement extends AbstractGameComponent {
         return currentTarget.isReached(getGameObject(), new AStarNode(getCurrentVoxel()));
     }
 
-    private float distance(GameObject target) {
-        return target.getTransform().getTranslation().distance(gameObject.getTransform().getTranslation().subtract(0, 1, 0));
-    }
-
-
     public GameObject getCurrentVoxel() {
         if (currentVoxel == null) {
             setCurrentVoxelToGround(gameObject);
@@ -93,8 +94,8 @@ public class GroundMovement extends AbstractGameComponent {
     }
 
     private void setCurrentVoxelToGround(GameObject gameObject) {
-        GameObject groundVoxel = voxelManager.getGroundAt(gameObject.getTransform().getTranslation(), 10).
-                orElseThrow(() -> new IllegalStateException("No ground found at " + gameObject.getTransform().getTranslation()));
+        GameObject groundVoxel = voxelManager.getGroundAt(gameObject.getTransform().getTranslation(new Vector3f()), 10).
+                orElseThrow(() -> new IllegalStateException("No ground found at " + gameObject.getTransform().getTranslation(new Vector3f())));
 
         setCurrentVoxel(groundVoxel);
     }
@@ -111,7 +112,8 @@ public class GroundMovement extends AbstractGameComponent {
         });
 
         this.currentVoxel = currentVoxel;
-        getGameObject().getTransform().getTranslation().setY(currentVoxel.getTransform().getTranslation().getY() + 1);
+        float newY = currentVoxel.getTransform().getTranslation(new Vector3f()).y() + 1;
+        getGameObject().getTransform().getTranslation(new Vector3f());
     }
 
     public static class Factory implements GameComponentFactory<GroundMovement> {

@@ -1,8 +1,9 @@
 package nl.civcraft.core.model;
 
-import com.jme3.math.Transform;
-import com.jme3.math.Vector3f;
+
 import nl.civcraft.core.utils.MathUtil;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.util.Optional;
 
@@ -13,15 +14,17 @@ import java.util.Optional;
  */
 public class Chunk {
 
-    public static final int CHUNK_SIZE = 30;
+    public static final int CHUNK_SIZE = 20;
     private final int chunkX;
     private final int chunkZ;
     private final GameObject[] voxels;
     private final int chunkY;
     private final String name;
-    private final Transform transform;
+    private final Matrix4f transform;
 
-    public Chunk(int chunkX, int chunkY, int chunkZ) {
+    public Chunk(int chunkX,
+                 int chunkY,
+                 int chunkZ) {
         voxels = new GameObject[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE];
         this.chunkX = chunkX;
         this.chunkZ = chunkZ;
@@ -30,10 +33,11 @@ public class Chunk {
         int y = chunkY * CHUNK_SIZE;
         int z = chunkZ * CHUNK_SIZE;
         this.name = chunkX + "x" + chunkY + "x" + chunkZ;
-        this.transform = new Transform(new Vector3f(x, y, z));
+        this.transform = new Matrix4f();
+        this.transform.setTranslation(new Vector3f(x, y, z));
     }
 
-    public Transform getTransform() {
+    public Matrix4f getTransform() {
         return transform;
     }
 
@@ -43,15 +47,17 @@ public class Chunk {
 
     private int getArrayIndex(GameObject voxel) {
         Vector3f localTranslation = getLocalTranslation(voxel);
-        return getArrayIndex(Math.round(localTranslation.getX()), Math.round(localTranslation.getY()),
-                Math.round(localTranslation.getZ()));
+        return getArrayIndex(Math.round(localTranslation.x()), Math.round(localTranslation.y()),
+                Math.round(localTranslation.z()));
     }
 
     private Vector3f getLocalTranslation(GameObject voxel) {
-        return voxel.getTransform().getTranslation().subtract(transform.getTranslation());
+        return voxel.getTransform().getTranslation(new Vector3f()).sub(transform.getTranslation(new Vector3f()));
     }
 
-    private int getArrayIndex(int x, int y, int z) {
+    private int getArrayIndex(int x,
+                              int y,
+                              int z) {
         int arrayIndex = (CHUNK_SIZE * CHUNK_SIZE * z) + (CHUNK_SIZE * y) + x;
         if (arrayIndex < 0 || arrayIndex >= voxels.length) {
             return -1;
@@ -59,7 +65,9 @@ public class Chunk {
         return arrayIndex;
     }
 
-    public Optional<GameObject> getVoxelAt(int x, int y, int z) {
+    public Optional<GameObject> getVoxelAt(int x,
+                                           int y,
+                                           int z) {
         int arrayIndex = getArrayIndex(x - chunkX * CHUNK_SIZE, y - chunkY * CHUNK_SIZE, z - chunkZ * CHUNK_SIZE);
         if (arrayIndex == -1) {
             return Optional.empty();
@@ -89,10 +97,13 @@ public class Chunk {
         return chunkY;
     }
 
-    public boolean containsCoors(int x, int y, int z) {
-        int roundedX = Math.round(transform.getTranslation().getX());
-        int roundedY = Math.round(transform.getTranslation().getY());
-        int roundedZ = Math.round(transform.getTranslation().getZ());
+    public boolean containsCoors(int x,
+                                 int y,
+                                 int z) {
+        Vector3f chunkTransform = transform.getTranslation(new Vector3f());
+        int roundedX = Math.round(chunkTransform.x());
+        int roundedY = Math.round(chunkTransform.y());
+        int roundedZ = Math.round(chunkTransform.z());
         return MathUtil.between(roundedX, x, roundedX + CHUNK_SIZE) &&
                 MathUtil.between(roundedY, y, roundedY + CHUNK_SIZE) &&
                 MathUtil.between(roundedZ, z, roundedZ + CHUNK_SIZE);

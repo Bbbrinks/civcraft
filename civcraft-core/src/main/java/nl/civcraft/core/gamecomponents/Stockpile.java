@@ -1,8 +1,8 @@
 package nl.civcraft.core.gamecomponents;
 
-import com.jme3.math.Vector3f;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.LimitedInventory;
+import org.joml.Vector3f;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class Stockpile extends AbstractGameComponent {
         return getAvailableSpot(item).
                 map(spot -> {
                     if (voxels.get(spot).addItem(item)) {
-                        item.getTransform().setTranslation(spot.getTransform().getTranslation().add(Vector3f.UNIT_Y));
+                        item.getTransform().setTranslation(spot.getTransform().getTranslation(new Vector3f()).add(new Vector3f(0, 1, 0)));
                         return true;
                     }
                     return false;

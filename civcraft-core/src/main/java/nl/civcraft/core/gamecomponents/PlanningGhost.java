@@ -1,7 +1,7 @@
 package nl.civcraft.core.gamecomponents;
 
 
-import com.jme3.math.Transform;
+import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,17 +13,17 @@ import java.util.List;
  */
 public class PlanningGhost extends AbstractGameComponent {
 
-    private final List<Transform> plannedVoxels;
+    private final List<Matrix4f> plannedVoxels;
 
     public PlanningGhost() {
         plannedVoxels = new ArrayList<>();
     }
 
-    public List<Transform> getPlannedVoxels() {
+    public List<Matrix4f> getPlannedVoxels() {
         return plannedVoxels;
     }
 
-    public void setPlannedVoxels(List<Transform> plannedVoxels) {
+    public void setPlannedVoxels(List<Matrix4f> plannedVoxels) {
         this.plannedVoxels.clear();
         this.plannedVoxels.addAll(plannedVoxels);
         gameObject.changed();

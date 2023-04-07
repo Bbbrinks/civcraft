@@ -7,7 +7,6 @@ import nl.civcraft.core.gamecomponents.*;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.TickManager;
 import nl.civcraft.core.managers.VoxelManager;
-import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.pathfinding.AStarPathFinder;
 
 import javax.inject.Named;

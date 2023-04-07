@@ -1,15 +1,16 @@
 package nl.civcraft.core.interaction.tools;
 
-import com.jme3.math.Transform;
-import com.jme3.math.Vector3f;
 import nl.civcraft.core.gamecomponents.PlanningGhost;
+import nl.civcraft.core.gamecomponents.Voxel;
+import nl.civcraft.core.interaction.MousePicker;
 import nl.civcraft.core.interaction.MouseTool;
 import nl.civcraft.core.interaction.tools.walltool.WallToolState;
-import nl.civcraft.core.interaction.util.CurrentVoxelHighlighter;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.TaskManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.tasks.PlaceBlock;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.statefulj.fsm.FSM;
 import org.statefulj.fsm.TooBusyException;
 import org.statefulj.fsm.model.State;
@@ -21,7 +22,9 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
+
 
 /**
  * Created by Bob on 21-4-2017.
@@ -35,22 +38,22 @@ public class BuildWallTool implements MouseTool {
     private static final String EVENT_RIGHT_CLICK = "rightClick";
 
 
-    private final CurrentVoxelHighlighter currentVoxelHighlighter;
+    private final MousePicker mousePicker;
     private final TaskManager taskManager;
     private final PrefabManager stockpileManager;
     private final PrefabManager blockManager;
     private final PrefabManager planningGhostManager;
     private final FSM<WallToolState> wallToolStateFSM;
-    private GameObject planningGhostObject;
     private final WallToolState wallToolState;
+    private GameObject planningGhostObject;
 
     @Inject
-    public BuildWallTool(CurrentVoxelHighlighter currentVoxelHighlighter,
+    public BuildWallTool(MousePicker mousePicker,
                          TaskManager taskManager,
                          @Named("stockpile") PrefabManager stockpileManager,
                          @Named("block") PrefabManager blockManager,
                          @Named("planningGhost") PrefabManager planningGhostManager) {
-        this.currentVoxelHighlighter = currentVoxelHighlighter;
+        this.mousePicker = mousePicker;
         this.taskManager = taskManager;
         this.stockpileManager = stockpileManager;
         this.blockManager = blockManager;
@@ -65,19 +68,22 @@ public class BuildWallTool implements MouseTool {
         State<WallToolState> horizontalBoundaryLockedIn = new StateImpl<>("horizontalBoundaryLockedIn");
 
         initial.addTransition(EVENT_MOUSE_MOVEMENT, initial, (wallToolState, event, args) -> {
-            wallToolState.setStart((Transform) args[0]);
+            wallToolState.setStart((Matrix4f) args[0]);
             wallToolState.getBuildWallTool().planningGhost();
         });
-        initial.addTransition(EVENT_LEFT_CLICK, startLockedIn, (wallToolState, event, args) -> wallToolState.setStart((Transform) args[0]));
+        initial.addTransition(EVENT_LEFT_CLICK, startLockedIn, (wallToolState, event, args) -> wallToolState.setStart((Matrix4f) args[0]));
         initial.addTransition(EVENT_RIGHT_CLICK, initial, (wallToolState, event, args) -> wallToolState.reset());
 
         startLockedIn.addTransition(EVENT_MOUSE_MOVEMENT, startLockedIn, (wallToolState, event, args) -> {
-            Transform end = (Transform) args[0];
-            end.getTranslation().y = wallToolState.getStart().getTranslation().getY();
+            Vector3f currentVoxelTransform = ((Matrix4f) args[0]).getTranslation(new Vector3f());
+            currentVoxelTransform.y = wallToolState.getStart().getTranslation(new Vector3f()).y();
+
+            Matrix4f end = new Matrix4f();
+            end.setTranslation(currentVoxelTransform);
             wallToolState.setEnd(end);
             wallToolState.getBuildWallTool().planningGhost();
         });
-        startLockedIn.addTransition(EVENT_LEFT_CLICK, horizontalBoundaryLockedIn, (wallToolState, event, args) -> wallToolState.setEnd((Transform) args[0]));
+        startLockedIn.addTransition(EVENT_LEFT_CLICK, horizontalBoundaryLockedIn, (wallToolState, event, args) -> wallToolState.setEnd((Matrix4f) args[0]));
         startLockedIn.addTransition(EVENT_RIGHT_CLICK, initial, (wallToolState, event, args) -> {
             wallToolState.getBuildWallTool().clearPlanningGhost();
             wallToolState.reset();
@@ -112,16 +118,11 @@ public class BuildWallTool implements MouseTool {
 
     private void planningGhost() {
         if (planningGhostObject == null) {
-            planningGhostObject = planningGhostManager.build(Transform.IDENTITY, true);
+            planningGhostObject = planningGhostManager.build(new Matrix4f(), true);
         }
-        List<Transform> selection = new ArrayList<>();
+        List<Matrix4f> selection = new ArrayList<>();
         loopThroughSelection(selection::add);
         planningGhostObject.getComponent(PlanningGhost.class).orElseThrow(() -> new IllegalStateException("No planning ghost")).setPlannedVoxels(selection);
-    }
-
-    @Override
-    public String getLabel() {
-        return "Build wall";
     }
 
     private void clearPlanningGhost() {
@@ -135,9 +136,9 @@ public class BuildWallTool implements MouseTool {
         loopThroughSelection(transform -> taskManager.addTask(new PlaceBlock(stockpileManager, blockManager, "grassItem", transform)));
     }
 
-    private void loopThroughSelection(Consumer<Transform> consumer) {
-        Transform start = wallToolState.getStart();
-        Transform end = wallToolState.getEnd();
+    private void loopThroughSelection(Consumer<Matrix4f> consumer) {
+        Matrix4f start = wallToolState.getStart();
+        Matrix4f end = wallToolState.getEnd();
 
         if (start == null) {
             return;
@@ -149,19 +150,21 @@ public class BuildWallTool implements MouseTool {
         Vector3f origin;
         Vector3f target;
 
-        if (start.getTranslation().length() < end.getTranslation().length()) {
-            origin = start.getTranslation();
-            target = end.getTranslation();
+        Vector3f startTranslation = start.getTranslation(new Vector3f());
+        Vector3f endTranslation = end.getTranslation(new Vector3f());
+        if (startTranslation.length() < endTranslation.length()) {
+            origin = startTranslation;
+            target = endTranslation;
         } else {
-            origin = end.getTranslation();
-            target = start.getTranslation();
+            origin = endTranslation;
+            target = startTranslation;
         }
 
-        Vector3f toPlace = target.subtract(origin).add(1, 1, 1);
-        for (float z = 0; z < toPlace.getZ(); z++) {
-            for (float x = 0; x < toPlace.getX(); x++) {
-                for (float y = 0; y < toPlace.getY(); y++) {
-                    consumer.accept(new Transform(new Vector3f(origin.getX() + x, origin.getY() + y, origin.getZ() + z)));
+        Vector3f toPlace = target.sub(origin).add(1, 1, 1);
+        for (float z = 0; z < toPlace.z(); z++) {
+            for (float x = 0; x < toPlace.x(); x++) {
+                for (float y = 0; y < toPlace.y(); y++) {
+                    consumer.accept(new Matrix4f().translate(new Vector3f(origin.x() + x, origin.y() + y, origin.z() + z)));
 
                 }
             }
@@ -169,14 +172,13 @@ public class BuildWallTool implements MouseTool {
     }
 
     @Override
-    public void handleLeftClick(boolean isPressed) {
-        if (!isPressed) {
-            return;
-        }
+    public void handleLeftClick() {
         try {
-            Transform clone = currentVoxelHighlighter.getCurrentVoxel().getTransform().clone();
-            clone.getTranslation().y += 1;
-            wallToolStateFSM.onEvent(wallToolState, EVENT_LEFT_CLICK, clone);
+            Optional<GameObject> currentVoxel = mousePicker.pickNearest(Voxel.class);
+            if(currentVoxel.isPresent()) {
+                Matrix4f clickedTransform = currentVoxel.get().getTransform().translate(new Vector3f(0, 1, 0), new Matrix4f());
+                wallToolStateFSM.onEvent(wallToolState, EVENT_LEFT_CLICK, clickedTransform);
+            }
         } catch (TooBusyException e) {
             throw new IllegalStateException(e);
         }
@@ -187,13 +189,20 @@ public class BuildWallTool implements MouseTool {
                                   float yDiff) {
 
         try {
-            Transform clone = currentVoxelHighlighter.getCurrentVoxel().getTransform().clone();
-            clone.getTranslation().y += 1;
-            wallToolStateFSM.onEvent(wallToolState, EVENT_MOUSE_MOVEMENT, clone, yDiff * 10.0f);
+            Optional<GameObject> currentVoxel = mousePicker.pickNearest(Voxel.class);
+            if(currentVoxel.isPresent()) {
+                Matrix4f clickedTransform = currentVoxel.get().getTransform().translate(new Vector3f(0, 1, 0), new Matrix4f());
+                wallToolStateFSM.onEvent(wallToolState, EVENT_MOUSE_MOVEMENT, clickedTransform, yDiff * 10.0f);
+            }
         } catch (TooBusyException e) {
             throw new IllegalStateException(e);
         }
 
 
+    }
+
+    @Override
+    public String getLabel() {
+        return "Build wall";
     }
 }

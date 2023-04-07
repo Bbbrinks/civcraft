@@ -6,7 +6,7 @@ package nl.civcraft.core.interaction;
  * This is probably not worth documenting
  */
 public interface MouseTool {
-    void handleLeftClick(boolean isPressed);
+    void handleLeftClick();
 
     void handleMouseMotion(float xDiff,
                            float yDiff);

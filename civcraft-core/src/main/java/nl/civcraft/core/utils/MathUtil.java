@@ -15,7 +15,8 @@ public class MathUtil {
         return rnd(0, max);
     }
 
-    public static int rnd(int min, int max) {
+    public static int rnd(int min,
+                          int max) {
         return min + RandomUtil.getNextInt(max);
     }
 
@@ -24,15 +25,19 @@ public class MathUtil {
         return rnd(0, max);
     }
 
-    public static float rnd(float min, float max) {
-        return  (float)(min + (Math.random() * max));
+    public static float rnd(float min,
+                            float max) {
+        return (float) (min + (Math.random() * max));
     }
 
-    public static float valueOrMin(float value, @SuppressWarnings("SameParameterValue") float min) {
+    public static float valueOrMin(float value,
+                                   @SuppressWarnings("SameParameterValue") float min) {
         return value > min ? value : min;
     }
 
-    public static boolean between(int min, int value, int max) {
+    public static boolean between(int min,
+                                  int value,
+                                  int max) {
         return min <= value && max > value;
     }
 }

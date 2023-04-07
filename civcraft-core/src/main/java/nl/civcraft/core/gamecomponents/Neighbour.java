@@ -3,6 +3,7 @@ package nl.civcraft.core.gamecomponents;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.NeighbourDirection;
+import org.joml.Vector3f;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -18,6 +19,7 @@ public class Neighbour extends AbstractGameComponent {
 
     protected final VoxelManager voxelManager;
     private final Map<NeighbourDirection, GameObject> neighbours;
+
     public Neighbour(VoxelManager voxelManager) {
         this.voxelManager = voxelManager;
         neighbours = new EnumMap<>(NeighbourDirection.class);
@@ -29,7 +31,8 @@ public class Neighbour extends AbstractGameComponent {
                 orElse(Collections.emptyMap());
     }
 
-    public static Optional<GameObject> getNeighbour(GameObject gameObject, NeighbourDirection neighbourDirection) {
+    public static Optional<GameObject> getNeighbour(GameObject gameObject,
+                                                    NeighbourDirection neighbourDirection) {
         return gameObject.getComponent(Neighbour.class).
                 map(n -> n.getNeighbour(neighbourDirection)).
                 orElse(Optional.empty());
@@ -43,7 +46,7 @@ public class Neighbour extends AbstractGameComponent {
     public void addTo(GameObject gameObject) {
         super.addTo(gameObject);
         for (NeighbourDirection neighbourDirection : NeighbourDirection.values()) {
-            voxelManager.getVoxelAt(getGameObject().getTransform().getTranslation().add(neighbourDirection.getTranslation())).ifPresent(v -> addNeighbour(neighbourDirection, v));
+            voxelManager.getVoxelAt(getGameObject().getTransform().getTranslation(new Vector3f()).add(neighbourDirection.getTranslation())).ifPresent(v -> addNeighbour(neighbourDirection, v));
         }
     }
 
@@ -66,18 +69,21 @@ public class Neighbour extends AbstractGameComponent {
                 map(Map.Entry::getValue).collect(Collectors.toList());
     }
 
-    public static Boolean hasNeighbour(GameObject gameObject, NeighbourDirection neighbourDirection) {
+    public static Boolean hasNeighbour(GameObject gameObject,
+                                       NeighbourDirection neighbourDirection) {
         return gameObject.
                 getComponent(Neighbour.class).
                 map(neighbourComponent -> neighbourComponent.getNeighbour(neighbourDirection).isPresent()).
                 orElse(false);
     }
 
-    private void addNeighbour(NeighbourDirection neighbourDirection, GameObject gameObject) {
+    private void addNeighbour(NeighbourDirection neighbourDirection,
+                              GameObject gameObject) {
         boolean isNew = !neighbours.containsValue(gameObject);
         neighbours.put(neighbourDirection, gameObject);
         if (isNew) {
             gameObject.getComponent(Neighbour.class).ifPresent(n -> n.addNeighbour(neighbourDirection.getOpposite(), this.getGameObject()));
+            gameObject.changed();
         }
     }
 

@@ -1,11 +1,11 @@
 package nl.civcraft.core.gamecomponents;
 
-import com.jme3.math.Transform;
-import com.jme3.math.Vector3f;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.NeighbourDirection;
 import org.hamcrest.core.IsCollectionContaining;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +47,7 @@ public class NeighbourTest {
         underTest = new Neighbour(voxelManager);
         testGameObject = new GameObject();
         when(voxelManager.getVoxelAt(any(Vector3f.class))).thenReturn(Optional.empty());
-        when(voxelManager.getVoxelAt(isInRange(Vector3f.ZERO))).thenReturn(Optional.of(testGameObject));
+        when(voxelManager.getVoxelAt(isInRange(new Vector3f()))).thenReturn(Optional.of(testGameObject));
     }
 
     //<editor-fold desc="addTo">
@@ -59,7 +59,7 @@ public class NeighbourTest {
 
     @Test
     public void testAddTo_topNeighbourIsAdded() {
-        testNeighbourIsAdded(Vector3f.UNIT_Y, NeighbourDirection.TOP);
+        testNeighbourIsAdded(new Vector3f(0, 1, 0), NeighbourDirection.TOP);
     }
 
     private void testNeighbourIsAdded(Vector3f transform, NeighbourDirection expectedDirection) {
@@ -71,36 +71,38 @@ public class NeighbourTest {
         assertThat(underTest.getNeighbours(), hasEntry(expectedDirection, expectedNeighbour));
     }
 
-    private GameObject addTestNeighbour(Vector3f location) {
-        GameObject gameObject = new GameObject(new Transform(location));
-        when(voxelManager.getVoxelAt(isInRange(location))).thenReturn(Optional.of(gameObject));
-        gameObject.addComponent(new Neighbour(voxelManager));
-        return gameObject;
-    }
-
     @Test
     public void testAddTo_bottomNeighbourIsAdded() {
-        testNeighbourIsAdded(Vector3f.UNIT_Y.mult(-1), NeighbourDirection.BOTTOM);
+        testNeighbourIsAdded(new Vector3f(0, 1, 0).mul(-1), NeighbourDirection.BOTTOM);
     }
 
     @Test
     public void testAddTo_leftNeighbourIsAdded() {
-        testNeighbourIsAdded(Vector3f.UNIT_X.mult(-1), NeighbourDirection.LEFT);
+        testNeighbourIsAdded(new Vector3f(1, 0, 0).mul(-1), NeighbourDirection.LEFT);
     }
 
     @Test
     public void testAddTo_rightNeighbourIsAdded() {
-        testNeighbourIsAdded(Vector3f.UNIT_X, NeighbourDirection.RIGHT);
+        testNeighbourIsAdded(new Vector3f(1, 0, 0), NeighbourDirection.RIGHT);
     }
 
     @Test
     public void testAddTo_frontNeighbourIsAdded() {
-        testNeighbourIsAdded(Vector3f.UNIT_Z.mult(-1), NeighbourDirection.FRONT);
+        testNeighbourIsAdded(new Vector3f(0, 0, 1).mul(-1), NeighbourDirection.FRONT);
     }
 
     @Test
     public void testAddTo_backNeighbourIsAdded() {
-        testNeighbourIsAdded(Vector3f.UNIT_Z, NeighbourDirection.BACK);
+        testNeighbourIsAdded(new Vector3f(0, 0, 1), NeighbourDirection.BACK);
+    }
+
+    @Test
+    public void testDestroyed_neighboursAreRemoved() {
+        addTestNeighbour(new Vector3f(1, 0, 0));
+        testGameObject.addComponent(underTest);
+        assertThat(underTest.getNeighbours().entrySet(), hasSize(1));
+        underTest.destroyed();
+        assertThat(underTest.getNeighbours().entrySet(), hasSize(0));
     }
 
     @Test
@@ -152,20 +154,18 @@ public class NeighbourTest {
         assertThat(underTest.getGameObject(), is(nullValue()));
     }
 
-    @Test
-    public void testDestroyed_neighboursAreRemoved() {
-        addTestNeighbour(Vector3f.UNIT_X);
-        testGameObject.addComponent(underTest);
-        assertThat(underTest.getNeighbours().entrySet(), hasSize(1));
-        underTest.destroyed();
-        assertThat(underTest.getNeighbours().entrySet(), hasSize(0));
+    private GameObject addTestNeighbour(Vector3f location) {
+        GameObject gameObject = new GameObject(new Matrix4f().translate(location));
+        when(voxelManager.getVoxelAt(isInRange(location))).thenReturn(Optional.of(gameObject));
+        gameObject.addComponent(new Neighbour(voxelManager));
+        return gameObject;
     }
     //</editor-fold>
 
     //<editor-fold desc="getEntrableNeighbours">
     @Test
     public void testGetEnterableNeighbours_returnsDirectNeighbourWithoutTop() {
-        GameObject rightNeighbour = addTestNeighbour(Vector3f.UNIT_X);
+        GameObject rightNeighbour = addTestNeighbour(new Vector3f(1, 0, 0));
         testGameObject.addComponent(underTest);
         List<GameObject> enterableNeighbours = underTest.getEnterableNeighbours();
         assertThat(enterableNeighbours, IsCollectionContaining.hasItems(rightNeighbour));
@@ -173,7 +173,7 @@ public class NeighbourTest {
 
     @Test
     public void testGetEnterableNeighbours_returnsNoDirectNeighbourWithTop() {
-        GameObject rightNeighbour = addTestNeighbour(Vector3f.UNIT_X);
+        GameObject rightNeighbour = addTestNeighbour(new Vector3f(1, 0, 0));
         GameObject rightTopNeighbour = addTestNeighbour(new Vector3f(1, 1, 0));
         testGameObject.addComponent(underTest);
         List<GameObject> enterableNeighbours = underTest.getEnterableNeighbours();
@@ -206,7 +206,7 @@ public class NeighbourTest {
     //<editor-fold desc="static methods">
     @Test
     public void testStaticGetNeighbours() {
-        GameObject rightNeighbour = addTestNeighbour(Vector3f.UNIT_X);
+        GameObject rightNeighbour = addTestNeighbour(new Vector3f(1, 0, 0));
         testGameObject.addComponent(underTest);
         Map<NeighbourDirection, GameObject> neighbours = Neighbour.getNeighbours(testGameObject);
         assertThat(neighbours, hasEntry(NeighbourDirection.RIGHT, rightNeighbour));
@@ -214,7 +214,7 @@ public class NeighbourTest {
 
     @Test
     public void testStaticGetNeighbour() {
-        GameObject rightNeighbour = addTestNeighbour(Vector3f.UNIT_X);
+        GameObject rightNeighbour = addTestNeighbour(new Vector3f(1, 0, 0));
         testGameObject.addComponent(underTest);
         Optional<GameObject> neighbour = Neighbour.getNeighbour(testGameObject, NeighbourDirection.RIGHT);
         assertThat(neighbour, optionalWithValue(is(rightNeighbour)));
@@ -222,14 +222,14 @@ public class NeighbourTest {
 
     @Test
     public void testStaticHasNeighbour_true() {
-        addTestNeighbour(Vector3f.UNIT_X);
+        addTestNeighbour(new Vector3f(1, 0, 0));
         testGameObject.addComponent(underTest);
         assertThat(Neighbour.hasNeighbour(testGameObject, NeighbourDirection.RIGHT), is(true));
     }
 
     @Test
     public void testStaticHasNeighbour_false() {
-        addTestNeighbour(Vector3f.UNIT_X);
+        addTestNeighbour(new Vector3f(1, 0, 0));
         testGameObject.addComponent(underTest);
         assertThat(Neighbour.hasNeighbour(testGameObject, NeighbourDirection.LEFT), is(false));
     }
@@ -237,8 +237,8 @@ public class NeighbourTest {
 
     @Test
     public void testGetNeighbours() {
-        GameObject right = addTestNeighbour(Vector3f.UNIT_X);
-        GameObject left = addTestNeighbour(Vector3f.UNIT_X.mult(-1));
+        GameObject right = addTestNeighbour(new Vector3f(1, 0, 0));
+        GameObject left = addTestNeighbour(new Vector3f(1, 0, 0).mul(-1));
         testGameObject.addComponent(underTest);
         Map<NeighbourDirection, GameObject> neighbours = underTest.getNeighbours(NeighbourDirection.RIGHT, NeighbourDirection.TOP);
         assertThat(neighbours, hasEntry(NeighbourDirection.RIGHT, right));
@@ -248,7 +248,7 @@ public class NeighbourTest {
 
     @Test
     public void testGetDirectNeighbours() {
-        GameObject right = addTestNeighbour(Vector3f.UNIT_X);
+        GameObject right = addTestNeighbour(new Vector3f(1, 0, 0));
         testGameObject.addComponent(underTest);
         Map<NeighbourDirection, GameObject> directNeighbours = underTest.getDirectNeighbours();
         assertThat(directNeighbours, hasEntry(NeighbourDirection.RIGHT, right));

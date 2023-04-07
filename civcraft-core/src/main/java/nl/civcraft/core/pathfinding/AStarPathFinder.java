@@ -8,7 +8,9 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class AStarPathFinder {
 
-    public Optional<Queue<GameObject>> findPath(GameObject civvy, GameObject start, PathFindingTarget target) {
+    public Optional<Queue<GameObject>> findPath(GameObject civvy,
+                                                GameObject start,
+                                                PathFindingTarget target) {
         AStarNode startNode = new AStarNode(start);
         if (target.isReached(civvy, startNode)) {
             LinkedBlockingDeque<GameObject> path = new LinkedBlockingDeque<>();
@@ -61,11 +63,13 @@ public class AStarPathFinder {
         }
     }
 
-    private AStarNode findLowestCost(Set<AStarNode> openList, PathFindingTarget target) {
+    private AStarNode findLowestCost(Set<AStarNode> openList,
+                                     PathFindingTarget target) {
         return openList.stream().min(Comparator.comparingInt(v -> calculateCost(v, target))).map(n -> n).orElseThrow(() -> new IllegalStateException("No lowest cost node"));
     }
 
-    private int calculateCost(AStarNode next, PathFindingTarget target) {
+    private int calculateCost(AStarNode next,
+                              PathFindingTarget target) {
         return target.getCostFrom(next);
 
     }

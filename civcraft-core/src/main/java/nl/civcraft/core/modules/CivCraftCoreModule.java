@@ -7,7 +7,6 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import io.reactivex.Scheduler;
 import io.reactivex.internal.schedulers.SingleScheduler;
-import nl.civcraft.core.SystemEventPublisher;
 import nl.civcraft.core.interaction.MouseTool;
 import nl.civcraft.core.interaction.selectors.SingleVoxelSelector;
 import nl.civcraft.core.interaction.tools.*;
@@ -32,8 +31,6 @@ public class CivCraftCoreModule extends AbstractModule {
         install(new WorldGenerationModule());
 
         bind(Scheduler.class).to(SingleScheduler.class).in(Singleton.class);
-        bind(SystemEventPublisher.class).asEagerSingleton();
-
 
         bind(MouseTool.class).annotatedWith(Names.named("singleVoxelSelector")).to(SingleVoxelSelector.class).in(Singleton.class);
         bind(MouseTool.class).annotatedWith(Names.named("stockpileTool")).to(StockpileTool.class).in(Singleton.class);

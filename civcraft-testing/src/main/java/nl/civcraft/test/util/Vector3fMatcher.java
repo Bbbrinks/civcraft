@@ -1,8 +1,9 @@
 package nl.civcraft.test.util;
 
-import com.jme3.math.Vector3f;
+
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
+import org.joml.Vector3f;
 import org.mockito.ArgumentMatcher;
 
 import static org.mockito.Matchers.argThat;

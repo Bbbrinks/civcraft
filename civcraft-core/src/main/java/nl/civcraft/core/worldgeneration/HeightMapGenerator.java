@@ -8,5 +8,6 @@ package nl.civcraft.core.worldgeneration;
 @FunctionalInterface
 public interface HeightMapGenerator {
 
-    HeightMap generateRandomHeightMap(int width, int length);
+    HeightMap generateRandomHeightMap(int width,
+                                      int length);
 }

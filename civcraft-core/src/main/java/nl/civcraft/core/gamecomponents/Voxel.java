@@ -12,7 +12,8 @@ public class Voxel extends Neighbour implements Breakable, Renderable {
 
     private final String type;
 
-    public Voxel(String type, VoxelManager voxelManager) {
+    public Voxel(String type,
+                 VoxelManager voxelManager) {
         super(voxelManager);
         this.type = type;
     }
@@ -26,6 +27,7 @@ public class Voxel extends Neighbour implements Breakable, Renderable {
 
     @Override
     public void destroyed() {
+        getNeighbours().forEach((neighbourDirection, gameObject1) -> gameObject1.changed());
         voxelManager.removeVoxel(gameObject);
         super.destroyed();
     }
@@ -46,11 +48,16 @@ public class Voxel extends Neighbour implements Breakable, Renderable {
         return type;
     }
 
+    public boolean isVisible() {
+        return getDirectNeighbours().size() < 6;
+    }
+
     public static class Factory implements GameComponentFactory<Voxel> {
         private final String type;
         private final VoxelManager voxelManager;
 
-        public Factory(String type, VoxelManager voxelManager) {
+        public Factory(String type,
+                       VoxelManager voxelManager) {
             this.type = type;
             this.voxelManager = voxelManager;
         }

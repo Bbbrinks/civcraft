@@ -11,7 +11,6 @@ import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.managers.PrefabManagerManager;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.rendering.VoxelRenderer;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -35,12 +34,10 @@ public class BlocksModule extends AbstractModule {
     @Named("grass")
     public PrefabManager grassManager(@Named("block") PrefabManager blockManager,
                                       VoxelManager voxelManager,
-                                      VoxelRenderer.StaticVoxelRendererFactory voxelRenderer,
                                       PrefabManagerManager prefabManagerManager) {
         PrefabManager prefabManager = new PrefabManager(blockManager);
         Voxel.Factory voxel = new Voxel.Factory("grass", voxelManager);
         prefabManager.registerComponent(voxel);
-        prefabManager.registerComponent(voxelRenderer);
         prefabManager.registerComponent(new DropOnDestoyed.Factory(ImmutableMap.<Supplier<PrefabManager>, Integer>builder().put(() -> prefabManagerManager.get("grassItem"), 1).build()));
         return prefabManager;
     }
@@ -50,12 +47,10 @@ public class BlocksModule extends AbstractModule {
     @Named("cobbleStone")
     public PrefabManager cobbleStoneManager(@Named("block") PrefabManager blockManager,
                                             VoxelManager voxelManager,
-                                            VoxelRenderer.StaticVoxelRendererFactory voxelRenderer,
                                             PrefabManagerManager prefabManagerManager) {
         PrefabManager prefabManager = new PrefabManager(blockManager);
         Voxel.Factory voxel = new Voxel.Factory("cobbleStone", voxelManager);
         prefabManager.registerComponent(voxel);
-        prefabManager.registerComponent(voxelRenderer);
         prefabManager.registerComponent(new DropOnDestoyed.Factory(ImmutableMap.<Supplier<PrefabManager>, Integer>builder().put(() -> prefabManagerManager.get("cobbleStoneItem"), 1).build()));
         return prefabManager;
     }
@@ -65,12 +60,10 @@ public class BlocksModule extends AbstractModule {
     @Named("dirt")
     public PrefabManager dirtManager(@Named("block") PrefabManager blockManager,
                                      VoxelManager voxelManager,
-                                     VoxelRenderer.StaticVoxelRendererFactory voxelRenderer,
                                      PrefabManagerManager prefabManagerManager) {
         PrefabManager prefabManager = new PrefabManager(blockManager);
         Voxel.Factory voxel = new Voxel.Factory("dirt", voxelManager);
         prefabManager.registerComponent(voxel);
-        prefabManager.registerComponent(voxelRenderer);
         prefabManager.registerComponent(new DropOnDestoyed.Factory(ImmutableMap.<Supplier<PrefabManager>, Integer>builder().put(() -> prefabManagerManager.get("dirtItem"), 1).build()));
         return prefabManager;
     }
@@ -82,14 +75,12 @@ public class BlocksModule extends AbstractModule {
             @Named("block") PrefabManager blockManager,
             VoxelManager voxelManager,
             @Named("apple") PrefabManager itemManager,
-            VoxelRenderer.StateBasedVoxelRendererFactoryFactory voxelRenderer,
             PrefabManagerManager prefabManagerManager) {
         PrefabManager prefabManager = new PrefabManager(blockManager);
         Function<GameObject, String> stateSupplier = (GameObject gameObject) -> gameObject.getComponent(InventoryComponent.class).map(i -> i.isEmpty() ? "empty" :
                 "not-empty").orElse("empty");
         Voxel.Factory voxel = new Voxel.Factory("treeLeaf", voxelManager);
         prefabManager.registerComponent(voxel);
-        prefabManager.registerComponent(voxelRenderer.build(stateSupplier));
         prefabManager.registerComponent(new InventoryComponent.Factory(4));
         prefabManager.registerComponent(new HarvestFromInventory.Factory());
         /*prefabManager.registerComponent(new RandomItemGenerator.Factory(4, itemManager));*/
@@ -103,12 +94,10 @@ public class BlocksModule extends AbstractModule {
     public PrefabManager treeTrunkManager(
             @Named("block") PrefabManager blockManager,
             VoxelManager voxelManager,
-            VoxelRenderer.StaticVoxelRendererFactory voxelRenderer,
             PrefabManagerManager prefabManagerManager) {
         PrefabManager prefabManager = new PrefabManager(blockManager);
         Voxel.Factory voxel = new Voxel.Factory("treeTrunk", voxelManager);
         prefabManager.registerComponent(voxel);
-        prefabManager.registerComponent(voxelRenderer);
         prefabManager.registerComponent(new DropOnDestoyed.Factory(ImmutableMap.<Supplier<PrefabManager>, Integer>builder().put(() -> prefabManagerManager.get("treeTrunkItem"), 1).build()));
         return prefabManager;
     }

@@ -1,9 +1,9 @@
 package nl.civcraft.core.tasks;
 
+import nl.civcraft.core.gamecomponents.Civvy;
 import nl.civcraft.core.gamecomponents.GroundMovement;
 import nl.civcraft.core.gamecomponents.Neighbour;
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.core.npc.Civvy;
 import nl.civcraft.core.utils.RandomUtil;
 
 import java.util.Collections;
@@ -22,7 +22,8 @@ public class Wander extends Task {
     }
 
     @Override
-    public Result affect(GameObject civvy, float tpf) {
+    public Result affect(GameObject civvy,
+                         float tpf) {
         Optional<GroundMovement> component = civvy.getComponent(GroundMovement.class);
         if (!component.isPresent()) {
             throw new IllegalStateException("Move to can only be done by GroundMovement game objects");

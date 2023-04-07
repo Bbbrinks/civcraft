@@ -3,6 +3,7 @@ package nl.civcraft.core.gamecomponents;
 import nl.civcraft.core.managers.PrefabManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.utils.RandomUtil;
+import org.joml.Matrix4f;
 
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ public class RandomItemGenerator extends AbstractGameComponent {
         InventoryComponent limitedInventory = inventory.get();
         int nextInt = RandomUtil.getNextInt(maxItems);
         for (int i = 0; i < nextInt; i++) {
-            limitedInventory.addItem(itemSupplier.build(gameObject.getTransform().clone(), true));
+            limitedInventory.addItem(itemSupplier.build(new Matrix4f(gameObject.getTransform()), true));
         }
     }
 
